@@ -26,11 +26,22 @@ import { ApiService } from '../services/api.service';
       <mat-dialog-content>
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Company</mat-label>
-          <mat-select formControlName="company" required>
+          <mat-select formControlName="company" required (selectionChange)="onCompanyChange($event.value)">
             <mat-option *ngFor="let company of companies" [value]="company.id">
               {{ company.name }}
             </mat-option>
           </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Product Group (Optional)</mat-label>
+          <mat-select formControlName="product_group">
+            <mat-option [value]="null">None</mat-option>
+            <mat-option *ngFor="let group of productGroups" [value]="group.id">
+              {{ group.name }}
+            </mat-option>
+          </mat-select>
+          <mat-hint>Select a product group to organize this product</mat-hint>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
@@ -93,6 +104,7 @@ import { ApiService } from '../services/api.service';
 export class ProductFormComponent implements OnInit {
   productForm: FormGroup;
   companies: any[] = [];
+  productGroups: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -102,6 +114,7 @@ export class ProductFormComponent implements OnInit {
   ) {
     this.productForm = this.fb.group({
       company: ['', Validators.required],
+      product_group: [''],
       name: ['', Validators.required],
       category: ['', Validators.required],
       grade_spec: [''],
@@ -115,6 +128,9 @@ export class ProductFormComponent implements OnInit {
     
     if (this.data) {
       this.productForm.patchValue(this.data);
+      if (this.data.company) {
+        this.loadProductGroups(this.data.company);
+      }
     }
   }
 
@@ -122,6 +138,18 @@ export class ProductFormComponent implements OnInit {
     this.apiService.getCompanies().subscribe({
       next: (data) => this.companies = data.results || data,
       error: (err: any) => console.error('Error loading companies:', err)
+    });
+  }
+
+  onCompanyChange(companyId: number) {
+    this.loadProductGroups(companyId);
+    this.productForm.patchValue({ product_group: null });
+  }
+
+  loadProductGroups(companyId: number) {
+    this.apiService.getProductGroups(companyId).subscribe({
+      next: (data) => this.productGroups = data.results || data,
+      error: (err: any) => console.error('Error loading product groups:', err)
     });
   }
 

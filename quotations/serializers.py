@@ -1,12 +1,24 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Company, Vendor, Product, Quotation, OrderRequest, ComparisonResult, UserProfile
+from .models import Company, Vendor, Product, Quotation, OrderRequest, ComparisonResult, UserProfile, ProductGroup
 
 
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
         fields = '__all__'
+
+
+class ProductGroupSerializer(serializers.ModelSerializer):
+    company_name = serializers.CharField(source='company.name', read_only=True)
+    product_count = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = ProductGroup
+        fields = '__all__'
+    
+    def get_product_count(self, obj):
+        return obj.products.count()
 
 
 class VendorSerializer(serializers.ModelSerializer):
@@ -19,6 +31,7 @@ class VendorSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     company_name = serializers.CharField(source='company.name', read_only=True)
+    product_group_name = serializers.CharField(source='product_group.name', read_only=True)
     
     class Meta:
         model = Product

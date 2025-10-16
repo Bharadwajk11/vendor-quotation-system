@@ -59,6 +59,35 @@ The backend is developed with Django 5.2+ and Django REST Framework, providing a
 
 # Recent Changes (October 16, 2025)
 
+## Product Groups Feature
+
+**New Module: Product Groups** - Full CRUD operations for organizing products into custom groups/categories:
+
+**Backend Implementation**:
+- **ProductGroup Model**: New model with fields: name, description, company (ForeignKey), created_at, updated_at
+- **Product Model Update**: Added optional product_group ForeignKey field (SET_NULL on delete)
+- **API Endpoints**: `/api/product-groups/` with full CRUD operations (GET, POST, PUT, DELETE)
+- **Filtering**: Product groups can be filtered by company_id via query parameter
+- **Product Count**: Serializer includes product_count field showing number of products in each group
+- **Migration**: quotations.0004_productgroup_product_product_group applied successfully
+
+**Frontend Implementation**:
+- **Product Groups Page**: New standalone module at `/product-groups` with table listing all groups
+- **Table Columns**: ID, Group Name, Description, Products (count badge), Company, Actions (Edit/Delete)
+- **Product Group Form**: Dialog-based form with Company selection, Group Name, and optional Description
+- **Dynamic Loading**: Product groups load based on selected company
+- **Navigation**: Added "Product Groups" menu item with category icon between Vendors and Products
+- **Product Form Enhancement**: Added optional Product Group dropdown that dynamically loads groups when company is selected
+- **User Workflow**: Users create product groups first, then assign products to groups during product creation/editing
+
+**Benefits**:
+- Better product organization and categorization
+- User-defined grouping based on business needs (e.g., "Plastic Resins", "Metal Parts", "Raw Materials")
+- Easy filtering and management of products by group
+- Scalable structure for multi-company environments
+
+# Recent Changes (October 16, 2025) - Comparison Table Enhancements
+
 ## Enhanced Comparison Results Table
 
 **Vendor Comparison Table (10 Columns)**:

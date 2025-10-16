@@ -57,8 +57,24 @@ class Vendor(models.Model):
         return f"{self.name} - {self.city}"
 
 
+class ProductGroup(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='product_groups')
+    name = models.CharField(max_length=200)
+    description = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name_plural = "Product Groups"
+
+    def __str__(self):
+        return self.name
+
+
 class Product(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='products')
+    product_group = models.ForeignKey(ProductGroup, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
     name = models.CharField(max_length=200)
     category = models.CharField(max_length=100)
     grade_spec = models.CharField(max_length=200)

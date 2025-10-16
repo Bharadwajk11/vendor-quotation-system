@@ -78,6 +78,23 @@ export class ApiService {
     return this.http.delete(`${this.apiUrl}/products/${id}/`);
   }
 
+  getProductGroups(companyId?: number): Observable<any> {
+    const url = companyId ? `${this.apiUrl}/product-groups/?company_id=${companyId}` : `${this.apiUrl}/product-groups/`;
+    return this.http.get(url);
+  }
+
+  createProductGroup(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/product-groups/`, data);
+  }
+
+  updateProductGroup(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/product-groups/${id}/`, data);
+  }
+
+  deleteProductGroup(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/product-groups/${id}/`);
+  }
+
   createQuotation(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/quotations/`, data);
   }

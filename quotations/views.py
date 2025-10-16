@@ -4,17 +4,29 @@ from rest_framework.response import Response
 from django.db.models import Q
 from decimal import Decimal
 from django.contrib.auth.models import User
-from .models import Company, Vendor, Product, Quotation, OrderRequest, ComparisonResult, UserProfile
+from .models import Company, Vendor, Product, Quotation, OrderRequest, ComparisonResult, UserProfile, ProductGroup
 from .serializers import (
     CompanySerializer, VendorSerializer, ProductSerializer, 
     QuotationSerializer, OrderRequestSerializer, ComparisonResultSerializer,
-    CompareVendorsInputSerializer, UserProfileSerializer, UserWithProfileSerializer
+    CompareVendorsInputSerializer, UserProfileSerializer, UserWithProfileSerializer, ProductGroupSerializer
 )
 
 
 class CompanyViewSet(viewsets.ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
+
+
+class ProductGroupViewSet(viewsets.ModelViewSet):
+    queryset = ProductGroup.objects.all()
+    serializer_class = ProductGroupSerializer
+
+    def get_queryset(self):
+        queryset = ProductGroup.objects.all()
+        company_id = self.request.query_params.get('company_id', None)
+        if company_id:
+            queryset = queryset.filter(company_id=company_id)
+        return queryset
 
 
 class VendorViewSet(viewsets.ModelViewSet):
