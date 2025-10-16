@@ -1,7 +1,24 @@
 import { Routes } from '@angular/router';
+import { LayoutComponent } from './layout/layout.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { CompaniesComponent } from './companies/companies.component';
+import { VendorsComponent } from './vendors/vendors.component';
+import { ProductsComponent } from './products/products.component';
+import { QuotationsComponent } from './quotations/quotations.component';
 import { CompareComponent } from './components/compare/compare.component';
 
 export const routes: Routes = [
-  { path: 'compare', component: CompareComponent },
-  { path: '', redirectTo: '/compare', pathMatch: 'full' }
+  {
+    path: '',
+    component: LayoutComponent,
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'companies', component: CompaniesComponent },
+      { path: 'vendors', component: VendorsComponent },
+      { path: 'products', component: ProductsComponent },
+      { path: 'quotations', component: QuotationsComponent },
+      { path: 'compare', component: CompareComponent }
+    ]
+  }
 ];

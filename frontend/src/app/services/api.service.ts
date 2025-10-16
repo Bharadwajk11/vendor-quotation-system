@@ -41,4 +41,52 @@ export class ApiService {
     const url = orderRequestId ? `${this.apiUrl}/comparison-results/?order_request_id=${orderRequestId}` : `${this.apiUrl}/comparison-results/`;
     return this.http.get(url);
   }
+
+  createCompany(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/companies/`, data);
+  }
+
+  updateCompany(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/companies/${id}/`, data);
+  }
+
+  deleteCompany(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/companies/${id}/`);
+  }
+
+  createVendor(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/vendors/`, data);
+  }
+
+  updateVendor(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/vendors/${id}/`, data);
+  }
+
+  deleteVendor(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/vendors/${id}/`);
+  }
+
+  createProduct(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/products/`, data);
+  }
+
+  updateProduct(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/products/${id}/`, data);
+  }
+
+  deleteProduct(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/products/${id}/`);
+  }
+
+  createQuotation(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/quotations/`, data);
+  }
+
+  updateQuotation(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/quotations/${id}/`, data);
+  }
+
+  deleteQuotation(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/quotations/${id}/`);
+  }
 }
