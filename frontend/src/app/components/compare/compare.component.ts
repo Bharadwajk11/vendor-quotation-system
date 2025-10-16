@@ -78,66 +78,59 @@ import { ApiService } from '../../services/api.service';
         </mat-card-header>
         <mat-card-content>
           <table mat-table [dataSource]="comparisonResults.comparisons" class="mat-elevation-z0">
-            <ng-container matColumnDef="rank">
-              <th mat-header-cell *matHeaderCellDef>Rank</th>
+            <ng-container matColumnDef="vendor_name">
+              <th mat-header-cell *matHeaderCellDef>Vendor Name</th>
               <td mat-cell *matCellDef="let result">
+                <strong>{{ result.vendor_name }}</strong>
                 <mat-chip-set *ngIf="result.rank === 1">
                   <mat-chip class="rank-badge">🏆 Best</mat-chip>
                 </mat-chip-set>
-                <span *ngIf="result.rank !== 1">#{{ result.rank }}</span>
               </td>
             </ng-container>
 
-            <ng-container matColumnDef="vendor_place">
-              <th mat-header-cell *matHeaderCellDef>Vendor Name & Place</th>
+            <ng-container matColumnDef="place">
+              <th mat-header-cell *matHeaderCellDef>Place</th>
               <td mat-cell *matCellDef="let result">
-                <strong>{{ result.vendor_name }}</strong>
-                <br>
-                <small>{{ result.vendor_city }}, {{ result.vendor_state }}</small>
+                {{ result.vendor_city }}, {{ result.vendor_state }}
+                <span *ngIf="result.is_interstate" class="interstate-tag">
+                  <br><small>Interstate</small>
+                </span>
+                <span *ngIf="!result.is_interstate" class="local-tag">
+                  <br><small>Local</small>
+                </span>
               </td>
             </ng-container>
 
             <ng-container matColumnDef="product_price">
               <th mat-header-cell *matHeaderCellDef>Product Price (₹/kg)</th>
-              <td mat-cell *matCellDef="let result">
-                <strong>₹{{ result.product_price }}</strong>
-              </td>
+              <td mat-cell *matCellDef="let result">₹{{ result.product_price }}</td>
             </ng-container>
 
             <ng-container matColumnDef="delivery_charges">
               <th mat-header-cell *matHeaderCellDef>Delivery Charges (₹)</th>
               <td mat-cell *matCellDef="let result">
                 ₹{{ result.delivery_price }}
-                <span *ngIf="result.is_interstate" class="interstate-tag">
-                  <br><small>+20% Interstate</small>
-                </span>
-                <span *ngIf="!result.is_interstate" class="local-tag">
-                  <br><small>✓ Local</small>
+                <span *ngIf="result.is_interstate">
+                  <br><small class="surcharge-note">Includes 20% surcharge</small>
                 </span>
               </td>
             </ng-container>
 
-            <ng-container matColumnDef="kilo_price">
+            <ng-container matColumnDef="landing_price">
               <th mat-header-cell *matHeaderCellDef>Landing Price (₹/kg)</th>
               <td mat-cell *matCellDef="let result">
-                <strong class="kilo-price">₹{{ result.kilo_price }}</strong>
+                <strong class="landing-price">₹{{ result.total_cost_per_unit }}</strong>
               </td>
+            </ng-container>
+
+            <ng-container matColumnDef="kilo_price">
+              <th mat-header-cell *matHeaderCellDef>Kilo Price (₹/kg)</th>
+              <td mat-cell *matCellDef="let result">₹{{ result.kilo_price }}</td>
             </ng-container>
 
             <ng-container matColumnDef="grade">
               <th mat-header-cell *matHeaderCellDef>Grade</th>
               <td mat-cell *matCellDef="let result">{{ result.grade_spec }}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="lead_time">
-              <th mat-header-cell *matHeaderCellDef>Lead Time</th>
-              <td mat-cell *matCellDef="let result">
-                <mat-chip-set>
-                  <mat-chip [ngClass]="getLeadTimeClass(result.lead_time_days)">
-                    {{ result.lead_time_days }} days
-                  </mat-chip>
-                </mat-chip-set>
-              </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -228,9 +221,14 @@ import { ApiService } from '../../services/api.service';
       font-weight: 500;
     }
 
-    .kilo-price {
+    .landing-price {
       color: #3f51b5;
       font-size: 16px;
+    }
+
+    .surcharge-note {
+      color: #666;
+      font-style: italic;
     }
 
     .success-row {
@@ -263,7 +261,7 @@ export class CompareComponent implements OnInit {
   deliveryLocation: string = '';
   comparisonResults: any = null;
   errorMessage: string = '';
-  displayedColumns: string[] = ['rank', 'vendor_place', 'product_price', 'delivery_charges', 'kilo_price', 'grade', 'lead_time'];
+  displayedColumns: string[] = ['vendor_name', 'place', 'product_price', 'delivery_charges', 'landing_price', 'kilo_price', 'grade'];
 
   constructor(private apiService: ApiService) {}
 
