@@ -1,0 +1,26 @@
+<div class="container">
+  <header>
+    <h1>{{ title }}</h1>
+    <p class="subtitle">Multi-Industry Procurement Comparison Platform</p>
+  </header>
+
+  <main>
+    <section class="dashboard">
+      <div class="card">
+        <h2>System Overview</h2>
+        <p><strong>Vendors:</strong> {{ vendors.length }}</p>
+        <p><strong>Products:</strong> {{ products.length }}</p>
+        <p>Database connected and operational ✅</p>
+      </div>
+
+      <div class="card">
+        <h2>Quick Stats</h2>
+        <ul>
+          <li *ngFor="let vendor of vendors">{{ vendor.name }} - {{ vendor.city }}, {{ vendor.state }}</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <router-outlet />
+</div>
