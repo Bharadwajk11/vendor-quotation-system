@@ -55,7 +55,7 @@ import { ProductGroupFormComponent } from '../product-groups/product-group-form.
                     (click)="addProductGroup()" 
                     [disabled]="!productForm.get('company')?.value"
                     matTooltip="Add New Group">
-              <mat-icon>add_circle</mat-icon>
+              <mat-icon>add</mat-icon>
             </button>
             <button mat-icon-button type="button" color="accent" 
                     (click)="editProductGroup()" 
