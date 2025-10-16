@@ -89,5 +89,8 @@ The backend is developed with Django 5.2+ and Django REST Framework, providing a
 - Both fields are read-only with helpful hint text
 - Robust validation using `Number.isFinite()` to prevent NaN display
 - **Quantity field**: Now stored in database, properly saves and loads custom quantities (e.g., 60kg, 30kg)
-- **Quotations table**: Shows Quantity column to display saved quantity values
+- **Quotations table enhancements**:
+  - Shows Quantity (kg) column to display saved quantity values
+  - Shows Total Landing Price (₹) column with auto-calculated values: (Product Price × Quantity) + Delivery Charges
+  - All table headers use consistent dark blue (#3f51b5) background with white bold text throughout the application
 - **Example**: Product Price ₹90/kg, Quantity 30kg, Delivery ₹33 → Total Landing Price ₹2,733, Landing Price ₹91.1/kg

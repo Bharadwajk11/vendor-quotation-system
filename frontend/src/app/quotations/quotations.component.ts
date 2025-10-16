@@ -67,6 +67,13 @@ import { QuotationFormComponent } from './quotation-form.component.js';
             <td mat-cell *matCellDef="let quote">₹{{ quote.delivery_price }}</td>
           </ng-container>
 
+          <ng-container matColumnDef="total_landing_price">
+            <th mat-header-cell *matHeaderCellDef>Total Landing Price (₹)</th>
+            <td mat-cell *matCellDef="let quote">
+              <strong>{{ calculateTotalLandingPrice(quote) }}</strong>
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="landing_price">
             <th mat-header-cell *matHeaderCellDef>Landing Price (₹/kg)</th>
             <td mat-cell *matCellDef="let quote">₹{{ quote.kilo_price }}</td>
@@ -103,7 +110,7 @@ import { QuotationFormComponent } from './quotation-form.component.js';
 })
 export class QuotationsComponent implements OnInit {
   quotations: any[] = [];
-  displayedColumns: string[] = ['id', 'vendor', 'product', 'product_price', 'quantity', 'delivery_price', 'landing_price', 'lead_time', 'grade_spec', 'actions'];
+  displayedColumns: string[] = ['id', 'vendor', 'product', 'product_price', 'quantity', 'delivery_price', 'total_landing_price', 'landing_price', 'lead_time', 'grade_spec', 'actions'];
 
   constructor(
     private apiService: ApiService,
@@ -141,5 +148,13 @@ export class QuotationsComponent implements OnInit {
         error: (err: any) => console.error('Error deleting quotation:', err)
       });
     }
+  }
+
+  calculateTotalLandingPrice(quote: any): string {
+    if (quote.quantity && quote.product_price && quote.delivery_price) {
+      const total = (parseFloat(quote.product_price) * parseFloat(quote.quantity)) + parseFloat(quote.delivery_price);
+      return '₹' + total.toFixed(2);
+    }
+    return '-';
   }
 }
