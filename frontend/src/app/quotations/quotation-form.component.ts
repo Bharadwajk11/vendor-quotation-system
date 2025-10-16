@@ -184,6 +184,7 @@ export class QuotationFormComponent implements OnInit {
         vendor: formValue.vendor,
         product: formValue.product,
         product_price: formValue.product_price,
+        quantity: formValue.quantity,
         delivery_price: formValue.delivery_price,
         lead_time_days: formValue.lead_time_days,
         grade_spec: formValue.grade_spec,
