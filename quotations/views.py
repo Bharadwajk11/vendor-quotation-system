@@ -241,35 +241,38 @@ def compare_vendors(request):
         total_cost_per_unit = quotation.product_price + delivery_per_unit
         total_order_cost = total_cost_per_unit * Decimal(order_qty)
         
-        # Scoring: lower is better
-        cost_score = float(total_cost_per_unit)
-        lead_time_score = quotation.lead_time_days * 10
-        
-        final_score = cost_score + lead_time_score
-        
         comparison_results.append({
             'quotation': quotation,
             'total_cost_per_unit': total_cost_per_unit,
             'total_order_cost': total_order_cost,
-            'score': final_score,
+            'lead_time_days': quotation.lead_time_days,
             'is_interstate': is_interstate,
             'base_delivery_price': base_delivery_price,
             'adjusted_delivery_price': adjusted_delivery_price
         })
     
-    comparison_results.sort(key=lambda x: x['score'])
+    # Sort by: 1st Total Landing Price, 2nd Landing Price per kg, 3rd Lead Time
+    comparison_results.sort(key=lambda x: (
+        float(x['total_order_cost']),      # 1st priority: Total Landing Price (lowest wins)
+        float(x['total_cost_per_unit']),   # 2nd priority: Landing Price per kg (lowest wins)
+        x['lead_time_days']                # 3rd priority: Lead Time (shortest wins)
+    ))
     
     saved_results = []
     response_data = []
     
     for rank, result in enumerate(comparison_results, start=1):
+        # Calculate score for historical tracking (lower is better)
+        # Priority: Total Landing Price > Landing Price per kg > Lead Time
+        score = float(result['total_order_cost']) + float(result['total_cost_per_unit']) + (result['lead_time_days'] * 0.01)
+        
         comparison = ComparisonResult.objects.create(
             order_request=order_request,
             vendor=result['quotation'].vendor,
             quotation=result['quotation'],
             total_cost_per_unit=result['total_cost_per_unit'],
             total_order_cost=result['total_order_cost'],
-            score=result['score'],
+            score=score,
             rank=rank
         )
         saved_results.append(comparison)

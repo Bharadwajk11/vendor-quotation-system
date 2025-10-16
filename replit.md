@@ -74,6 +74,12 @@ The backend is developed with Django 5.2+ and Django REST Framework, providing a
 
 **Enhanced Table Headers**: Dark blue background (#3f51b5), white bold text, extra padding for visibility
 
+**Intelligent Ranking Algorithm**:
+- **1st Priority**: Total Landing Price (₹) - Lowest total order cost wins
+- **2nd Priority**: Landing Price (₹/kg) - If Total Landing Price is tied, lowest per-kg cost wins
+- **3rd Priority**: Lead Time - If both prices are tied, shortest delivery time wins
+- Best vendor gets 🏆 trophy badge and green row highlighting
+
 ## Enhanced Quotation Form
 
 **Dual Landing Price Display**:
