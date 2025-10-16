@@ -54,8 +54,9 @@ import { ApiService } from '../../services/api.service';
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Delivery Location</mat-label>
+              <mat-label>Delivery Location (State)</mat-label>
               <input matInput [(ngModel)]="deliveryLocation" placeholder="e.g., Andhra Pradesh">
+              <mat-hint>Enter your delivery state. Local vendors (same state) have lower shipping costs.</mat-hint>
             </mat-form-field>
           </div>
 
@@ -101,6 +102,12 @@ import { ApiService } from '../../services/api.service';
               <td mat-cell *matCellDef="let result">
                 Product: ₹{{ result.product_price }}<br>
                 Delivery: ₹{{ result.delivery_price }}
+                <span *ngIf="result.is_interstate" class="interstate-badge">
+                  <br><small>+20% Interstate</small>
+                </span>
+                <span *ngIf="!result.is_interstate" class="local-badge">
+                  <br><small>✓ Local Delivery</small>
+                </span>
               </td>
             </ng-container>
 
@@ -210,6 +217,19 @@ import { ApiService } from '../../services/api.service';
       width: 24px;
       height: 24px;
     }
+
+    .interstate-badge {
+      color: #f44336;
+      font-weight: 500;
+    }
+
+    .local-badge {
+      color: #4caf50;
+      font-weight: 500;
+    }
+
+    .success-row {
+      background-color: #e8f5e9 !important;
     }
 
     th {

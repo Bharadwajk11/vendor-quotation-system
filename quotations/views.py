@@ -99,6 +99,61 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserWithProfileSerializer
 
 
+def normalize_state(state_str):
+    """
+    Normalize state name to handle abbreviations and formatting variations.
+    Returns lowercase normalized state name for comparison.
+    """
+    if not state_str:
+        return ''
+    
+    # Common state mappings (Indian states)
+    state_mappings = {
+        'ap': 'andhra pradesh',
+        'ar': 'arunachal pradesh',
+        'as': 'assam',
+        'br': 'bihar',
+        'cg': 'chhattisgarh',
+        'ga': 'goa',
+        'gj': 'gujarat',
+        'hr': 'haryana',
+        'hp': 'himachal pradesh',
+        'jk': 'jammu and kashmir',
+        'jh': 'jharkhand',
+        'ka': 'karnataka',
+        'kl': 'kerala',
+        'mp': 'madhya pradesh',
+        'mh': 'maharashtra',
+        'mn': 'manipur',
+        'ml': 'meghalaya',
+        'mz': 'mizoram',
+        'nl': 'nagaland',
+        'or': 'odisha',
+        'pb': 'punjab',
+        'rj': 'rajasthan',
+        'sk': 'sikkim',
+        'tn': 'tamil nadu',
+        'tg': 'telangana',
+        'tr': 'tripura',
+        'up': 'uttar pradesh',
+        'uk': 'uttarakhand',
+        'wb': 'west bengal',
+        'dl': 'delhi',
+        'dd': 'daman and diu',
+        'dn': 'dadra and nagar haveli',
+        'ld': 'lakshadweep',
+        'py': 'puducherry',
+    }
+    
+    normalized = state_str.strip().lower()
+    
+    # If it's an abbreviation, expand it
+    if normalized in state_mappings:
+        return state_mappings[normalized]
+    
+    return normalized
+
+
 @api_view(['POST'])
 def compare_vendors(request):
     """
@@ -166,10 +221,27 @@ def compare_vendors(request):
     comparison_results = []
     
     for quotation in quotations:
-        delivery_per_unit = quotation.delivery_price / Decimal(order_qty)
+        base_delivery_price = quotation.delivery_price
+        
+        # Apply interstate shipping surcharge if vendor is in different state
+        vendor_state_normalized = normalize_state(quotation.vendor.state)
+        delivery_state_normalized = normalize_state(delivery_location)
+        
+        # Check if it's interstate delivery (vendor state != delivery state)
+        if vendor_state_normalized != delivery_state_normalized:
+            # Add 20% interstate shipping surcharge
+            adjusted_delivery_price = base_delivery_price * Decimal('1.20')
+            is_interstate = True
+        else:
+            # Local delivery - use base price
+            adjusted_delivery_price = base_delivery_price
+            is_interstate = False
+        
+        delivery_per_unit = adjusted_delivery_price / Decimal(order_qty)
         total_cost_per_unit = quotation.product_price + delivery_per_unit
         total_order_cost = total_cost_per_unit * Decimal(order_qty)
         
+        # Scoring: lower is better
         cost_score = float(total_cost_per_unit)
         lead_time_score = quotation.lead_time_days * 10
         
@@ -179,12 +251,17 @@ def compare_vendors(request):
             'quotation': quotation,
             'total_cost_per_unit': total_cost_per_unit,
             'total_order_cost': total_order_cost,
-            'score': final_score
+            'score': final_score,
+            'is_interstate': is_interstate,
+            'base_delivery_price': base_delivery_price,
+            'adjusted_delivery_price': adjusted_delivery_price
         })
     
     comparison_results.sort(key=lambda x: x['score'])
     
     saved_results = []
+    response_data = []
+    
     for rank, result in enumerate(comparison_results, start=1):
         comparison = ComparisonResult.objects.create(
             order_request=order_request,
@@ -196,13 +273,18 @@ def compare_vendors(request):
             rank=rank
         )
         saved_results.append(comparison)
-    
-    serializer = ComparisonResultSerializer(saved_results, many=True)
+        
+        # Add interstate flag to response
+        comparison_dict = ComparisonResultSerializer(comparison).data
+        comparison_dict['is_interstate'] = result['is_interstate']
+        comparison_dict['base_delivery_price'] = str(result['base_delivery_price'])
+        comparison_dict['adjusted_delivery_price'] = str(result['adjusted_delivery_price'])
+        response_data.append(comparison_dict)
     
     return Response({
         'order_request_id': order_request.id,
         'product_name': product.name,
         'order_qty': order_qty,
         'delivery_location': delivery_location,
-        'comparisons': serializer.data
+        'comparisons': response_data
     })

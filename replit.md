@@ -58,7 +58,10 @@ Preferred communication style: Simple, everyday language.
 
 **Business Logic**:
 - Vendor comparison algorithm evaluates total cost per unit, delivery pricing, quality grades, and lead times
-- Scoring system ranks vendors based on multiple weighted factors
+- **Smart Delivery Location**: Automatically applies 20% interstate shipping surcharge when vendor state differs from delivery location
+  - Local vendors (same state as delivery) = base delivery price
+  - Interstate vendors (different state) = base delivery price + 20% surcharge
+- Scoring system ranks vendors based on multiple weighted factors (lower score = better)
 - Results stored in ComparisonResult model for historical tracking
 
 ## External Dependencies
@@ -194,13 +197,16 @@ The application has been transformed from a basic single-page app into a profess
    - Enter product price, delivery price, lead time, grade
    - View comprehensive quotation table
 
-6. **Compare Vendors**:
+6. **Compare Vendors** (Smart Delivery Location):
    - Select product from dropdown
    - Enter order quantity
-   - Enter delivery location
+   - **Enter delivery location (State)** - System automatically calculates shipping costs:
+     - ✅ **Local vendors** (same state) = base delivery price
+     - ⚠️ **Interstate vendors** (different state) = base price + 20% surcharge
    - Click "Compare Vendors"
    - View ranked results with #1 highlighted in green
-   - See color-coded lead times and total cost breakdown
+   - See color-coded lead times, total cost breakdown, and interstate shipping indicators
+   - Results show "✓ Local Delivery" or "+20% Interstate" for each vendor
 
 **API Endpoints** (accessible at http://localhost:8000/api/ or via frontend proxy at /api/):
 - Companies: GET, POST, PUT, DELETE `/api/companies/` and `/api/companies/{id}/`
