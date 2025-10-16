@@ -40,10 +40,6 @@ import { MatButtonModule } from '@angular/material/button';
             <mat-icon>store</mat-icon>
             <span>Vendors</span>
           </a>
-          <a routerLink="/product-groups" routerLinkActive="active" class="nav-link">
-            <mat-icon>category</mat-icon>
-            <span>Product Groups</span>
-          </a>
           <a routerLink="/products" routerLinkActive="active" class="nav-link">
             <mat-icon>inventory_2</mat-icon>
             <span>Products</span>
