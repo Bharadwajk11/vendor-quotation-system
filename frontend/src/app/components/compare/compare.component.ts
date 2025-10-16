@@ -82,14 +82,14 @@ import { ApiService } from '../../services/api.service';
               <th mat-header-cell *matHeaderCellDef>Rank</th>
               <td mat-cell *matCellDef="let result">
                 <mat-chip-set *ngIf="result.rank === 1">
-                  <mat-chip class="rank-badge">🏆 #{{ result.rank }}</mat-chip>
+                  <mat-chip class="rank-badge">🏆 Best</mat-chip>
                 </mat-chip-set>
                 <span *ngIf="result.rank !== 1">#{{ result.rank }}</span>
               </td>
             </ng-container>
 
-            <ng-container matColumnDef="vendor">
-              <th mat-header-cell *matHeaderCellDef>Vendor</th>
+            <ng-container matColumnDef="vendor_place">
+              <th mat-header-cell *matHeaderCellDef>Vendor Name & Place</th>
               <td mat-cell *matCellDef="let result">
                 <strong>{{ result.vendor_name }}</strong>
                 <br>
@@ -97,17 +97,30 @@ import { ApiService } from '../../services/api.service';
               </td>
             </ng-container>
 
-            <ng-container matColumnDef="pricing">
-              <th mat-header-cell *matHeaderCellDef>Pricing</th>
+            <ng-container matColumnDef="product_price">
+              <th mat-header-cell *matHeaderCellDef>Product Price (₹/kg)</th>
               <td mat-cell *matCellDef="let result">
-                Product: ₹{{ result.product_price }}<br>
-                Delivery: ₹{{ result.delivery_price }}
-                <span *ngIf="result.is_interstate" class="interstate-badge">
+                <strong>₹{{ result.product_price }}</strong>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="delivery_charges">
+              <th mat-header-cell *matHeaderCellDef>Delivery Charges (₹)</th>
+              <td mat-cell *matCellDef="let result">
+                ₹{{ result.delivery_price }}
+                <span *ngIf="result.is_interstate" class="interstate-tag">
                   <br><small>+20% Interstate</small>
                 </span>
-                <span *ngIf="!result.is_interstate" class="local-badge">
-                  <br><small>✓ Local Delivery</small>
+                <span *ngIf="!result.is_interstate" class="local-tag">
+                  <br><small>✓ Local</small>
                 </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="kilo_price">
+              <th mat-header-cell *matHeaderCellDef>Landing Price (₹/kg)</th>
+              <td mat-cell *matCellDef="let result">
+                <strong class="kilo-price">₹{{ result.kilo_price }}</strong>
               </td>
             </ng-container>
 
@@ -125,19 +138,6 @@ import { ApiService } from '../../services/api.service';
                   </mat-chip>
                 </mat-chip-set>
               </td>
-            </ng-container>
-
-            <ng-container matColumnDef="total_cost">
-              <th mat-header-cell *matHeaderCellDef>Total Cost</th>
-              <td mat-cell *matCellDef="let result">
-                <strong>₹{{ result.total_order_cost }}</strong><br>
-                <small>(₹{{ result.total_cost_per_unit }}/unit)</small>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="score">
-              <th mat-header-cell *matHeaderCellDef>Score</th>
-              <td mat-cell *matCellDef="let result">{{ result.score }}</td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -218,14 +218,19 @@ import { ApiService } from '../../services/api.service';
       height: 24px;
     }
 
-    .interstate-badge {
+    .interstate-tag {
       color: #f44336;
       font-weight: 500;
     }
 
-    .local-badge {
+    .local-tag {
       color: #4caf50;
       font-weight: 500;
+    }
+
+    .kilo-price {
+      color: #3f51b5;
+      font-size: 16px;
     }
 
     .success-row {
@@ -258,7 +263,7 @@ export class CompareComponent implements OnInit {
   deliveryLocation: string = '';
   comparisonResults: any = null;
   errorMessage: string = '';
-  displayedColumns: string[] = ['rank', 'vendor', 'pricing', 'grade', 'lead_time', 'total_cost', 'score'];
+  displayedColumns: string[] = ['rank', 'vendor_place', 'product_price', 'delivery_charges', 'kilo_price', 'grade', 'lead_time'];
 
   constructor(private apiService: ApiService) {}
 
