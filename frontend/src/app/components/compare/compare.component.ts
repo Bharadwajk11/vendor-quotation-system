@@ -238,6 +238,21 @@ import { ApiService } from '../../services/api.service';
     th {
       background: #3f51b5;
       color: white;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 16px 12px !important;
+      text-align: left;
+      border-bottom: 2px solid #303f9f;
+    }
+
+    td {
+      padding: 12px !important;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
     }
 
     .best-vendor {
