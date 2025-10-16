@@ -79,6 +79,7 @@ class Quotation(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='quotations')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='quotations')
     product_price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.IntegerField(null=True, blank=True)
     delivery_price = models.DecimalField(max_digits=10, decimal_places=2)
     kilo_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     grade_spec = models.CharField(max_length=200)
