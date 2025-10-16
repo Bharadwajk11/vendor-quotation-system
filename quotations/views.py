@@ -3,11 +3,12 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.db.models import Q
 from decimal import Decimal
-from .models import Company, Vendor, Product, Quotation, OrderRequest, ComparisonResult
+from django.contrib.auth.models import User
+from .models import Company, Vendor, Product, Quotation, OrderRequest, ComparisonResult, UserProfile
 from .serializers import (
     CompanySerializer, VendorSerializer, ProductSerializer, 
     QuotationSerializer, OrderRequestSerializer, ComparisonResultSerializer,
-    CompareVendorsInputSerializer
+    CompareVendorsInputSerializer, UserProfileSerializer, UserWithProfileSerializer
 )
 
 
@@ -74,6 +75,28 @@ class ComparisonResultViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(order_request_id=order_request_id)
         
         return queryset
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    queryset = UserProfile.objects.select_related('user', 'company').all()
+    serializer_class = UserProfileSerializer
+
+    def get_queryset(self):
+        queryset = UserProfile.objects.select_related('user', 'company').all()
+        company_id = self.request.query_params.get('company_id', None)
+        role = self.request.query_params.get('role', None)
+        
+        if company_id:
+            queryset = queryset.filter(company_id=company_id)
+        if role:
+            queryset = queryset.filter(role=role)
+        
+        return queryset
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserWithProfileSerializer
 
 
 @api_view(['POST'])

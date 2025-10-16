@@ -48,6 +48,10 @@ import { MatButtonModule } from '@angular/material/button';
             <mat-icon>description</mat-icon>
             <span>Quotations</span>
           </a>
+          <a mat-list-item routerLink="/users" routerLinkActive="active">
+            <mat-icon>people</mat-icon>
+            <span>User Management</span>
+          </a>
           <a mat-list-item routerLink="/compare" routerLinkActive="active">
             <mat-icon>compare_arrows</mat-icon>
             <span>Compare Vendors</span>

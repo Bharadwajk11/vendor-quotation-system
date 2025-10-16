@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     CompanyViewSet, VendorViewSet, ProductViewSet, 
     QuotationViewSet, OrderRequestViewSet, ComparisonResultViewSet,
+    UserProfileViewSet, UserViewSet,
     compare_vendors
 )
 
@@ -13,6 +14,8 @@ router.register(r'products', ProductViewSet)
 router.register(r'quotations', QuotationViewSet)
 router.register(r'orders', OrderRequestViewSet)
 router.register(r'comparison-results', ComparisonResultViewSet)
+router.register(r'user-profiles', UserProfileViewSet)
+router.register(r'users', UserViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

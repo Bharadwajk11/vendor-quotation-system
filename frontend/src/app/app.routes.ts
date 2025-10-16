@@ -6,6 +6,7 @@ import { VendorsComponent } from './vendors/vendors.component';
 import { ProductsComponent } from './products/products.component';
 import { QuotationsComponent } from './quotations/quotations.component';
 import { CompareComponent } from './components/compare/compare.component';
+import { UsersComponent } from './users/users.component';
 
 export const routes: Routes = [
   {
@@ -18,6 +19,7 @@ export const routes: Routes = [
       { path: 'vendors', component: VendorsComponent },
       { path: 'products', component: ProductsComponent },
       { path: 'quotations', component: QuotationsComponent },
+      { path: 'users', component: UsersComponent },
       { path: 'compare', component: CompareComponent }
     ]
   }

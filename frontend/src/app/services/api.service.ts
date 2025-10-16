@@ -89,4 +89,29 @@ export class ApiService {
   deleteQuotation(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/quotations/${id}/`);
   }
+
+  getUserProfiles(companyId?: number, role?: string): Observable<any> {
+    let url = `${this.apiUrl}/user-profiles/`;
+    const params = [];
+    if (companyId) params.push(`company_id=${companyId}`);
+    if (role) params.push(`role=${role}`);
+    if (params.length > 0) url += '?' + params.join('&');
+    return this.http.get(url);
+  }
+
+  getUserProfile(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/user-profiles/${id}/`);
+  }
+
+  createUserProfile(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/user-profiles/`, data);
+  }
+
+  updateUserProfile(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/user-profiles/${id}/`, data);
+  }
+
+  deleteUserProfile(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/user-profiles/${id}/`);
+  }
 }

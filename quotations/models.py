@@ -1,6 +1,29 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class UserProfile(models.Model):
+    ROLE_CHOICES = [
+        ('admin', 'Administrator'),
+        ('manager', 'Manager'),
+        ('user', 'User'),
+    ]
+    
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='user')
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    department = models.CharField(max_length=100, null=True, blank=True)
+    company = models.ForeignKey('Company', on_delete=models.SET_NULL, null=True, blank=True, related_name='users')
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.get_full_name() or self.user.username} ({self.role})"
+
+
 class Company(models.Model):
     name = models.CharField(max_length=200)
     industry_type = models.CharField(max_length=100)
