@@ -72,13 +72,17 @@ The backend is developed with Django 5.2+ and Django REST Framework, providing a
 - **Migration**: quotations.0004_productgroup_product_product_group applied successfully
 
 **Frontend Implementation**:
-- **Product Groups Page**: New standalone module at `/product-groups` with table listing all groups
-- **Table Columns**: ID, Group Name, Description, Products (count badge), Company, Actions (Edit/Delete)
+- **Inline Product Group Management**: All Product Group CRUD operations are handled directly within the Product form (no separate navigation page)
 - **Product Group Form**: Dialog-based form with Company selection, Group Name, and optional Description
 - **Dynamic Loading**: Product groups load based on selected company
-- **Navigation**: Added "Product Groups" menu item with category icon between Vendors and Products
-- **Product Form Enhancement**: Added optional Product Group dropdown that dynamically loads groups when company is selected
-- **User Workflow**: Users create product groups first, then assign products to groups during product creation/editing
+- **Product Form with Inline CRUD**: 
+  - Product Group dropdown with dynamic loading based on selected company
+  - **Add button** (green +) - Create new product groups without leaving the form
+  - **Edit button** (blue pencil) - Edit the currently selected product group
+  - **Delete button** (red trash) - Delete the currently selected product group
+  - Buttons are disabled/enabled based on context (company selected, group selected)
+  - All operations refresh the dropdown automatically
+- **User Workflow**: When creating/editing a product, users can add, edit, delete, and select product groups all in one place
 
 **Benefits**:
 - Better product organization and categorization
