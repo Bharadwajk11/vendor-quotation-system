@@ -56,3 +56,30 @@ The backend is developed with Django 5.2+ and Django REST Framework, providing a
 
 -   Frontend proxy (`proxy.conf.json`) routes `/api/*` requests to the Django backend.
 -   RESTful endpoints with JSON serialization for all API responses.
+
+# Recent Changes (October 16, 2025)
+
+## Enhanced Comparison Results Table
+
+**Vendor Comparison Table (9 Columns)**:
+1. **Vendor Name** - Company name with 🏆 Best badge for top-ranked vendor
+2. **Place** - City, State with Interstate/Local indicator
+3. **Product Price (₹/kg)** - Base product price per kilogram
+4. **Delivery Charges (₹)** - Total delivery cost (shows 20% surcharge for interstate)
+5. **Total Landing Price (₹)** - Complete order cost: (Product Price × Quantity) + Delivery Charges - **Highlighted in green**
+6. **Landing Price (₹/kg)** - Final cost per kg: Total Landing Price ÷ Quantity - **Highlighted in blue**
+7. **Kilo Price (₹/kg)** - Original quoted kilo price from vendor
+8. **Grade** - Product quality specification
+9. **Lead Time** - Delivery days with color-coded chips (Green ≤4 days, Orange 5-6 days, Red ≥7 days)
+
+**Enhanced Table Headers**: Dark blue background (#3f51b5), white bold text, extra padding for visibility
+
+## Enhanced Quotation Form
+
+**Dual Landing Price Display**:
+- **Total Landing Price (₹)**: Shows complete order cost = (Product Price × Quantity) + Delivery Charges
+- **Landing Price (₹/kg)**: Shows per-kilogram cost = Total Landing Price ÷ Quantity
+- Real-time calculation updates as user enters values
+- Both fields are read-only with helpful hint text
+- Robust validation using `Number.isFinite()` to prevent NaN display
+- **Example**: Product Price ₹90/kg, Quantity 30kg, Delivery ₹33 → Total Landing Price ₹2,733, Landing Price ₹91.1/kg

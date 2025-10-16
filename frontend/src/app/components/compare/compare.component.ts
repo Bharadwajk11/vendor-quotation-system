@@ -116,6 +116,13 @@ import { ApiService } from '../../services/api.service';
               </td>
             </ng-container>
 
+            <ng-container matColumnDef="total_landing_price">
+              <th mat-header-cell *matHeaderCellDef>Total Landing Price (₹)</th>
+              <td mat-cell *matCellDef="let result">
+                <strong class="total-landing-price">₹{{ result.total_order_cost }}</strong>
+              </td>
+            </ng-container>
+
             <ng-container matColumnDef="landing_price">
               <th mat-header-cell *matHeaderCellDef>Landing Price (₹/kg)</th>
               <td mat-cell *matCellDef="let result">
@@ -232,6 +239,11 @@ import { ApiService } from '../../services/api.service';
       font-weight: 500;
     }
 
+    .total-landing-price {
+      color: #2e7d32;
+      font-size: 16px;
+    }
+
     .landing-price {
       color: #3f51b5;
       font-size: 16px;
@@ -316,7 +328,7 @@ export class CompareComponent implements OnInit {
   deliveryLocation: string = '';
   comparisonResults: any = null;
   errorMessage: string = '';
-  displayedColumns: string[] = ['vendor_name', 'place', 'product_price', 'delivery_charges', 'landing_price', 'kilo_price', 'grade', 'lead_time'];
+  displayedColumns: string[] = ['vendor_name', 'place', 'product_price', 'delivery_charges', 'total_landing_price', 'landing_price', 'kilo_price', 'grade', 'lead_time'];
 
   constructor(private apiService: ApiService) {}
 
