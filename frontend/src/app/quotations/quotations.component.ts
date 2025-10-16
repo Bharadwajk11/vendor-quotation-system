@@ -58,8 +58,13 @@ import { QuotationFormComponent } from './quotation-form.component.js';
           </ng-container>
 
           <ng-container matColumnDef="delivery_price">
-            <th mat-header-cell *matHeaderCellDef>Delivery Price</th>
+            <th mat-header-cell *matHeaderCellDef>Delivery Charges</th>
             <td mat-cell *matCellDef="let quote">₹{{ quote.delivery_price }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="landing_price">
+            <th mat-header-cell *matHeaderCellDef>Landing Price (₹/kg)</th>
+            <td mat-cell *matCellDef="let quote">₹{{ quote.kilo_price }}</td>
           </ng-container>
 
           <ng-container matColumnDef="lead_time">
@@ -93,7 +98,7 @@ import { QuotationFormComponent } from './quotation-form.component.js';
 })
 export class QuotationsComponent implements OnInit {
   quotations: any[] = [];
-  displayedColumns: string[] = ['id', 'vendor', 'product', 'product_price', 'delivery_price', 'lead_time', 'grade_spec', 'actions'];
+  displayedColumns: string[] = ['id', 'vendor', 'product', 'product_price', 'delivery_price', 'landing_price', 'lead_time', 'grade_spec', 'actions'];
 
   constructor(
     private apiService: ApiService,

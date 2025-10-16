@@ -43,13 +43,25 @@ import { ApiService } from '../services/api.service';
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Product Price (₹)</mat-label>
-          <input matInput formControlName="product_price" type="number" step="0.01" required>
+          <mat-label>Product Price (₹/kg)</mat-label>
+          <input matInput formControlName="product_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Delivery Price (₹)</mat-label>
-          <input matInput formControlName="delivery_price" type="number" step="0.01" required>
+          <mat-label>Quantity (kg)</mat-label>
+          <input matInput formControlName="quantity" type="number" step="1" required (input)="calculateLandingPrice()">
+          <mat-hint>Enter quantity for landing price calculation</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Delivery Charges (₹)</mat-label>
+          <input matInput formControlName="delivery_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Landing Price (₹/kg)</mat-label>
+          <input matInput formControlName="landing_price" type="number" step="0.01" readonly>
+          <mat-hint>Auto-calculated: Product Price + (Delivery Charges / Quantity)</mat-hint>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
@@ -98,10 +110,33 @@ export class QuotationFormComponent implements OnInit {
       vendor: ['', Validators.required],
       product: ['', Validators.required],
       product_price: ['', [Validators.required, Validators.min(0)]],
+      quantity: [100, [Validators.required, Validators.min(1)]],
       delivery_price: ['', [Validators.required, Validators.min(0)]],
+      landing_price: [{ value: '', disabled: true }],
       lead_time_days: ['', [Validators.required, Validators.min(1)]],
       grade_spec: ['']
     });
+  }
+
+  calculateLandingPrice() {
+    const productPrice = this.quotationForm.get('product_price')?.value;
+    const quantity = this.quotationForm.get('quantity')?.value;
+    const deliveryCharges = this.quotationForm.get('delivery_price')?.value;
+    
+    const price = parseFloat(productPrice);
+    const qty = parseFloat(quantity);
+    const delivery = parseFloat(deliveryCharges);
+    
+    if (Number.isFinite(price) && Number.isFinite(qty) && qty > 0 && Number.isFinite(delivery) && delivery >= 0) {
+      const landingPrice = price + (delivery / qty);
+      this.quotationForm.patchValue({
+        landing_price: landingPrice.toFixed(2)
+      });
+    } else {
+      this.quotationForm.patchValue({
+        landing_price: ''
+      });
+    }
   }
 
   ngOnInit() {
@@ -110,6 +145,7 @@ export class QuotationFormComponent implements OnInit {
     
     if (this.data) {
       this.quotationForm.patchValue(this.data);
+      this.calculateLandingPrice();
     }
   }
 
@@ -129,9 +165,15 @@ export class QuotationFormComponent implements OnInit {
 
   onSubmit() {
     if (this.quotationForm.valid) {
+      const formValue = this.quotationForm.getRawValue();
       const quotationData = {
-        ...this.quotationForm.value,
-        kilo_price: this.quotationForm.value.product_price
+        vendor: formValue.vendor,
+        product: formValue.product,
+        product_price: formValue.product_price,
+        delivery_price: formValue.delivery_price,
+        lead_time_days: formValue.lead_time_days,
+        grade_spec: formValue.grade_spec,
+        kilo_price: formValue.landing_price || formValue.product_price
       };
       
       if (this.data) {
