@@ -21,7 +21,7 @@ import { ApiService } from '../services/api.service';
     MatSelectModule
   ],
   template: `
-    <h2 mat-dialog-title>{{ data ? 'Edit' : 'Add' }} Product Group</h2>
+    <h2 mat-dialog-title>{{ isEditMode ? 'Edit' : 'Add' }} Product Group</h2>
     <form [formGroup]="productGroupForm" (ngSubmit)="onSubmit()">
       <mat-dialog-content>
         <mat-form-field appearance="outline" class="full-width">
@@ -48,7 +48,7 @@ import { ApiService } from '../services/api.service';
       <mat-dialog-actions align="end">
         <button mat-button type="button" (click)="dialogRef.close()">Cancel</button>
         <button mat-raised-button color="primary" type="submit" [disabled]="!productGroupForm.valid">
-          {{ data ? 'Update' : 'Create' }}
+          {{ isEditMode ? 'Update' : 'Create' }}
         </button>
       </mat-dialog-actions>
     </form>
@@ -72,6 +72,7 @@ import { ApiService } from '../services/api.service';
 export class ProductGroupFormComponent implements OnInit {
   productGroupForm: FormGroup;
   companies: any[] = [];
+  isEditMode: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -84,6 +85,8 @@ export class ProductGroupFormComponent implements OnInit {
       name: ['', Validators.required],
       description: ['']
     });
+    
+    this.isEditMode = this.data && this.data.id ? true : false;
   }
 
   ngOnInit() {
@@ -109,7 +112,7 @@ export class ProductGroupFormComponent implements OnInit {
     if (this.productGroupForm.valid) {
       const productGroupData = this.productGroupForm.value;
       
-      if (this.data) {
+      if (this.isEditMode) {
         this.apiService.updateProductGroup(this.data.id, productGroupData).subscribe({
           next: () => this.dialogRef.close(true),
           error: (err: any) => console.error('Error updating product group:', err)
