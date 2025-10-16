@@ -116,7 +116,7 @@ import { ApiService } from '../../services/api.service';
             <ng-container matColumnDef="delivery_charges">
               <th mat-header-cell *matHeaderCellDef>Delivery Charges (₹)</th>
               <td mat-cell *matCellDef="let result">
-                ₹{{ result.delivery_price }}
+                ₹{{ result.adjusted_delivery_price || result.delivery_price }}
                 <span *ngIf="result.is_interstate">
                   <br><small class="surcharge-note">Includes 20% surcharge</small>
                 </span>
