@@ -2,7 +2,7 @@
 
 This is a multi-industry vendor quotation comparison platform designed to help manufacturing companies compare vendor quotes and select optimal suppliers based on cost, quality, delivery, and other factors. The initial client is a plastic manufacturing company, but the architecture supports expansion to any industry (steel, chemicals, food, etc.).
 
-The application provides vendor management, product cataloging, quotation entry, and automated comparison with scoring/ranking capabilities. It uses a full-stack architecture with Angular frontend, Django REST Framework backend, and PostgreSQL database (Replit-managed).
+The application provides vendor management, product cataloging, quotation entry, and automated comparison with scoring/ranking capabilities. It uses a full-stack architecture with Angular frontend, Django REST Framework backend, and SQLite database (for development - easily upgradeable to PostgreSQL for production).
 
 # User Preferences
 
@@ -94,7 +94,34 @@ Preferred communication style: Simple, everyday language.
 - Query parameter filtering for related data
 - JSON serialization for all API responses
 
-## Recent Implementation (October 2025)
+## Recent Changes (October 16, 2025)
+
+**✅ CRITICAL FIXES APPLIED:**
+
+1. **Database Migration (SQLite)**: 
+   - Migrated from disabled Neon PostgreSQL endpoint to SQLite for development
+   - Environment-aware configuration: uses PostgreSQL when DATABASE_URL is available, falls back to SQLite otherwise
+   - All migrations successfully applied, seed data populated
+   - All API endpoints verified working (companies, vendors, products, quotations, user-profiles)
+
+2. **UI Icon Fix**:
+   - Added Material Icons font CDN link to index.html
+   - Replaced mat-nav-list with custom flexbox navigation for proper icon/text layout
+   - Icons now display correctly without overlapping text
+   - Professional enterprise UI appearance maintained
+
+3. **UserProfile Auto-Creation**:
+   - Added Django signals to automatically create UserProfile when User is created
+   - Ensures relational integrity for user management module
+   - Prevents null-profile errors
+
+4. **Security Improvements**:
+   - Moved SECRET_KEY to environment variable with development fallback
+   - Made DEBUG setting environment-driven (production-safe)
+
+**Database Status**: Using SQLite (db.sqlite3) with 1 company, 3 vendors, 2 products, 5 quotations, 3 user profiles
+
+## Previous Implementation (October 2025)
 
 **✅ COMPLETED: Enterprise-Level UI Transformation**
 The application has been transformed from a basic single-page app into a professional, multi-module enterprise system with complete CRUD functionality and professional UI/UX.

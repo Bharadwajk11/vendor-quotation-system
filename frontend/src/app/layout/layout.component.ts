@@ -27,36 +27,36 @@ import { MatButtonModule } from '@angular/material/button';
           <p>Enterprise Edition</p>
         </div>
         
-        <mat-nav-list>
-          <a mat-list-item routerLink="/dashboard" routerLinkActive="active">
+        <nav class="nav-menu">
+          <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
             <mat-icon>dashboard</mat-icon>
             <span>Dashboard</span>
           </a>
-          <a mat-list-item routerLink="/companies" routerLinkActive="active">
+          <a routerLink="/companies" routerLinkActive="active" class="nav-link">
             <mat-icon>business</mat-icon>
             <span>Companies</span>
           </a>
-          <a mat-list-item routerLink="/vendors" routerLinkActive="active">
+          <a routerLink="/vendors" routerLinkActive="active" class="nav-link">
             <mat-icon>store</mat-icon>
             <span>Vendors</span>
           </a>
-          <a mat-list-item routerLink="/products" routerLinkActive="active">
+          <a routerLink="/products" routerLinkActive="active" class="nav-link">
             <mat-icon>inventory_2</mat-icon>
             <span>Products</span>
           </a>
-          <a mat-list-item routerLink="/quotations" routerLinkActive="active">
+          <a routerLink="/quotations" routerLinkActive="active" class="nav-link">
             <mat-icon>description</mat-icon>
             <span>Quotations</span>
           </a>
-          <a mat-list-item routerLink="/users" routerLinkActive="active">
+          <a routerLink="/users" routerLinkActive="active" class="nav-link">
             <mat-icon>people</mat-icon>
             <span>User Management</span>
           </a>
-          <a mat-list-item routerLink="/compare" routerLinkActive="active">
+          <a routerLink="/compare" routerLinkActive="active" class="nav-link">
             <mat-icon>compare_arrows</mat-icon>
             <span>Compare Vendors</span>
           </a>
-        </mat-nav-list>
+        </nav>
       </mat-sidenav>
 
       <mat-sidenav-content>
@@ -111,31 +111,43 @@ import { MatButtonModule } from '@angular/material/button';
       color: #90a4ae;
     }
 
-    mat-nav-list {
+    .nav-menu {
       padding-top: 16px;
+      display: flex;
+      flex-direction: column;
     }
 
-    mat-nav-list a {
-      color: #b0bec5;
+    .nav-link {
       display: flex;
       align-items: center;
-      gap: 16px;
-      height: 48px;
+      padding: 12px 16px;
+      color: #b0bec5;
+      text-decoration: none;
       transition: all 0.2s;
+      cursor: pointer;
     }
 
-    mat-nav-list a:hover {
+    .nav-link mat-icon {
+      margin-right: 16px;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+    }
+
+    .nav-link span {
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
       background: rgba(255,255,255,0.05);
       color: white;
     }
 
-    mat-nav-list a.active {
+    .nav-link.active {
       background: #3f51b5;
       color: white;
-    }
-
-    mat-nav-list a mat-icon {
-      margin-left: 16px;
     }
 
     .top-toolbar {
