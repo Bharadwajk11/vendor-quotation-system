@@ -102,7 +102,7 @@ Preferred communication style: Simple, everyday language.
 **✅ LATEST UPDATE - Enhanced Comparison Results Table:**
 
 **Vendor Comparison Table Enhancement (Client-Friendly Format)**:
-- **Column Headers (7 columns in this order)**:
+- **Column Headers (8 columns in this order)**:
   1. **Vendor Name** - Company name with 🏆 Best badge for top-ranked vendor
   2. **Place** - City, State with Interstate/Local indicator
   3. **Product Price (₹/kg)** - Base product price per kilogram
@@ -110,6 +110,7 @@ Preferred communication style: Simple, everyday language.
   5. **Landing Price (₹/kg)** - Final cost per kg (Product Price + Delivery Charges ÷ Quantity) - Highlighted in blue
   6. **Kilo Price (₹/kg)** - Original quoted kilo price from vendor
   7. **Grade** - Product quality specification
+  8. **Lead Time** - Delivery days with color-coded chips (Green ≤4 days, Orange 5-6 days, Red ≥7 days)
 
 - **Enhanced Table Headers**: Dark blue background (#3f51b5), white bold text, extra padding for visibility
 - **Best vendor highlighting**: Green background row with 🏆 trophy badge

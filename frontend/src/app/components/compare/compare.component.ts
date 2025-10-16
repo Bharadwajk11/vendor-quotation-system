@@ -133,6 +133,17 @@ import { ApiService } from '../../services/api.service';
               <td mat-cell *matCellDef="let result">{{ result.grade_spec }}</td>
             </ng-container>
 
+            <ng-container matColumnDef="lead_time">
+              <th mat-header-cell *matHeaderCellDef>Lead Time</th>
+              <td mat-cell *matCellDef="let result">
+                <mat-chip-set>
+                  <mat-chip [class]="getLeadTimeClass(result.lead_time_days)">
+                    {{ result.lead_time_days }} days
+                  </mat-chip>
+                </mat-chip-set>
+              </td>
+            </ng-container>
+
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
                 [class.success-row]="row.rank === 1"></tr>
@@ -305,7 +316,7 @@ export class CompareComponent implements OnInit {
   deliveryLocation: string = '';
   comparisonResults: any = null;
   errorMessage: string = '';
-  displayedColumns: string[] = ['vendor_name', 'place', 'product_price', 'delivery_charges', 'landing_price', 'kilo_price', 'grade'];
+  displayedColumns: string[] = ['vendor_name', 'place', 'product_price', 'delivery_charges', 'landing_price', 'kilo_price', 'grade', 'lead_time'];
 
   constructor(private apiService: ApiService) {}
 
