@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ApiService } from '../services/api.service';
-import { QuotationFormComponent } from './quotation-form.component';
+import { QuotationFormComponent } from './quotation-form.component.js';
 
 @Component({
   selector: 'app-quotations',

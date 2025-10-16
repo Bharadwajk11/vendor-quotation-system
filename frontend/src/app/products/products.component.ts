@@ -7,7 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatChipsModule } from '@angular/material/chips';
 import { ApiService } from '../services/api.service';
-import { ProductFormComponent } from './product-form.component';
+import { ProductFormComponent } from './product-form.component.js';
 
 @Component({
   selector: 'app-products',

@@ -7,7 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatChipsModule } from '@angular/material/chips';
 import { ApiService } from '../services/api.service';
-import { VendorFormComponent } from './vendor-form.component';
+import { VendorFormComponent } from './vendor-form.component.js';
 
 @Component({
   selector: 'app-vendors',
