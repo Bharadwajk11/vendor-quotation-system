@@ -99,6 +99,18 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (October 16, 2025)
 
+**✅ LATEST UPDATE - Enhanced Quotation Form:**
+
+**Quotation Form Enhancement (Landing Price Calculation)**:
+- Renamed "Delivery Price" to "Delivery Charges" throughout the UI
+- Added "Quantity (kg)" field to quotation form (default: 100 kg)
+- Added auto-calculated "Landing Price (₹/kg)" field with formula: `Landing Price = Product Price + (Delivery Charges / Quantity)`
+- Real-time calculation updates as user enters product price, quantity, or delivery charges
+- Landing Price field is read-only with helpful hint text
+- Robust validation using `Number.isFinite()` to prevent NaN display and handle zero values correctly
+- Landing price stored in `kilo_price` database field for historical tracking
+- Quotations table updated to display "Delivery Charges" and "Landing Price (₹/kg)" columns
+
 **✅ CRITICAL FIXES APPLIED:**
 
 1. **Database Migration (SQLite)**: 
