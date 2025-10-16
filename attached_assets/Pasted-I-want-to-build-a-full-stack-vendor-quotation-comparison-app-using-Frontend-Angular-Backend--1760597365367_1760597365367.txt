@@ -1,0 +1,315 @@
+I want to build a full-stack vendor quotation comparison app using
+
+Frontend: Angular
+
+Backend: Django REST Framework (DRF)
+
+Database: MySQL
+
+🎯 Goal
+
+My first client is a plastic manufacturing company that buys raw materials (like granules, resins, additives) from different vendors across India.
+
+They want to compare vendor quotations automatically and choose the best vendor based on total cost, delivery price, quality, and grade.
+
+In the future, this same app should work for any industry (like steel, chemicals, food, etc.) — so please design it in a multi-industry, multi-company way.
+
+⚙️ Core Features
+
+Company Management (for future multi-user setup)
+
+Each company (client) has its own vendors, products, and orders.
+
+Fields: name, industry_type, address, contact_email.
+
+Vendor Management
+
+Add, view, edit vendors for that company.
+
+Fields: name, city, state, rating, contact.
+
+Product Management
+
+Add, view, edit products supplied by vendors.
+
+Fields: name, category, grade/specification, unit_type (kg, liter, piece), unit_price, kilo_price (optional).
+
+Quotation Management
+
+Enter vendor quotations for each product:
+
+vendor
+
+product
+
+product_price (₹ per unit)
+
+delivery_price (₹ total or per unit)
+
+kilo_price (optional)
+
+grade/specification
+
+lead_time_days
+
+Order Request (Comparison Request)
+
+Buyer enters:
+
+product name
+
+quantity
+
+delivery location (city/state)
+
+required date
+
+System finds all matching vendor quotations for that product.
+
+Comparison Engine
+
+Backend calculates:
+
+product_price_per_unit
+
+delivery_per_unit = delivery_price ÷ order_qty
+
+total_cost_per_unit = product_price_per_unit + delivery_per_unit
+
+total_order_cost = total_cost_per_unit × order_qty
+
+score = (weighted average of cost, lead time, and grade/quality)
+
+Sort vendors by total cost or best score.
+
+Comparison Table (Frontend View)
+Display results in this format:
+| Vendor Name | City | Product Price | Delivery Price | Kilo Price | Grade/Spec | Lead Time | Total Cost per Unit | Total Order Cost | Score |
+
+Highlight the best vendor automatically (lowest total cost).
+
+Allow sorting and filtering (e.g., by grade, city, lead time).
+
+Authentication (2 roles)
+
+Admin: can manage all data (vendors, products, quotations).
+
+Buyer: can view vendors and run comparisons.
+
+History / Orders
+
+Save every comparison and selected vendor into an “Order History” table.
+
+🧮 Example Calculation
+
+Example input:
+
+Buyer location: Andhra Pradesh
+
+Order qty: 100
+
+Vendor A (Chennai): product ₹120/unit, delivery ₹30 total
+
+Vendor B (Delhi): product ₹90/unit, delivery ₹80 total
+
+Steps:
+
+Vendor A delivery per unit = 30 ÷ 100 = 0.30
+
+Vendor B delivery per unit = 80 ÷ 100 = 0.80
+
+Vendor A total = 120 + 0.30 = 120.30
+
+Vendor B total = 90 + 0.80 = 90.80
+✅ Vendor B is cheaper → recommended.
+
+🧩 Database Models (Tables)
+
+Please define Django models like this:
+
+1️⃣ Company
+
+id (Auto)
+
+name (CharField)
+
+industry_type (CharField)
+
+address (CharField)
+
+contact_email (EmailField)
+
+2️⃣ Vendor
+
+id (Auto)
+
+company (ForeignKey → Company)
+
+name (CharField)
+
+city (CharField)
+
+state (CharField)
+
+rating (FloatField, optional)
+
+contact (CharField, optional)
+
+3️⃣ Product
+
+id (Auto)
+
+company (ForeignKey → Company)
+
+name (CharField)
+
+category (CharField)
+
+grade_spec (CharField)
+
+unit_type (CharField)
+
+unit_price (DecimalField, optional)
+
+kilo_price (DecimalField, optional)
+
+4️⃣ Quotation
+
+id (Auto)
+
+vendor (ForeignKey → Vendor)
+
+product (ForeignKey → Product)
+
+product_price (DecimalField)
+
+delivery_price (DecimalField)
+
+kilo_price (DecimalField, optional)
+
+grade_spec (CharField)
+
+lead_time_days (IntegerField)
+
+created_at (DateTimeField, auto_now_add=True)
+
+5️⃣ OrderRequest
+
+id (Auto)
+
+company (ForeignKey → Company)
+
+product (ForeignKey → Product)
+
+order_qty (IntegerField)
+
+delivery_location (CharField)
+
+required_date (DateField)
+
+6️⃣ ComparisonResult
+
+id (Auto)
+
+order_request (ForeignKey → OrderRequest)
+
+vendor (ForeignKey → Vendor)
+
+total_cost_per_unit (DecimalField)
+
+total_order_cost (DecimalField)
+
+score (FloatField)
+
+rank (IntegerField)
+
+🛠️ API Endpoints (DRF)
+
+/api/companies/ — CRUD
+
+/api/vendors/ — CRUD
+
+/api/products/ — CRUD
+
+/api/quotes/ — CRUD
+
+/api/orders/ — CRUD
+
+/api/compare/ — POST → computes vendor comparison
+Input:
+
+{
+  "product_id": 1,
+  "order_qty": 100,
+  "delivery_location": "Andhra Pradesh"
+}
+
+
+Output:
+List of vendors with: vendor_name, product_price, delivery_price, total_cost_per_unit, total_order_cost, score, rank.
+
+🎨 Frontend (Angular)
+
+Dashboard with tabs:
+
+Vendors
+
+Products
+
+Quotations
+
+Compare Vendors
+
+Order History
+
+Add/Update forms for each section.
+
+“Compare Vendors” page → enter order details → show comparison table.
+
+Use Angular Material components or Tailwind CSS for design.
+
+💾 Database
+
+Use MySQL
+
+Add seed data:
+
+3 vendors (e.g., Chennai, Delhi, Mumbai)
+
+2 products
+
+5 quotations for testing.
+
+✅ Deliverables
+
+Full working DRF backend connected to MySQL
+
+Angular frontend connected to backend via REST API
+
+CRUD pages for vendors/products/quotes/orders
+
+Comparison logic (best vendor ranking) implemented
+
+Clean, commented code with setup instructions
+
+Ready for future multi-company scaling
+
+🚀 Optional Future Features
+
+Multi-company login (SaaS model)
+
+Distance-based delivery estimation using Google Maps API
+
+Vendor performance analytics (on-time %)
+
+AI-based best vendor prediction
+
+✅ What to tell Replit if it asks you something:
+
+If Replit AI asks “Should I start with the backend or frontend?”, reply:
+
+“Start with Django REST Framework backend — create all models, serializers, and APIs first.”
+
+Then once backend works, say:
+
+“Now create the Angular frontend and connect it to the DRF APIs.”
