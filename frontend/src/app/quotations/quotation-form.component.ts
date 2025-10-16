@@ -59,9 +59,15 @@ import { ApiService } from '../services/api.service';
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Total Landing Price (₹)</mat-label>
+          <input matInput formControlName="total_landing_price" type="number" step="0.01" readonly>
+          <mat-hint>Total cost: (Product Price × Quantity) + Delivery Charges</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
           <mat-label>Landing Price (₹/kg)</mat-label>
           <input matInput formControlName="landing_price" type="number" step="0.01" readonly>
-          <mat-hint>Auto-calculated: Product Price + (Delivery Charges / Quantity)</mat-hint>
+          <mat-hint>Per kg cost: Total Landing Price ÷ Quantity</mat-hint>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
@@ -112,6 +118,7 @@ export class QuotationFormComponent implements OnInit {
       product_price: ['', [Validators.required, Validators.min(0)]],
       quantity: [100, [Validators.required, Validators.min(1)]],
       delivery_price: ['', [Validators.required, Validators.min(0)]],
+      total_landing_price: [{ value: '', disabled: true }],
       landing_price: [{ value: '', disabled: true }],
       lead_time_days: ['', [Validators.required, Validators.min(1)]],
       grade_spec: ['']
@@ -128,12 +135,19 @@ export class QuotationFormComponent implements OnInit {
     const delivery = parseFloat(deliveryCharges);
     
     if (Number.isFinite(price) && Number.isFinite(qty) && qty > 0 && Number.isFinite(delivery) && delivery >= 0) {
-      const landingPrice = price + (delivery / qty);
+      // Calculate Total Landing Price = (Product Price × Quantity) + Delivery Charges
+      const totalLandingPrice = (price * qty) + delivery;
+      
+      // Calculate Landing Price per kg = Total Landing Price ÷ Quantity
+      const landingPricePerKg = totalLandingPrice / qty;
+      
       this.quotationForm.patchValue({
-        landing_price: landingPrice.toFixed(2)
+        total_landing_price: totalLandingPrice.toFixed(2),
+        landing_price: landingPricePerKg.toFixed(2)
       });
     } else {
       this.quotationForm.patchValue({
+        total_landing_price: '',
         landing_price: ''
       });
     }
