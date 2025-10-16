@@ -1,12 +1,15 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ApiService } from '../services/api.service';
+import { ProductGroupFormComponent } from '../product-groups/product-group-form.component';
 
 @Component({
   selector: 'app-product-form',
@@ -18,7 +21,9 @@ import { ApiService } from '../services/api.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatSelectModule
+    MatSelectModule,
+    MatIconModule,
+    MatTooltipModule
   ],
   template: `
     <h2 mat-dialog-title>{{ data ? 'Edit' : 'Add' }} Product</h2>
@@ -33,16 +38,39 @@ import { ApiService } from '../services/api.service';
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Product Group (Optional)</mat-label>
-          <mat-select formControlName="product_group">
-            <mat-option [value]="null">None</mat-option>
-            <mat-option *ngFor="let group of productGroups" [value]="group.id">
-              {{ group.name }}
-            </mat-option>
-          </mat-select>
-          <mat-hint>Select a product group to organize this product</mat-hint>
-        </mat-form-field>
+        <div class="product-group-container">
+          <mat-form-field appearance="outline" class="product-group-field">
+            <mat-label>Product Group (Optional)</mat-label>
+            <mat-select formControlName="product_group">
+              <mat-option [value]="null">None</mat-option>
+              <mat-option *ngFor="let group of productGroups" [value]="group.id">
+                {{ group.name }}
+              </mat-option>
+            </mat-select>
+            <mat-hint>Manage groups using the buttons →</mat-hint>
+          </mat-form-field>
+          
+          <div class="group-actions">
+            <button mat-icon-button type="button" color="primary" 
+                    (click)="addProductGroup()" 
+                    [disabled]="!productForm.get('company')?.value"
+                    matTooltip="Add New Group">
+              <mat-icon>add_circle</mat-icon>
+            </button>
+            <button mat-icon-button type="button" color="accent" 
+                    (click)="editProductGroup()" 
+                    [disabled]="!productForm.get('product_group')?.value"
+                    matTooltip="Edit Selected Group">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button type="button" color="warn" 
+                    (click)="deleteProductGroup()" 
+                    [disabled]="!productForm.get('product_group')?.value"
+                    matTooltip="Delete Selected Group">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
 
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Product Name</mat-label>
@@ -99,6 +127,33 @@ import { ApiService } from '../services/api.service';
       padding: 20px 24px;
       min-width: 500px;
     }
+
+    .product-group-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .product-group-field {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .group-actions {
+      display: flex;
+      gap: 4px;
+      padding-top: 8px;
+    }
+
+    .group-actions button {
+      width: 36px;
+      height: 36px;
+    }
+
+    .group-actions mat-icon {
+      font-size: 20px;
+    }
   `]
 })
 export class ProductFormComponent implements OnInit {
@@ -110,7 +165,8 @@ export class ProductFormComponent implements OnInit {
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<ProductFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private dialog: MatDialog
   ) {
     this.productForm = this.fb.group({
       company: ['', Validators.required],
@@ -151,6 +207,58 @@ export class ProductFormComponent implements OnInit {
       next: (data) => this.productGroups = data.results || data,
       error: (err: any) => console.error('Error loading product groups:', err)
     });
+  }
+
+  addProductGroup() {
+    const companyId = this.productForm.get('company')?.value;
+    if (!companyId) return;
+
+    const dialogRef = this.dialog.open(ProductGroupFormComponent, {
+      width: '500px',
+      data: { company: companyId }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadProductGroups(companyId);
+      }
+    });
+  }
+
+  editProductGroup() {
+    const groupId = this.productForm.get('product_group')?.value;
+    const companyId = this.productForm.get('company')?.value;
+    if (!groupId) return;
+
+    const selectedGroup = this.productGroups.find(g => g.id === groupId);
+    if (!selectedGroup) return;
+
+    const dialogRef = this.dialog.open(ProductGroupFormComponent, {
+      width: '500px',
+      data: selectedGroup
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadProductGroups(companyId);
+      }
+    });
+  }
+
+  deleteProductGroup() {
+    const groupId = this.productForm.get('product_group')?.value;
+    const companyId = this.productForm.get('company')?.value;
+    if (!groupId) return;
+
+    if (confirm('Are you sure you want to delete this product group? Products in this group will not be deleted.')) {
+      this.apiService.deleteProductGroup(groupId).subscribe({
+        next: () => {
+          this.productForm.patchValue({ product_group: null });
+          this.loadProductGroups(companyId);
+        },
+        error: (err: any) => console.error('Error deleting product group:', err)
+      });
+    }
   }
 
   onSubmit() {
