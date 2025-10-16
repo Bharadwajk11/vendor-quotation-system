@@ -1,128 +1,215 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { MatChipsModule } from '@angular/material/chips';
 import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-compare',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTableModule,
+    MatChipsModule
+  ],
   template: `
-    <div class="compare-container">
-      <h2>Compare Vendors</h2>
-      
-      <div class="form-section">
-        <label>Select Product:</label>
-        <select [(ngModel)]="selectedProductId" (change)="onProductChange()">
-          <option value="">-- Select Product --</option>
-          <option *ngFor="let product of products" [value]="product.id">
-            {{ product.name }} ({{ product.grade_spec }})
-          </option>
-        </select>
-
-        <label>Order Quantity:</label>
-        <input type="number" [(ngModel)]="orderQty" placeholder="Enter quantity">
-
-        <label>Delivery Location:</label>
-        <input type="text" [(ngModel)]="deliveryLocation" placeholder="e.g., Andhra Pradesh">
-
-        <button (click)="compareVendors()" [disabled]="!selectedProductId || !orderQty || !deliveryLocation">
-          Compare Vendors
-        </button>
+    <div class="page-container">
+      <div class="page-header">
+        <h1 class="page-title">Compare Vendors</h1>
+        <p class="page-subtitle">Find the best vendor for your procurement needs</p>
       </div>
 
-      <div class="results-section" *ngIf="comparisonResults">
-        <h3>Comparison Results for {{ comparisonResults.product_name }}</h3>
-        <p>Order Quantity: {{ comparisonResults.order_qty }} | Location: {{ comparisonResults.delivery_location }}</p>
-        
-        <table>
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Vendor</th>
-              <th>City</th>
-              <th>Product Price</th>
-              <th>Delivery Price</th>
-              <th>Grade</th>
-              <th>Lead Time</th>
-              <th>Total Cost/Unit</th>
-              <th>Total Order Cost</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let result of comparisonResults.comparisons" [class.best-vendor]="result.rank === 1">
-              <td>{{ result.rank }}</td>
-              <td>{{ result.vendor_name }}</td>
-              <td>{{ result.vendor_city }}</td>
-              <td>₹{{ result.product_price }}</td>
-              <td>₹{{ result.delivery_price }}</td>
-              <td>{{ result.grade_spec }}</td>
-              <td>{{ result.lead_time_days }} days</td>
-              <td>₹{{ result.total_cost_per_unit }}</td>
-              <td>₹{{ result.total_order_cost }}</td>
-              <td>{{ result.score }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <mat-card class="form-card">
+        <mat-card-header>
+          <mat-card-title>Quotation Request</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="form-grid">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Select Product</mat-label>
+              <mat-select [(ngModel)]="selectedProductId" (selectionChange)="onProductChange()">
+                <mat-option *ngFor="let product of products" [value]="product.id">
+                  {{ product.name }} ({{ product.grade_spec }})
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
-      <div *ngIf="errorMessage" class="error">
-        {{ errorMessage }}
-      </div>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Order Quantity</mat-label>
+              <input matInput type="number" [(ngModel)]="orderQty" placeholder="Enter quantity">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Delivery Location</mat-label>
+              <input matInput [(ngModel)]="deliveryLocation" placeholder="e.g., Andhra Pradesh">
+            </mat-form-field>
+          </div>
+
+          <button mat-raised-button color="primary" class="compare-btn" 
+                  (click)="compareVendors()" 
+                  [disabled]="!selectedProductId || !orderQty || !deliveryLocation">
+            <mat-icon>compare_arrows</mat-icon>
+            Compare Vendors
+          </button>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="results-card" *ngIf="comparisonResults">
+        <mat-card-header>
+          <mat-card-title>Comparison Results for {{ comparisonResults.product_name }}</mat-card-title>
+          <mat-card-subtitle>
+            Order Quantity: {{ comparisonResults.order_qty }} | Delivery Location: {{ comparisonResults.delivery_location }}
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <table mat-table [dataSource]="comparisonResults.comparisons" class="mat-elevation-z0">
+            <ng-container matColumnDef="rank">
+              <th mat-header-cell *matHeaderCellDef>Rank</th>
+              <td mat-cell *matCellDef="let result">
+                <mat-chip-set *ngIf="result.rank === 1">
+                  <mat-chip class="rank-badge">🏆 #{{ result.rank }}</mat-chip>
+                </mat-chip-set>
+                <span *ngIf="result.rank !== 1">#{{ result.rank }}</span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="vendor">
+              <th mat-header-cell *matHeaderCellDef>Vendor</th>
+              <td mat-cell *matCellDef="let result">
+                <strong>{{ result.vendor_name }}</strong>
+                <br>
+                <small>{{ result.vendor_city }}, {{ result.vendor_state }}</small>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="pricing">
+              <th mat-header-cell *matHeaderCellDef>Pricing</th>
+              <td mat-cell *matCellDef="let result">
+                Product: ₹{{ result.product_price }}<br>
+                Delivery: ₹{{ result.delivery_price }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="grade">
+              <th mat-header-cell *matHeaderCellDef>Grade</th>
+              <td mat-cell *matCellDef="let result">{{ result.grade_spec }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="lead_time">
+              <th mat-header-cell *matHeaderCellDef>Lead Time</th>
+              <td mat-cell *matCellDef="let result">
+                <mat-chip-set>
+                  <mat-chip [ngClass]="getLeadTimeClass(result.lead_time_days)">
+                    {{ result.lead_time_days }} days
+                  </mat-chip>
+                </mat-chip-set>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="total_cost">
+              <th mat-header-cell *matHeaderCellDef>Total Cost</th>
+              <td mat-cell *matCellDef="let result">
+                <strong>₹{{ result.total_order_cost }}</strong><br>
+                <small>(₹{{ result.total_cost_per_unit }}/unit)</small>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="score">
+              <th mat-header-cell *matHeaderCellDef>Score</th>
+              <td mat-cell *matCellDef="let result">{{ result.score }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+                [class.success-row]="row.rank === 1"></tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="error-card" *ngIf="errorMessage">
+        <mat-card-content>
+          <mat-icon color="warn">error</mat-icon>
+          {{ errorMessage }}
+        </mat-card-content>
+      </mat-card>
     </div>
   `,
   styles: [`
-    .compare-container {
+    .form-card {
+      margin-bottom: 24px;
       padding: 20px;
     }
 
-    .form-section {
-      background: #f5f5f5;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 30px;
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
     }
 
-    .form-section label {
-      display: block;
-      margin-top: 15px;
+    .full-width {
+      width: 100%;
+    }
+
+    .compare-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+    }
+
+    .results-card {
+      padding: 20px;
+    }
+
+    .rank-badge {
+      background-color: #4caf50 !important;
+      color: white !important;
       font-weight: bold;
     }
 
-    .form-section input, .form-section select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+    .lead-time-fast {
+      background-color: #4caf50 !important;
+      color: white !important;
     }
 
-    .form-section button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background: #3f51b5;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+    .lead-time-medium {
+      background-color: #ff9800 !important;
+      color: white !important;
     }
 
-    .form-section button:disabled {
-      background: #ccc;
-      cursor: not-allowed;
+    .lead-time-slow {
+      background-color: #f44336 !important;
+      color: white !important;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
+    .error-card {
+      background-color: #ffebee;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    th, td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
+    .error-card mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
     }
 
     th {
@@ -151,19 +238,26 @@ export class CompareComponent implements OnInit {
   deliveryLocation: string = '';
   comparisonResults: any = null;
   errorMessage: string = '';
+  displayedColumns: string[] = ['rank', 'vendor', 'pricing', 'grade', 'lead_time', 'total_cost', 'score'];
 
   constructor(private apiService: ApiService) {}
 
   ngOnInit() {
     this.apiService.getProducts().subscribe({
       next: (data) => this.products = data.results || data,
-      error: (err) => console.error('Error loading products:', err)
+      error: (err: any) => console.error('Error loading products:', err)
     });
   }
 
   onProductChange() {
     this.comparisonResults = null;
     this.errorMessage = '';
+  }
+
+  getLeadTimeClass(days: number): string {
+    if (days <= 4) return 'lead-time-fast';
+    if (days <= 6) return 'lead-time-medium';
+    return 'lead-time-slow';
   }
 
   compareVendors() {
@@ -184,7 +278,7 @@ export class CompareComponent implements OnInit {
         this.comparisonResults = data;
         this.errorMessage = '';
       },
-      error: (err) => {
+      error: (err: any) => {
         this.errorMessage = 'Error comparing vendors: ' + (err.error?.error || err.message);
         console.error('Error:', err);
       }
