@@ -116,7 +116,7 @@ export class QuotationFormComponent implements OnInit {
       vendor: ['', Validators.required],
       product: ['', Validators.required],
       product_price: ['', [Validators.required, Validators.min(0)]],
-      quantity: [100, [Validators.required, Validators.min(1)]],
+      quantity: ['', [Validators.required, Validators.min(1)]],
       delivery_price: ['', [Validators.required, Validators.min(0)]],
       total_landing_price: [{ value: '', disabled: true }],
       landing_price: [{ value: '', disabled: true }],
