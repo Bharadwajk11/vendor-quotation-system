@@ -61,16 +61,17 @@ The backend is developed with Django 5.2+ and Django REST Framework, providing a
 
 ## Enhanced Comparison Results Table
 
-**Vendor Comparison Table (9 Columns)**:
-1. **Vendor Name** - Company name with 🏆 Best badge for top-ranked vendor
-2. **Place** - City, State with Interstate/Local indicator
-3. **Product Price (₹/kg)** - Base product price per kilogram
-4. **Delivery Charges (₹)** - Total delivery cost (shows 20% surcharge for interstate)
-5. **Total Landing Price (₹)** - Complete order cost: (Product Price × Quantity) + Delivery Charges - **Highlighted in green**
-6. **Landing Price (₹/kg)** - Final cost per kg: Total Landing Price ÷ Quantity - **Highlighted in blue**
-7. **Kilo Price (₹/kg)** - Original quoted kilo price from vendor
-8. **Grade** - Product quality specification
-9. **Lead Time** - Delivery days with color-coded chips (Green ≤4 days, Orange 5-6 days, Red ≥7 days)
+**Vendor Comparison Table (10 Columns)**:
+1. **Rank** - Vendor position (1, 2, 3...) with 🏆 trophy badge for #1
+2. **Vendor Name** - Company name
+3. **Place** - City, State with Interstate/Local indicator
+4. **Product Price (₹/kg)** - Base product price per kilogram
+5. **Delivery Charges (₹)** - Total delivery cost (shows 20% surcharge for interstate)
+6. **Total Landing Price (₹)** - Complete order cost: (Product Price × Quantity) + Delivery Charges - **Highlighted in green**
+7. **Landing Price (₹/kg)** - Final cost per kg: Total Landing Price ÷ Quantity - **Highlighted in blue**
+8. **Kilo Price (₹/kg)** - Original quoted kilo price from vendor
+9. **Grade** - Product quality specification
+10. **Lead Time** - Delivery days with color-coded chips (Green ≤4 days, Orange 5-6 days, Red ≥7 days)
 
 **Enhanced Table Headers**: Dark blue background (#3f51b5), white bold text, extra padding for visibility
 

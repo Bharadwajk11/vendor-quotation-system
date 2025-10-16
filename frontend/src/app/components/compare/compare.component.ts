@@ -78,13 +78,20 @@ import { ApiService } from '../../services/api.service';
         </mat-card-header>
         <mat-card-content>
           <table mat-table [dataSource]="comparisonResults.comparisons" class="mat-elevation-z0">
+            <ng-container matColumnDef="rank">
+              <th mat-header-cell *matHeaderCellDef>Rank</th>
+              <td mat-cell *matCellDef="let result">
+                <strong class="rank-number">{{ result.rank }}</strong>
+                <mat-chip-set *ngIf="result.rank === 1">
+                  <mat-chip class="rank-badge">🏆</mat-chip>
+                </mat-chip-set>
+              </td>
+            </ng-container>
+
             <ng-container matColumnDef="vendor_name">
               <th mat-header-cell *matHeaderCellDef>Vendor Name</th>
               <td mat-cell *matCellDef="let result">
                 <strong>{{ result.vendor_name }}</strong>
-                <mat-chip-set *ngIf="result.rank === 1">
-                  <mat-chip class="rank-badge">🏆 Best</mat-chip>
-                </mat-chip-set>
               </td>
             </ng-container>
 
@@ -194,10 +201,17 @@ import { ApiService } from '../../services/api.service';
       padding: 20px;
     }
 
+    .rank-number {
+      font-size: 20px;
+      color: #3f51b5;
+      font-weight: bold;
+    }
+
     .rank-badge {
       background-color: #4caf50 !important;
       color: white !important;
       font-weight: bold;
+      margin-left: 8px;
     }
 
     .lead-time-fast {
@@ -328,7 +342,7 @@ export class CompareComponent implements OnInit {
   deliveryLocation: string = '';
   comparisonResults: any = null;
   errorMessage: string = '';
-  displayedColumns: string[] = ['vendor_name', 'place', 'product_price', 'delivery_charges', 'total_landing_price', 'landing_price', 'kilo_price', 'grade', 'lead_time'];
+  displayedColumns: string[] = ['rank', 'vendor_name', 'place', 'product_price', 'delivery_charges', 'total_landing_price', 'landing_price', 'kilo_price', 'grade', 'lead_time'];
 
   constructor(private apiService: ApiService) {}
 
