@@ -22,12 +22,12 @@ export class App implements OnInit {
 
   loadData() {
     this.apiService.getVendors().subscribe({
-      next: (data) => this.vendors = data,
+      next: (data) => this.vendors = data.results || data,
       error: (err) => console.error('Error loading vendors:', err)
     });
 
     this.apiService.getProducts().subscribe({
-      next: (data) => this.products = data,
+      next: (data) => this.products = data.results || data,
       error: (err) => console.error('Error loading products:', err)
     });
   }

@@ -156,7 +156,7 @@ export class CompareComponent implements OnInit {
 
   ngOnInit() {
     this.apiService.getProducts().subscribe({
-      next: (data) => this.products = data,
+      next: (data) => this.products = data.results || data,
       error: (err) => console.error('Error loading products:', err)
     });
   }
