@@ -235,17 +235,45 @@ import { ApiService } from '../../services/api.service';
       background-color: #e8f5e9 !important;
     }
 
-    th {
-      background: #3f51b5;
-      color: white;
-      font-weight: 600;
-      font-size: 14px;
+    .mat-mdc-header-row {
+      display: table-row !important;
+      height: auto !important;
+      min-height: 56px !important;
+      background: #3f51b5 !important;
+    }
+
+    .mat-mdc-header-cell {
+      background: #3f51b5 !important;
+      color: white !important;
+      font-weight: 600 !important;
+      font-size: 14px !important;
       padding: 16px 12px !important;
-      text-align: left;
-      border-bottom: 2px solid #303f9f;
+      text-align: left !important;
+      border-bottom: 2px solid #303f9f !important;
+      display: table-cell !important;
+      vertical-align: middle !important;
+    }
+
+    th {
+      background: #3f51b5 !important;
+      color: white !important;
+      font-weight: 600 !important;
+      font-size: 14px !important;
+      padding: 16px 12px !important;
+      text-align: left !important;
+      border-bottom: 2px solid #303f9f !important;
     }
 
     td {
+      padding: 12px !important;
+    }
+
+    .mat-mdc-row {
+      display: table-row !important;
+    }
+
+    .mat-mdc-cell {
+      display: table-cell !important;
       padding: 12px !important;
     }
 
@@ -253,6 +281,7 @@ import { ApiService } from '../../services/api.service';
       width: 100%;
       border-collapse: separate;
       border-spacing: 0;
+      display: table !important;
     }
 
     .best-vendor {

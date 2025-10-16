@@ -99,7 +99,24 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (October 16, 2025)
 
-**✅ LATEST UPDATE - Enhanced Quotation Form:**
+**✅ LATEST UPDATE - Enhanced Comparison Results Table:**
+
+**Vendor Comparison Table Enhancement (Client-Friendly Format)**:
+- **Column Headers (7 columns in this order)**:
+  1. **Vendor Name** - Company name with 🏆 Best badge for top-ranked vendor
+  2. **Place** - City, State with Interstate/Local indicator
+  3. **Product Price (₹/kg)** - Base product price per kilogram
+  4. **Delivery Charges (₹)** - Total delivery cost (shows 20% surcharge for interstate)
+  5. **Landing Price (₹/kg)** - Final cost per kg (Product Price + Delivery Charges ÷ Quantity) - Highlighted in blue
+  6. **Kilo Price (₹/kg)** - Original quoted kilo price from vendor
+  7. **Grade** - Product quality specification
+
+- **Enhanced Table Headers**: Dark blue background (#3f51b5), white bold text, extra padding for visibility
+- **Best vendor highlighting**: Green background row with 🏆 trophy badge
+- **Interstate shipping**: Red "Interstate" tag with surcharge note
+- **Local shipping**: Green "Local" tag
+- **Landing Price prominence**: Blue color (#3f51b5) with larger font size
+- All pricing components clearly separated for easy client understanding
 
 **Quotation Form Enhancement (Landing Price Calculation)**:
 - Renamed "Delivery Price" to "Delivery Charges" throughout the UI
