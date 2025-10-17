@@ -25,15 +25,6 @@ import { ApiService } from '../services/api.service';
     <form [formGroup]="productGroupForm" (ngSubmit)="onSubmit()">
       <mat-dialog-content>
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Company</mat-label>
-          <mat-select formControlName="company" required>
-            <mat-option *ngFor="let company of companies" [value]="company.id">
-              {{ company.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
           <mat-label>Group Name</mat-label>
           <input matInput formControlName="name" required placeholder="e.g., Plastic Resins, Metal Parts">
         </mat-form-field>
@@ -71,7 +62,6 @@ import { ApiService } from '../services/api.service';
 })
 export class ProductGroupFormComponent implements OnInit {
   productGroupForm: FormGroup;
-  companies: any[] = [];
   isEditMode: boolean = false;
 
   constructor(
@@ -81,7 +71,6 @@ export class ProductGroupFormComponent implements OnInit {
     private apiService: ApiService
   ) {
     this.productGroupForm = this.fb.group({
-      company: ['', Validators.required],
       name: ['', Validators.required],
       description: ['']
     });
@@ -90,22 +79,12 @@ export class ProductGroupFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadCompanies();
-    
     if (this.data) {
       this.productGroupForm.patchValue({
-        company: this.data.company,
         name: this.data.name,
         description: this.data.description
       });
     }
-  }
-
-  loadCompanies() {
-    this.apiService.getCompanies().subscribe({
-      next: (data) => this.companies = data.results || data,
-      error: (err: any) => console.error('Error loading companies:', err)
-    });
   }
 
   onSubmit() {
