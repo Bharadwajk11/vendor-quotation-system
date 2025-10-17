@@ -29,15 +29,6 @@ import { ProductGroupFormComponent } from '../product-groups/product-group-form.
     <h2 mat-dialog-title>{{ data ? 'Edit' : 'Add' }} Product</h2>
     <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
       <mat-dialog-content>
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Company</mat-label>
-          <mat-select formControlName="company" required (selectionChange)="onCompanyChange($event.value)">
-            <mat-option *ngFor="let company of companies" [value]="company.id">
-              {{ company.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
         <div class="product-group-container">
           <mat-form-field appearance="outline" class="product-group-field">
             <mat-label>Product Group (Optional)</mat-label>
@@ -53,7 +44,6 @@ import { ProductGroupFormComponent } from '../product-groups/product-group-form.
           <div class="group-actions">
             <button mat-icon-button type="button" color="primary" 
                     (click)="addProductGroup()" 
-                    [disabled]="!productForm.get('company')?.value"
                     matTooltip="Add New Group">
               <mat-icon>add</mat-icon>
             </button>
@@ -158,7 +148,6 @@ import { ProductGroupFormComponent } from '../product-groups/product-group-form.
 })
 export class ProductFormComponent implements OnInit {
   productForm: FormGroup;
-  companies: any[] = [];
   productGroups: any[] = [];
 
   constructor(
@@ -169,7 +158,6 @@ export class ProductFormComponent implements OnInit {
     private dialog: MatDialog
   ) {
     this.productForm = this.fb.group({
-      company: ['', Validators.required],
       product_group: [''],
       name: ['', Validators.required],
       category: ['', Validators.required],
@@ -180,54 +168,35 @@ export class ProductFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadCompanies();
+    this.loadProductGroups();
     
     if (this.data) {
       this.productForm.patchValue(this.data);
-      if (this.data.company) {
-        this.loadProductGroups(this.data.company);
-      }
     }
   }
 
-  loadCompanies() {
-    this.apiService.getCompanies().subscribe({
-      next: (data) => this.companies = data.results || data,
-      error: (err: any) => console.error('Error loading companies:', err)
-    });
-  }
-
-  onCompanyChange(companyId: number) {
-    this.loadProductGroups(companyId);
-    this.productForm.patchValue({ product_group: null });
-  }
-
-  loadProductGroups(companyId: number) {
-    this.apiService.getProductGroups(companyId).subscribe({
+  loadProductGroups() {
+    this.apiService.getProductGroups().subscribe({
       next: (data) => this.productGroups = data.results || data,
       error: (err: any) => console.error('Error loading product groups:', err)
     });
   }
 
   addProductGroup() {
-    const companyId = this.productForm.get('company')?.value;
-    if (!companyId) return;
-
     const dialogRef = this.dialog.open(ProductGroupFormComponent, {
       width: '500px',
-      data: { company: companyId }
+      data: {}
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadProductGroups(companyId);
+        this.loadProductGroups();
       }
     });
   }
 
   editProductGroup() {
     const groupId = this.productForm.get('product_group')?.value;
-    const companyId = this.productForm.get('company')?.value;
     if (!groupId) return;
 
     const selectedGroup = this.productGroups.find(g => g.id === groupId);
@@ -240,21 +209,20 @@ export class ProductFormComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadProductGroups(companyId);
+        this.loadProductGroups();
       }
     });
   }
 
   deleteProductGroup() {
     const groupId = this.productForm.get('product_group')?.value;
-    const companyId = this.productForm.get('company')?.value;
     if (!groupId) return;
 
     if (confirm('Are you sure you want to delete this product group? Products in this group will not be deleted.')) {
       this.apiService.deleteProductGroup(groupId).subscribe({
         next: () => {
           this.productForm.patchValue({ product_group: null });
-          this.loadProductGroups(companyId);
+          this.loadProductGroups();
         },
         error: (err: any) => console.error('Error deleting product group:', err)
       });
