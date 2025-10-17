@@ -12,6 +12,20 @@ from .serializers import (
 )
 
 
+def get_default_company():
+    """Get or create the default company for single-tenant mode."""
+    company, created = Company.objects.get_or_create(
+        id=1,
+        defaults={
+            'name': 'My Company',
+            'industry_type': 'Manufacturing',
+            'address': 'Company Address',
+            'contact_email': 'contact@mycompany.com'
+        }
+    )
+    return company
+
+
 class CompanyViewSet(viewsets.ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
@@ -21,36 +35,42 @@ class ProductGroupViewSet(viewsets.ModelViewSet):
     queryset = ProductGroup.objects.all()
     serializer_class = ProductGroupSerializer
 
+    def perform_create(self, serializer):
+        # Auto-assign default company if not provided
+        company = serializer.validated_data.get('company') or get_default_company()
+        serializer.save(company=company)
+
     def get_queryset(self):
-        queryset = ProductGroup.objects.all()
-        company_id = self.request.query_params.get('company_id', None)
-        if company_id:
-            queryset = queryset.filter(company_id=company_id)
-        return queryset
+        # Return all product groups for the default company
+        return ProductGroup.objects.filter(company=get_default_company())
 
 
 class VendorViewSet(viewsets.ModelViewSet):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
 
+    def perform_create(self, serializer):
+        # Auto-assign default company if not provided
+        company = serializer.validated_data.get('company') or get_default_company()
+        serializer.save(company=company)
+
     def get_queryset(self):
-        queryset = Vendor.objects.all()
-        company_id = self.request.query_params.get('company_id', None)
-        if company_id:
-            queryset = queryset.filter(company_id=company_id)
-        return queryset
+        # Return all vendors for the default company
+        return Vendor.objects.filter(company=get_default_company())
 
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+    def perform_create(self, serializer):
+        # Auto-assign default company if not provided
+        company = serializer.validated_data.get('company') or get_default_company()
+        serializer.save(company=company)
+
     def get_queryset(self):
-        queryset = Product.objects.all()
-        company_id = self.request.query_params.get('company_id', None)
-        if company_id:
-            queryset = queryset.filter(company_id=company_id)
-        return queryset
+        # Return all products for the default company
+        return Product.objects.filter(company=get_default_company())
 
 
 class QuotationViewSet(viewsets.ModelViewSet):
