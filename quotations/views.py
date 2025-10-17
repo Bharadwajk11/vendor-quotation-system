@@ -26,9 +26,14 @@ def get_default_company():
     return company
 
 
-class CompanyViewSet(viewsets.ModelViewSet):
+class CompanyViewSet(viewsets.ReadOnlyModelViewSet):
+    # Read-only: Single-tenant mode only allows access to the default company
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
+
+    def get_queryset(self):
+        # Return only the default company for single-tenant mode
+        return Company.objects.filter(id=1)
 
 
 class ProductGroupViewSet(viewsets.ModelViewSet):
@@ -36,9 +41,12 @@ class ProductGroupViewSet(viewsets.ModelViewSet):
     serializer_class = ProductGroupSerializer
 
     def perform_create(self, serializer):
-        # Auto-assign default company if not provided
-        company = serializer.validated_data.get('company') or get_default_company()
-        serializer.save(company=company)
+        # Auto-assign default company (force it to prevent override)
+        serializer.save(company=get_default_company())
+
+    def perform_update(self, serializer):
+        # Force default company on update to prevent override
+        serializer.save(company=get_default_company())
 
     def get_queryset(self):
         # Return all product groups for the default company
@@ -50,9 +58,12 @@ class VendorViewSet(viewsets.ModelViewSet):
     serializer_class = VendorSerializer
 
     def perform_create(self, serializer):
-        # Auto-assign default company if not provided
-        company = serializer.validated_data.get('company') or get_default_company()
-        serializer.save(company=company)
+        # Auto-assign default company (force it to prevent override)
+        serializer.save(company=get_default_company())
+
+    def perform_update(self, serializer):
+        # Force default company on update to prevent override
+        serializer.save(company=get_default_company())
 
     def get_queryset(self):
         # Return all vendors for the default company
@@ -64,9 +75,12 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
 
     def perform_create(self, serializer):
-        # Auto-assign default company if not provided
-        company = serializer.validated_data.get('company') or get_default_company()
-        serializer.save(company=company)
+        # Auto-assign default company (force it to prevent override)
+        serializer.save(company=get_default_company())
+
+    def perform_update(self, serializer):
+        # Force default company on update to prevent override
+        serializer.save(company=get_default_company())
 
     def get_queryset(self):
         # Return all products for the default company
@@ -77,8 +91,41 @@ class QuotationViewSet(viewsets.ModelViewSet):
     queryset = Quotation.objects.all()
     serializer_class = QuotationSerializer
 
+    def perform_create(self, serializer):
+        # Validate vendor and product belong to default company
+        vendor = serializer.validated_data.get('vendor')
+        product = serializer.validated_data.get('product')
+        default_company = get_default_company()
+        
+        if vendor and vendor.company != default_company:
+            from rest_framework.exceptions import ValidationError
+            raise ValidationError("Vendor must belong to the default company")
+        if product and product.company != default_company:
+            from rest_framework.exceptions import ValidationError
+            raise ValidationError("Product must belong to the default company")
+        
+        serializer.save()
+
+    def perform_update(self, serializer):
+        # Validate vendor and product belong to default company
+        vendor = serializer.validated_data.get('vendor')
+        product = serializer.validated_data.get('product')
+        default_company = get_default_company()
+        
+        if vendor and vendor.company != default_company:
+            from rest_framework.exceptions import ValidationError
+            raise ValidationError("Vendor must belong to the default company")
+        if product and product.company != default_company:
+            from rest_framework.exceptions import ValidationError
+            raise ValidationError("Product must belong to the default company")
+        
+        serializer.save()
+
     def get_queryset(self):
-        queryset = Quotation.objects.all()
+        # Filter by vendors of the default company
+        default_company = get_default_company()
+        queryset = Quotation.objects.filter(vendor__company=default_company)
+        
         product_id = self.request.query_params.get('product_id', None)
         vendor_id = self.request.query_params.get('vendor_id', None)
         
@@ -94,13 +141,29 @@ class OrderRequestViewSet(viewsets.ModelViewSet):
     queryset = OrderRequest.objects.all()
     serializer_class = OrderRequestSerializer
 
+    def perform_create(self, serializer):
+        # Force default company on create
+        serializer.save(company=get_default_company())
 
-class ComparisonResultViewSet(viewsets.ModelViewSet):
+    def perform_update(self, serializer):
+        # Force default company on update to prevent override
+        serializer.save(company=get_default_company())
+
+    def get_queryset(self):
+        # Return all order requests for the default company
+        return OrderRequest.objects.filter(company=get_default_company())
+
+
+class ComparisonResultViewSet(viewsets.ReadOnlyModelViewSet):
+    # Read-only: ComparisonResults are only created by the compare_vendors function
     queryset = ComparisonResult.objects.all()
     serializer_class = ComparisonResultSerializer
 
     def get_queryset(self):
-        queryset = ComparisonResult.objects.all()
+        # Filter by order requests of the default company
+        default_company = get_default_company()
+        queryset = ComparisonResult.objects.filter(order_request__company=default_company)
+        
         order_request_id = self.request.query_params.get('order_request_id', None)
         
         if order_request_id:
@@ -113,13 +176,20 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.select_related('user', 'company').all()
     serializer_class = UserProfileSerializer
 
+    def perform_create(self, serializer):
+        # Force default company on create
+        serializer.save(company=get_default_company())
+
+    def perform_update(self, serializer):
+        # Force default company on update to prevent override
+        serializer.save(company=get_default_company())
+
     def get_queryset(self):
-        queryset = UserProfile.objects.select_related('user', 'company').all()
-        company_id = self.request.query_params.get('company_id', None)
-        role = self.request.query_params.get('role', None)
+        # Return all user profiles for the default company
+        default_company = get_default_company()
+        queryset = UserProfile.objects.select_related('user', 'company').filter(company=default_company)
         
-        if company_id:
-            queryset = queryset.filter(company_id=company_id)
+        role = self.request.query_params.get('role', None)
         if role:
             queryset = queryset.filter(role=role)
         
@@ -213,32 +283,27 @@ def compare_vendors(request):
     order_qty = data['order_qty']
     delivery_location = data['delivery_location']
     required_date = data.get('required_date', None)
-    company_id = data.get('company_id', None)
+    
+    # Always use default company for single-tenant mode (ignore company_id input)
+    company = get_default_company()
     
     try:
-        product = Product.objects.get(id=product_id)
+        product = Product.objects.get(id=product_id, company=company)
     except Product.DoesNotExist:
         return Response(
-            {"error": "Product not found"}, 
+            {"error": "Product not found or does not belong to your company"}, 
             status=status.HTTP_404_NOT_FOUND
         )
     
-    if company_id:
-        try:
-            company = Company.objects.get(id=company_id)
-        except Company.DoesNotExist:
-            return Response(
-                {"error": "Company not found"}, 
-                status=status.HTTP_404_NOT_FOUND
-            )
-    else:
-        company = product.company
-    
-    quotations = Quotation.objects.filter(product=product).select_related('vendor')
+    # Filter quotations to only include those from vendors belonging to the default company
+    quotations = Quotation.objects.filter(
+        product=product,
+        vendor__company=company
+    ).select_related('vendor')
     
     if not quotations.exists():
         return Response(
-            {"error": "No quotations found for this product"}, 
+            {"error": "No quotations found for this product from your company's vendors"}, 
             status=status.HTTP_404_NOT_FOUND
         )
     
