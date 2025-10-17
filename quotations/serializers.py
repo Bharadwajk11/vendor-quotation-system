@@ -12,6 +12,7 @@ class CompanySerializer(serializers.ModelSerializer):
 class ProductGroupSerializer(serializers.ModelSerializer):
     company_name = serializers.CharField(source='company.name', read_only=True)
     product_count = serializers.SerializerMethodField()
+    company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all(), required=False)
     
     class Meta:
         model = ProductGroup
@@ -23,6 +24,7 @@ class ProductGroupSerializer(serializers.ModelSerializer):
 
 class VendorSerializer(serializers.ModelSerializer):
     company_name = serializers.CharField(source='company.name', read_only=True)
+    company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all(), required=False)
     
     class Meta:
         model = Vendor
@@ -32,6 +34,7 @@ class VendorSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     company_name = serializers.CharField(source='company.name', read_only=True)
     product_group_name = serializers.CharField(source='product_group.name', read_only=True)
+    company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all(), required=False)
     
     class Meta:
         model = Product
