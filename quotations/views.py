@@ -26,14 +26,28 @@ def get_default_company():
     return company
 
 
-class CompanyViewSet(viewsets.ReadOnlyModelViewSet):
-    # Read-only: Single-tenant mode only allows access to the default company
+class CompanyViewSet(viewsets.ModelViewSet):
+    # Single-tenant mode: Allow updates to the default company but prevent create/delete
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
 
     def get_queryset(self):
         # Return only the default company for single-tenant mode
         return Company.objects.filter(id=1)
+    
+    def create(self, request, *args, **kwargs):
+        # Prevent creation of new companies
+        return Response(
+            {"error": "Cannot create new companies in single-tenant mode"},
+            status=status.HTTP_403_FORBIDDEN
+        )
+    
+    def destroy(self, request, *args, **kwargs):
+        # Prevent deletion of the company
+        return Response(
+            {"error": "Cannot delete company in single-tenant mode"},
+            status=status.HTTP_403_FORBIDDEN
+        )
 
 
 class ProductGroupViewSet(viewsets.ModelViewSet):

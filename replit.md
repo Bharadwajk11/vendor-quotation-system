@@ -22,7 +22,7 @@ The backend is built with Django 5.2+ and Django REST Framework, offering a REST
 -   **Technical Implementations**: Standalone Angular components, service-based state management, Django REST Framework ViewSets, Django ORM.
 -   **Feature Specifications**: Automated vendor comparison with a scoring algorithm, dynamic delivery cost calculation (including a 20% interstate surcharge when applicable), real-time landing price calculation in quotation forms, and comprehensive product grouping.
 -   **Single-Tenant Architecture**: Each instance serves a single company, with automatic association of all data to a default company and removal of multi-company selection fields for simplified user experience and enhanced data isolation.
--   **Security**: Writable ViewSets enforce default company assignment, read operations filter by the default company, and the `compare_vendors` endpoint validates product and vendor ownership to ensure complete tenant isolation. Company and ComparisonResult ViewSets are read-only.
+-   **Security**: Writable ViewSets enforce default company assignment, read operations filter by the default company, and the `compare_vendors` endpoint validates product and vendor ownership to ensure complete tenant isolation. CompanyViewSet allows updating company information but blocks creation and deletion. ComparisonResultViewSet is read-only.
 
 # External Dependencies
 
