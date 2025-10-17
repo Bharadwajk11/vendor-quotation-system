@@ -24,7 +24,7 @@ import { ApiService } from '../../services/api.service';
     MatButtonModule,
     MatIconModule,
     MatTableModule,
-    MatChipsModule
+    MatChipsModule,
   ],
   template: `
     <div class="page-container">
@@ -50,19 +50,26 @@ import { ApiService } from '../../services/api.service';
 
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Order Quantity</mat-label>
-              <input matInput type="number" [(ngModel)]="orderQty" placeholder="Enter quantity">
+              <input matInput type="number" [(ngModel)]="orderQty" placeholder="Enter quantity" />
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Delivery Location (State)</mat-label>
-              <input matInput [(ngModel)]="deliveryLocation" placeholder="e.g., Andhra Pradesh">
-              <mat-hint>Enter your delivery state. Local vendors (same state) have lower shipping costs.</mat-hint>
+              <input matInput [(ngModel)]="deliveryLocation" placeholder="e.g., Andhra Pradesh" />
+              <mat-hint
+                >Enter your delivery state. Local vendors (same state) have lower shipping
+                costs.</mat-hint
+              >
             </mat-form-field>
           </div>
 
-          <button mat-raised-button color="primary" class="compare-btn" 
-                  (click)="compareVendors()" 
-                  [disabled]="!selectedProductId || !orderQty || !deliveryLocation">
+          <button
+            mat-raised-button
+            color="primary"
+            class="compare-btn"
+            (click)="compareVendors()"
+            [disabled]="!selectedProductId || !orderQty || !deliveryLocation"
+          >
             <mat-icon>compare_arrows</mat-icon>
             Compare Vendors
           </button>
@@ -71,9 +78,12 @@ import { ApiService } from '../../services/api.service';
 
       <mat-card class="results-card" *ngIf="comparisonResults">
         <mat-card-header>
-          <mat-card-title>Comparison Results for {{ comparisonResults.product_name }}</mat-card-title>
+          <mat-card-title
+            >Comparison Results for {{ comparisonResults.product_name }}</mat-card-title
+          >
           <mat-card-subtitle>
-            Order Quantity: {{ comparisonResults.order_qty }} | Delivery Location: {{ comparisonResults.delivery_location }}
+            Order Quantity: {{ comparisonResults.order_qty }} | Delivery Location:
+            {{ comparisonResults.delivery_location }}
           </mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
@@ -100,10 +110,10 @@ import { ApiService } from '../../services/api.service';
               <td mat-cell *matCellDef="let result">
                 {{ result.vendor_city }}, {{ result.vendor_state }}
                 <span *ngIf="result.is_interstate" class="interstate-tag">
-                  <br><small>Interstate</small>
+                  <br /><small>Interstate</small>
                 </span>
                 <span *ngIf="!result.is_interstate" class="local-tag">
-                  <br><small>Local</small>
+                  <br /><small>Local</small>
                 </span>
               </td>
             </ng-container>
@@ -113,20 +123,18 @@ import { ApiService } from '../../services/api.service';
               <td mat-cell *matCellDef="let result">₹{{ result.product_price }}</td>
             </ng-container>
 
+            <ng-container matColumnDef="quantity">
+              <th mat-header-cell *matHeaderCellDef>Quantity (kg)</th>
+              <td mat-cell *matCellDef="let result">{{ comparisonResults.order_qty }} kg</td>
+            </ng-container>
+
             <ng-container matColumnDef="delivery_charges">
               <th mat-header-cell *matHeaderCellDef>Delivery Charges (₹)</th>
               <td mat-cell *matCellDef="let result">
                 ₹{{ result.adjusted_delivery_price || result.delivery_price }}
                 <span *ngIf="result.is_interstate">
-                  <br><small class="surcharge-note">Includes 20% surcharge</small>
+                  <br /><small class="surcharge-note">Includes 20% surcharge</small>
                 </span>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="total_landing_price">
-              <th mat-header-cell *matHeaderCellDef>Total Landing Price (₹)</th>
-              <td mat-cell *matCellDef="let result">
-                <strong class="total-landing-price">₹{{ result.total_order_cost }}</strong>
               </td>
             </ng-container>
 
@@ -137,9 +145,11 @@ import { ApiService } from '../../services/api.service';
               </td>
             </ng-container>
 
-            <ng-container matColumnDef="kilo_price">
-              <th mat-header-cell *matHeaderCellDef>Kilo Price (₹/kg)</th>
-              <td mat-cell *matCellDef="let result">₹{{ result.kilo_price }}</td>
+            <ng-container matColumnDef="total_landing_price">
+              <th mat-header-cell *matHeaderCellDef>Total Landing Price (₹)</th>
+              <td mat-cell *matCellDef="let result">
+                <strong class="total-landing-price">₹{{ result.total_order_cost }}</strong>
+              </td>
             </ng-container>
 
             <ng-container matColumnDef="grade">
@@ -159,8 +169,11 @@ import { ApiService } from '../../services/api.service';
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
-                [class.success-row]="row.rank === 1"></tr>
+            <tr
+              mat-row
+              *matRowDef="let row; columns: displayedColumns"
+              [class.success-row]="row.rank === 1"
+            ></tr>
           </table>
         </mat-card-content>
       </mat-card>
@@ -173,167 +186,169 @@ import { ApiService } from '../../services/api.service';
       </mat-card>
     </div>
   `,
-  styles: [`
-    .form-card {
-      margin-bottom: 24px;
-      padding: 20px;
-    }
+  styles: [
+    `
+      .form-card {
+        margin-bottom: 24px;
+        padding: 20px;
+      }
 
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      margin-bottom: 20px;
-    }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+      }
 
-    .full-width {
-      width: 100%;
-    }
+      .full-width {
+        width: 100%;
+      }
 
-    .compare-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 16px;
-    }
+      .compare-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 16px;
+      }
 
-    .results-card {
-      padding: 20px;
-    }
+      .results-card {
+        padding: 20px;
+      }
 
-    .rank-number {
-      font-size: 20px;
-      color: #3f51b5;
-      font-weight: bold;
-    }
+      .rank-number {
+        font-size: 20px;
+        color: #3f51b5;
+        font-weight: bold;
+      }
 
-    .rank-badge {
-      background-color: #4caf50 !important;
-      color: white !important;
-      font-weight: bold;
-      margin-left: 8px;
-    }
+      .rank-badge {
+        background-color: #4caf50 !important;
+        color: white !important;
+        font-weight: bold;
+        margin-left: 8px;
+      }
 
-    .lead-time-fast {
-      background-color: #4caf50 !important;
-      color: white !important;
-    }
+      .lead-time-fast {
+        background-color: #4caf50 !important;
+        color: white !important;
+      }
 
-    .lead-time-medium {
-      background-color: #ff9800 !important;
-      color: white !important;
-    }
+      .lead-time-medium {
+        background-color: #ff9800 !important;
+        color: white !important;
+      }
 
-    .lead-time-slow {
-      background-color: #f44336 !important;
-      color: white !important;
-    }
+      .lead-time-slow {
+        background-color: #f44336 !important;
+        color: white !important;
+      }
 
-    .error-card {
-      background-color: #ffebee;
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+      .error-card {
+        background-color: #ffebee;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
 
-    .error-card mat-icon {
-      font-size: 24px;
-      width: 24px;
-      height: 24px;
-    }
+      .error-card mat-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
 
-    .interstate-tag {
-      color: #f44336;
-      font-weight: 500;
-    }
+      .interstate-tag {
+        color: #f44336;
+        font-weight: 500;
+      }
 
-    .local-tag {
-      color: #4caf50;
-      font-weight: 500;
-    }
+      .local-tag {
+        color: #4caf50;
+        font-weight: 500;
+      }
 
-    .total-landing-price {
-      color: #2e7d32;
-      font-size: 16px;
-    }
+      .total-landing-price {
+        color: #2e7d32;
+        font-size: 16px;
+      }
 
-    .landing-price {
-      color: #3f51b5;
-      font-size: 16px;
-    }
+      .landing-price {
+        color: #3f51b5;
+        font-size: 16px;
+      }
 
-    .surcharge-note {
-      color: #666;
-      font-style: italic;
-    }
+      .surcharge-note {
+        color: #666;
+        font-style: italic;
+      }
 
-    .success-row {
-      background-color: #e8f5e9 !important;
-    }
+      .success-row {
+        background-color: #e8f5e9 !important;
+      }
 
-    .mat-mdc-header-row {
-      display: table-row !important;
-      height: auto !important;
-      min-height: 56px !important;
-      background: #3f51b5 !important;
-    }
+      .mat-mdc-header-row {
+        display: table-row !important;
+        height: auto !important;
+        min-height: 56px !important;
+        background: #3f51b5 !important;
+      }
 
-    .mat-mdc-header-cell {
-      background: #3f51b5 !important;
-      color: white !important;
-      font-weight: 600 !important;
-      font-size: 14px !important;
-      padding: 16px 12px !important;
-      text-align: left !important;
-      border-bottom: 2px solid #303f9f !important;
-      display: table-cell !important;
-      vertical-align: middle !important;
-    }
+      .mat-mdc-header-cell {
+        background: #3f51b5 !important;
+        color: white !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+        padding: 16px 12px !important;
+        text-align: left !important;
+        border-bottom: 2px solid #303f9f !important;
+        display: table-cell !important;
+        vertical-align: middle !important;
+      }
 
-    th {
-      background: #3f51b5 !important;
-      color: white !important;
-      font-weight: 600 !important;
-      font-size: 14px !important;
-      padding: 16px 12px !important;
-      text-align: left !important;
-      border-bottom: 2px solid #303f9f !important;
-    }
+      th {
+        background: #3f51b5 !important;
+        color: white !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+        padding: 16px 12px !important;
+        text-align: left !important;
+        border-bottom: 2px solid #303f9f !important;
+      }
 
-    td {
-      padding: 12px !important;
-    }
+      td {
+        padding: 12px !important;
+      }
 
-    .mat-mdc-row {
-      display: table-row !important;
-    }
+      .mat-mdc-row {
+        display: table-row !important;
+      }
 
-    .mat-mdc-cell {
-      display: table-cell !important;
-      padding: 12px !important;
-    }
+      .mat-mdc-cell {
+        display: table-cell !important;
+        padding: 12px !important;
+      }
 
-    table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      display: table !important;
-    }
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        display: table !important;
+      }
 
-    .best-vendor {
-      background: #c8e6c9;
-      font-weight: bold;
-    }
+      .best-vendor {
+        background: #c8e6c9;
+        font-weight: bold;
+      }
 
-    .error {
-      color: red;
-      padding: 10px;
-      background: #ffebee;
-      border-radius: 4px;
-      margin-top: 10px;
-    }
-  `]
+      .error {
+        color: red;
+        padding: 10px;
+        background: #ffebee;
+        border-radius: 4px;
+        margin-top: 10px;
+      }
+    `,
+  ],
 })
 export class CompareComponent implements OnInit {
   products: any[] = [];
@@ -342,14 +357,25 @@ export class CompareComponent implements OnInit {
   deliveryLocation: string = '';
   comparisonResults: any = null;
   errorMessage: string = '';
-  displayedColumns: string[] = ['rank', 'vendor_name', 'place', 'product_price', 'delivery_charges', 'total_landing_price', 'landing_price', 'kilo_price', 'grade', 'lead_time'];
+  displayedColumns: string[] = [
+    'rank',
+    'vendor_name',
+    'place',
+    'product_price',
+    'quantity',
+    'delivery_charges',
+    'landing_price',
+    'total_landing_price',
+    'grade',
+    'lead_time',
+  ];
 
   constructor(private apiService: ApiService) {}
 
   ngOnInit() {
     this.apiService.getProducts().subscribe({
-      next: (data) => this.products = data.results || data,
-      error: (err: any) => console.error('Error loading products:', err)
+      next: (data) => (this.products = data.results || data),
+      error: (err: any) => console.error('Error loading products:', err),
     });
   }
 
@@ -374,7 +400,7 @@ export class CompareComponent implements OnInit {
       product_id: parseInt(this.selectedProductId),
       order_qty: this.orderQty,
       delivery_location: this.deliveryLocation,
-      company_id: 1
+      company_id: 1,
     };
 
     this.apiService.compareVendors(requestData).subscribe({
@@ -385,7 +411,7 @@ export class CompareComponent implements OnInit {
       error: (err: any) => {
         this.errorMessage = 'Error comparing vendors: ' + (err.error?.error || err.message);
         console.error('Error:', err);
-      }
+      },
     });
   }
 }

@@ -94,15 +94,15 @@ The backend is developed with Django 5.2+ and Django REST Framework, providing a
 
 ## Enhanced Comparison Results Table
 
-**Vendor Comparison Table (10 Columns)**:
+**Vendor Comparison Table (9 Columns)**:
 1. **Rank** - Vendor position (1, 2, 3...) with 🏆 trophy badge for #1
 2. **Vendor Name** - Company name
 3. **Place** - City, State with Interstate/Local indicator
 4. **Product Price (₹/kg)** - Base product price per kilogram
-5. **Delivery Charges (₹)** - Total delivery cost (shows 20% surcharge for interstate)
-6. **Total Landing Price (₹)** - Complete order cost: (Product Price × Quantity) + Delivery Charges - **Highlighted in green**
-7. **Landing Price (₹/kg)** - Final cost per kg: Total Landing Price ÷ Quantity - **Highlighted in blue**
-8. **Kilo Price (₹/kg)** - Original quoted kilo price from vendor
+5. **Quantity (kg)** - Order quantity for the comparison
+6. **Delivery Charges (₹)** - Adjusted delivery cost (includes 20% surcharge for interstate shipments)
+7. **Landing Price (₹/kg)** - Final cost per kg: Total Landing Price ÷ Quantity - **Highlighted in blue** (shown first for clarity)
+8. **Total Landing Price (₹)** - Complete order cost: (Product Price × Quantity) + Delivery Charges - **Highlighted in green**
 9. **Grade** - Product quality specification
 10. **Lead Time** - Delivery days with color-coded chips (Green ≤4 days, Orange 5-6 days, Red ≥7 days)
 
@@ -128,3 +128,21 @@ The backend is developed with Django 5.2+ and Django REST Framework, providing a
   - Shows Total Landing Price (₹) column with auto-calculated values: (Product Price × Quantity) + Delivery Charges
   - All table headers use consistent dark blue (#3f51b5) background with white bold text throughout the application
 - **Example**: Product Price ₹90/kg, Quantity 30kg, Delivery ₹33 → Total Landing Price ₹2,733, Landing Price ₹91.1/kg
+
+# Recent Changes (October 17, 2025)
+
+## Comparison Table Updates
+
+**Column Optimizations**:
+- **Removed**: Kilo Price (₹/kg) column - Eliminated redundant pricing field for clearer comparison
+- **Reordered**: Landing Price (₹/kg) now appears before Total Landing Price (₹) - Shows per-unit cost first, then total cost (more meaningful sequence for price evaluation)
+- **Added**: Quantity (kg) column - Displays order quantity for each comparison, providing complete context
+- **Fixed**: Delivery Charges now correctly shows adjusted price with 20% interstate surcharge (previously showed base price)
+
+**Updated Column Order** (9 columns):
+1. Rank → 2. Vendor Name → 3. Place → 4. Product Price (₹/kg) → 5. Quantity (kg) → 6. Delivery Charges (₹) → 7. **Landing Price (₹/kg)** → 8. **Total Landing Price (₹)** → 9. Grade → 10. Lead Time
+
+**Product Group Form Fixes**:
+- **Fixed Add/Edit Mode Detection**: Form now correctly shows "Add Product Group" title with "Create" button for new groups, and "Edit Product Group" title with "Update" button for existing groups
+- **Mode Logic**: Uses `data.id` check instead of `data` existence to distinguish between Add (no ID) and Edit (has ID) modes
+- **Consistent Behavior**: All CRUD operations (Add, Edit, Delete) now work correctly from the Product form's inline management buttons
