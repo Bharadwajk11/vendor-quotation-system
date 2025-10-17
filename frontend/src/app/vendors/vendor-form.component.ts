@@ -25,15 +25,6 @@ import { ApiService } from '../services/api.service';
     <form [formGroup]="vendorForm" (ngSubmit)="onSubmit()">
       <mat-dialog-content>
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Company</mat-label>
-          <mat-select formControlName="company" required>
-            <mat-option *ngFor="let company of companies" [value]="company.id">
-              {{ company.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
           <mat-label>Vendor Name</mat-label>
           <input matInput formControlName="name" required>
         </mat-form-field>
@@ -81,7 +72,6 @@ import { ApiService } from '../services/api.service';
 })
 export class VendorFormComponent implements OnInit {
   vendorForm: FormGroup;
-  companies: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -90,7 +80,6 @@ export class VendorFormComponent implements OnInit {
     private apiService: ApiService
   ) {
     this.vendorForm = this.fb.group({
-      company: ['', Validators.required],
       name: ['', Validators.required],
       city: ['', Validators.required],
       state: ['', Validators.required],
@@ -100,18 +89,9 @@ export class VendorFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadCompanies();
-    
     if (this.data) {
       this.vendorForm.patchValue(this.data);
     }
-  }
-
-  loadCompanies() {
-    this.apiService.getCompanies().subscribe({
-      next: (data) => this.companies = data.results || data,
-      error: (err: any) => console.error('Error loading companies:', err)
-    });
   }
 
   onSubmit() {
