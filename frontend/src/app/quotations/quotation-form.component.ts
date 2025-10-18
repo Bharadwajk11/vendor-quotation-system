@@ -1,4 +1,3 @@
-
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -28,8 +27,9 @@ import { ProductFormComponent } from '../products/product-form.component';
     MatTooltipModule
   ],
   template: `
-    <h2 mat-dialog-title>{{ data?.id ? 'Edit' : 'Add' }} Quotation</h2>
-    
+    <div class="dialog-header">
+      <h2 mat-dialog-title>{{ data?.id ? 'Edit' : 'Add' }} Quotation</h2>
+    </div>
     <mat-dialog-content>
       <form [formGroup]="quotationForm">
         <!-- Vendor Selection -->
@@ -42,15 +42,15 @@ import { ProductFormComponent } from '../products/product-form.component';
               </mat-option>
             </mat-select>
           </mat-form-field>
-          
+
           <button mat-mini-fab color="primary" type="button" (click)="addVendor()" matTooltip="Add Vendor">
             <mat-icon>add</mat-icon>
           </button>
-          <button mat-mini-fab color="accent" type="button" (click)="editVendor()" 
+          <button mat-mini-fab color="accent" type="button" (click)="editVendor()"
                   [disabled]="!quotationForm.get('vendor')?.value" matTooltip="Edit Vendor">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-mini-fab color="warn" type="button" (click)="deleteVendor()" 
+          <button mat-mini-fab color="warn" type="button" (click)="deleteVendor()"
                   [disabled]="!quotationForm.get('vendor')?.value" matTooltip="Delete Vendor">
             <mat-icon>delete</mat-icon>
           </button>
@@ -66,15 +66,15 @@ import { ProductFormComponent } from '../products/product-form.component';
               </mat-option>
             </mat-select>
           </mat-form-field>
-          
+
           <button mat-mini-fab color="primary" type="button" (click)="addProduct()" matTooltip="Add Product">
             <mat-icon>add</mat-icon>
           </button>
-          <button mat-mini-fab color="accent" type="button" (click)="editProduct()" 
+          <button mat-mini-fab color="accent" type="button" (click)="editProduct()"
                   [disabled]="!quotationForm.get('product')?.value" matTooltip="Edit Product">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-mini-fab color="warn" type="button" (click)="deleteProduct()" 
+          <button mat-mini-fab color="warn" type="button" (click)="deleteProduct()"
                   [disabled]="!quotationForm.get('product')?.value" matTooltip="Delete Product">
             <mat-icon>delete</mat-icon>
           </button>
@@ -130,8 +130,27 @@ import { ProductFormComponent } from '../products/product-form.component';
     </mat-dialog-actions>
   `,
   styles: [`
+    .dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    h2 {
+      margin: 0;
+      padding: 0;
+    }
+
     mat-dialog-content {
+      padding: 20px 24px;
       min-width: 500px;
+    }
+
+    mat-dialog-actions {
+      padding: 12px 24px;
+      gap: 8px;
     }
 
     form {
@@ -150,10 +169,14 @@ import { ProductFormComponent } from '../products/product-form.component';
         padding: 12px !important;
       }
 
+      .dialog-header {
+        padding: 12px !important;
+      }
+
       h2 {
         font-size: 16px !important;
-        padding: 12px !important;
         margin: 0 !important;
+        padding: 0 !important;
       }
 
       form {
@@ -224,6 +247,12 @@ import { ProductFormComponent } from '../products/product-form.component';
       /* Reduce spacing between vendor/product action buttons */
       div[style*="display: flex"] {
         gap: 4px !important;
+        align-items: center; /* Align items vertically in the center */
+      }
+
+      /* Align add buttons to the right top */
+      div[style*="display: flex"] > button[mat-mini-fab]:last-of-type {
+        margin-left: auto; /* Pushes the button to the right */
       }
     }
 
@@ -297,15 +326,15 @@ export class QuotationFormComponent implements OnInit {
     const productPrice = this.quotationForm.get('product_price')?.value;
     const quantity = this.quotationForm.get('quantity')?.value;
     const deliveryCharges = this.quotationForm.get('delivery_price')?.value;
-    
+
     const price = parseFloat(productPrice);
     const qty = parseFloat(quantity);
     const delivery = parseFloat(deliveryCharges);
-    
+
     if (Number.isFinite(price) && Number.isFinite(qty) && qty > 0 && Number.isFinite(delivery) && delivery >= 0) {
       const totalLandingPrice = (price * qty) + delivery;
       const landingPricePerKg = totalLandingPrice / qty;
-      
+
       this.quotationForm.patchValue({
         total_landing_price: totalLandingPrice.toFixed(2),
         landing_price: landingPricePerKg.toFixed(2)
@@ -321,7 +350,7 @@ export class QuotationFormComponent implements OnInit {
   ngOnInit() {
     this.loadVendors();
     this.loadProducts();
-    
+
     if (this.data?.id) {
       this.quotationForm.patchValue(this.data);
       this.calculateLandingPrice();
