@@ -249,13 +249,15 @@ import { ProductFormComponent } from './product-form.component';
     }
 
     th {
-      background-color: #f9f9f9;
-      font-weight: bold;
-      color: #333;
+      background-color: #3f51b5;
+      font-weight: 600;
+      color: white;
+      padding: 16px;
     }
 
     td {
       color: #555;
+      padding: 12px 16px;
     }
 
     .mat-chip-set {
