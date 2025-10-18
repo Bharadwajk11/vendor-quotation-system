@@ -95,11 +95,9 @@ import { ProductFormComponent } from './product-form.component';
             <td mat-cell *matCellDef="let product">{{ product.grade_spec }}</td>
           </ng-container>
 
-          <ng-container matColumnDef="unit_price">
-            <th mat-header-cell *matHeaderCellDef>Unit Price</th>
-            <td mat-cell *matCellDef="let product">
-              ₹{{ product.unit_price }}/{{ product.unit_type }}
-            </td>
+          <ng-container matColumnDef="unit_type">
+            <th mat-header-cell *matHeaderCellDef>Unit Type</th>
+            <td mat-cell *matCellDef="let product">{{ product.unit_type }}</td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
@@ -385,7 +383,7 @@ import { ProductFormComponent } from './product-form.component';
 export class ProductsComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   allProducts: any[] = [];
-  displayedColumns: string[] = ['id', 'name', 'product_group', 'product_category', 'grade_spec', 'unit_price', 'actions'];
+  displayedColumns: string[] = ['id', 'name', 'product_group', 'product_category', 'grade_spec', 'unit_type', 'actions'];
   searchText: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
