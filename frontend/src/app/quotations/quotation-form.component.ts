@@ -34,135 +34,110 @@ import { ProductFormComponent } from '../products/product-form.component';
       <form [formGroup]="quotationForm" (ngSubmit)="onSubmit()">
         <div class="form-content">
           
-          <!-- Vendor Selection Section -->
-          <div class="form-section">
-            <label class="section-label">Select Vendor</label>
-            <div class="input-with-icons">
-              <mat-form-field appearance="outline" class="compact-field">
-                <mat-select formControlName="vendor" required placeholder="Choose vendor">
-                  <mat-option *ngFor="let vendor of vendors" [value]="vendor.id">
-                    {{ vendor.name }} - {{ vendor.city }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-              
-              <div class="inline-icons">
-                <button mat-icon-button color="primary" type="button" 
-                        (click)="addVendor()" 
-                        matTooltip="Add"
-                        class="icon-btn">
-                  <mat-icon>add</mat-icon>
-                </button>
-                <button mat-icon-button color="accent" type="button" 
-                        (click)="editVendor()" 
-                        [disabled]="!quotationForm.get('vendor')?.value"
-                        matTooltip="Edit"
-                        class="icon-btn">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button color="warn" type="button" 
-                        (click)="deleteVendor()" 
-                        [disabled]="!quotationForm.get('vendor')?.value"
-                        matTooltip="Delete"
-                        class="icon-btn">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
+          <!-- Vendor Selection -->
+          <div class="input-with-icons">
+            <mat-form-field appearance="outline" class="compact-field">
+              <mat-select formControlName="vendor" required placeholder="Choose vendor">
+                <mat-option *ngFor="let vendor of vendors" [value]="vendor.id">
+                  {{ vendor.name }} - {{ vendor.city }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            
+            <div class="inline-icons">
+              <button mat-icon-button color="primary" type="button" 
+                      (click)="addVendor()" 
+                      matTooltip="Add"
+                      class="icon-btn">
+                <mat-icon>add</mat-icon>
+              </button>
+              <button mat-icon-button color="accent" type="button" 
+                      (click)="editVendor()" 
+                      [disabled]="!quotationForm.get('vendor')?.value"
+                      matTooltip="Edit"
+                      class="icon-btn">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" type="button" 
+                      (click)="deleteVendor()" 
+                      [disabled]="!quotationForm.get('vendor')?.value"
+                      matTooltip="Delete"
+                      class="icon-btn">
+                <mat-icon>delete</mat-icon>
+              </button>
             </div>
           </div>
 
-          <!-- Product Selection Section -->
-          <div class="form-section">
-            <label class="section-label">Select Product</label>
-            <div class="input-with-icons">
-              <mat-form-field appearance="outline" class="compact-field">
-                <mat-select formControlName="product" required placeholder="Choose product">
-                  <mat-option *ngFor="let product of products" [value]="product.id">
-                    {{ product.name }} ({{ product.grade_spec }})
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-              
-              <div class="inline-icons">
-                <button mat-icon-button color="primary" type="button" 
-                        (click)="addProduct()" 
-                        matTooltip="Add"
-                        class="icon-btn">
-                  <mat-icon>add</mat-icon>
-                </button>
-                <button mat-icon-button color="accent" type="button" 
-                        (click)="editProduct()" 
-                        [disabled]="!quotationForm.get('product')?.value"
-                        matTooltip="Edit"
-                        class="icon-btn">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button color="warn" type="button" 
-                        (click)="deleteProduct()" 
-                        [disabled]="!quotationForm.get('product')?.value"
-                        matTooltip="Delete"
-                        class="icon-btn">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
+          <!-- Product Selection -->
+          <div class="input-with-icons">
+            <mat-form-field appearance="outline" class="compact-field">
+              <mat-select formControlName="product" required placeholder="Choose product">
+                <mat-option *ngFor="let product of products" [value]="product.id">
+                  {{ product.name }} ({{ product.grade_spec }})
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            
+            <div class="inline-icons">
+              <button mat-icon-button color="primary" type="button" 
+                      (click)="addProduct()" 
+                      matTooltip="Add"
+                      class="icon-btn">
+                <mat-icon>add</mat-icon>
+              </button>
+              <button mat-icon-button color="accent" type="button" 
+                      (click)="editProduct()" 
+                      [disabled]="!quotationForm.get('product')?.value"
+                      matTooltip="Edit"
+                      class="icon-btn">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" type="button" 
+                      (click)="deleteProduct()" 
+                      [disabled]="!quotationForm.get('product')?.value"
+                      matTooltip="Delete"
+                      class="icon-btn">
+                <mat-icon>delete</mat-icon>
+              </button>
             </div>
           </div>
 
           <div class="divider"></div>
 
-          <!-- Pricing Section -->
-          <div class="form-section">
-            <label class="section-label">Pricing Details</label>
-            
-            <mat-form-field appearance="outline" class="compact-field full-width">
-              <mat-label>Product Price (₹/kg)</mat-label>
-              <input matInput formControlName="product_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
-            </mat-form-field>
+          <!-- Pricing Fields -->
+          <mat-form-field appearance="outline" class="compact-field full-width">
+            <input matInput formControlName="product_price" type="number" step="0.01" required (input)="calculateLandingPrice()" placeholder="Product Price (₹/kg)">
+          </mat-form-field>
 
-            <mat-form-field appearance="outline" class="compact-field full-width">
-              <mat-label>Quantity (kg)</mat-label>
-              <input matInput formControlName="quantity" type="number" step="1" required (input)="calculateLandingPrice()">
-            </mat-form-field>
+          <mat-form-field appearance="outline" class="compact-field full-width">
+            <input matInput formControlName="quantity" type="number" step="1" required (input)="calculateLandingPrice()" placeholder="Quantity (kg)">
+          </mat-form-field>
 
-            <mat-form-field appearance="outline" class="compact-field full-width">
-              <mat-label>Delivery Charges (₹)</mat-label>
-              <input matInput formControlName="delivery_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
-            </mat-form-field>
-          </div>
+          <mat-form-field appearance="outline" class="compact-field full-width">
+            <input matInput formControlName="delivery_price" type="number" step="0.01" required (input)="calculateLandingPrice()" placeholder="Delivery Charges (₹)">
+          </mat-form-field>
 
           <div class="divider"></div>
 
-          <!-- Calculated Results Section -->
-          <div class="form-section">
-            <label class="section-label">Calculated Costs</label>
-            
-            <mat-form-field appearance="outline" class="compact-field full-width">
-              <mat-label>Total Landing Price (₹)</mat-label>
-              <input matInput [value]="quotationForm.get('total_landing_price')?.value || '0.00'" readonly>
-            </mat-form-field>
+          <!-- Calculated Fields -->
+          <mat-form-field appearance="outline" class="compact-field full-width">
+            <input matInput [value]="quotationForm.get('total_landing_price')?.value || '0.00'" readonly placeholder="Total Landing Price (₹)">
+          </mat-form-field>
 
-            <mat-form-field appearance="outline" class="compact-field full-width">
-              <mat-label>Landing Price per kg (₹/kg)</mat-label>
-              <input matInput [value]="quotationForm.get('landing_price')?.value || '0.00'" readonly>
-            </mat-form-field>
-          </div>
+          <mat-form-field appearance="outline" class="compact-field full-width">
+            <input matInput [value]="quotationForm.get('landing_price')?.value || '0.00'" readonly placeholder="Landing Price per kg (₹/kg)">
+          </mat-form-field>
 
           <div class="divider"></div>
 
-          <!-- Additional Details Section -->
-          <div class="form-section">
-            <label class="section-label">Additional Information</label>
-            
-            <mat-form-field appearance="outline" class="compact-field full-width">
-              <mat-label>Lead Time (days)</mat-label>
-              <input matInput formControlName="lead_time_days" type="number" required>
-            </mat-form-field>
+          <!-- Additional Fields -->
+          <mat-form-field appearance="outline" class="compact-field full-width">
+            <input matInput formControlName="lead_time_days" type="number" required placeholder="Lead Time (days)">
+          </mat-form-field>
 
-            <mat-form-field appearance="outline" class="compact-field full-width">
-              <mat-label>Grade/Specification</mat-label>
-              <input matInput formControlName="grade_spec">
-            </mat-form-field>
-          </div>
+          <mat-form-field appearance="outline" class="compact-field full-width">
+            <input matInput formControlName="grade_spec" placeholder="Grade/Specification">
+          </mat-form-field>
         </div>
 
         <!-- Action Buttons -->
@@ -201,24 +176,11 @@ import { ProductFormComponent } from '../products/product-form.component';
       padding: 16px 20px;
     }
 
-    .form-section {
-      margin-bottom: 16px;
-    }
-
-    .section-label {
-      display: block;
-      font-size: 11px;
-      font-weight: 600;
-      color: #6b7280;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-    }
-
     .input-with-icons {
       display: flex;
       align-items: center;
       gap: 6px;
+      margin-bottom: 12px;
     }
 
     .compact-field {
@@ -248,7 +210,7 @@ import { ProductFormComponent } from '../products/product-form.component';
 
     .full-width {
       width: 100%;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .divider {
@@ -256,8 +218,6 @@ import { ProductFormComponent } from '../products/product-form.component';
       background: #e5e7eb;
       margin: 16px 0;
     }
-
-    
 
     .form-actions {
       padding: 12px 20px;
@@ -294,18 +254,21 @@ import { ProductFormComponent } from '../products/product-form.component';
     ::ng-deep .compact-field input,
     ::ng-deep .compact-field .mat-mdc-select {
       font-size: 13px;
+      text-align: center;
     }
 
-    ::ng-deep .compact-field .mat-mdc-floating-label {
-      font-size: 12px;
+    ::ng-deep .compact-field .mat-mdc-select-value {
+      text-align: center;
     }
 
     ::ng-deep .compact-field input::placeholder {
-      text-align: left;
+      text-align: center;
+      opacity: 0.6;
     }
 
     ::ng-deep .compact-field .mat-mdc-select-placeholder {
-      text-align: left;
+      text-align: center;
+      opacity: 0.6;
     }
 
     /* Mobile Responsive Styles */
@@ -319,17 +282,9 @@ import { ProductFormComponent } from '../products/product-form.component';
         padding: 14px 16px;
       }
 
-      .form-section {
-        margin-bottom: 14px;
-      }
-
-      .section-label {
-        font-size: 10px;
-        margin-bottom: 6px;
-      }
-
       .input-with-icons {
         gap: 4px;
+        margin-bottom: 10px;
       }
 
       .inline-icons {
@@ -350,14 +305,12 @@ import { ProductFormComponent } from '../products/product-form.component';
       }
 
       .full-width {
-        margin-bottom: 8px;
+        margin-bottom: 10px;
       }
 
       .divider {
         margin: 12px 0;
       }
-
-      
 
       .form-actions {
         padding: 10px 16px;
@@ -379,14 +332,6 @@ import { ProductFormComponent } from '../products/product-form.component';
 
       ::ng-deep .compact-field input,
       ::ng-deep .compact-field .mat-mdc-select {
-        font-size: 12px;
-      }
-
-      ::ng-deep .compact-field .mat-mdc-floating-label {
-        font-size: 11px;
-      }
-
-      ::ng-deep .compact-field .mat-mdc-select-value {
         font-size: 12px;
       }
     }
@@ -436,13 +381,12 @@ import { ProductFormComponent } from '../products/product-form.component';
         padding: 20px 24px;
       }
 
-      .form-section {
-        margin-bottom: 20px;
+      .input-with-icons {
+        margin-bottom: 16px;
       }
 
-      .section-label {
-        font-size: 12px;
-        margin-bottom: 10px;
+      .full-width {
+        margin-bottom: 14px;
       }
 
       .divider {
