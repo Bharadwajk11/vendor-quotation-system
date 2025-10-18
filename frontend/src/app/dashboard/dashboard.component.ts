@@ -144,20 +144,24 @@ import { ChartConfiguration } from 'chart.js';
         gap: 8px;
         flex-wrap: nowrap;
         overflow-x: auto;
+        width: 100%;
       }
 
       .action-buttons button {
+        flex: 0 0 auto;
+        width: auto !important;
+        min-width: auto !important;
         flex-shrink: 0;
-        font-size: 12px;
-        padding: 8px 12px;
-        min-width: auto;
+        font-size: 11px;
+        padding: 6px 10px;
+        height: 36px;
         white-space: nowrap;
       }
 
       .action-buttons button mat-icon {
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
       }
 
       .stats-grid {
@@ -170,6 +174,10 @@ import { ChartConfiguration } from 'chart.js';
 
       .charts-grid {
         gap: 16px;
+      }
+
+      .charts-grid {
+        grid-template-columns: 1fr;
       }
     }
   `]
