@@ -126,6 +126,41 @@ import { ProductFormComponent } from './product-form.component';
     </div>
   `,
   styles: [`
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 20px;
+    }
+
+    .add-button {
+      white-space: nowrap;
+      height: 40px;
+    }
+
+    @media (max-width: 600px) {
+      .page-header {
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .add-button {
+        height: 36px;
+        min-width: 36px;
+        padding: 0 12px;
+      }
+
+      .add-button mat-icon {
+        margin-right: 4px;
+        font-size: 20px;
+      }
+
+      .add-button .mat-button-wrapper {
+        font-size: 13px;
+      }
+    }
+
     .page-container {
       padding: 24px;
       max-width: 1200px;

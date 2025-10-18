@@ -198,6 +198,28 @@ import { QuotationFormComponent } from './quotation-form.component.js';
       height: 40px;
     }
 
+    @media (max-width: 600px) {
+      .header-content {
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .add-button {
+        height: 36px;
+        min-width: 36px;
+        padding: 0 12px;
+      }
+
+      .add-button mat-icon {
+        margin-right: 4px;
+        font-size: 20px;
+      }
+
+      .add-button .mat-button-wrapper {
+        font-size: 13px;
+      }
+    }
+
     .filters-card {
       margin-bottom: 20px;
       padding: 12px 16px;
