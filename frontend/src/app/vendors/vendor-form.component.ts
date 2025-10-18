@@ -77,27 +77,56 @@ import { ApiService } from '../services/api.service';
     @media (max-width: 600px) {
       mat-dialog-content {
         min-width: unset;
-        padding: 16px;
+        padding: 16px 12px;
+        max-height: 70vh;
+        overflow-y: auto;
       }
 
       mat-dialog-actions {
-        padding: 12px 16px;
+        padding: 12px;
         flex-direction: column-reverse;
         align-items: stretch;
+        gap: 10px;
+        position: sticky;
+        bottom: 0;
+        background: white;
+        border-top: 1px solid #e0e0e0;
+        margin: 0 -12px -12px -12px;
       }
 
       mat-dialog-actions button {
         width: 100%;
-        margin: 4px 0 !important;
+        margin: 0 !important;
+        height: 48px;
+        font-size: 16px;
+        border-radius: 8px;
       }
 
       .full-width {
-        margin-bottom: 12px;
+        margin-bottom: 14px;
       }
 
       h2 {
         font-size: 18px;
-        padding: 12px 16px;
+        padding: 12px;
+        margin: 0 -12px 12px -12px;
+        border-bottom: 1px solid #e0e0e0;
+        background: #fafafa;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-text-field-wrapper {
+        background-color: white;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-form-field-infix {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        min-height: 48px;
+      }
+
+      input {
+        font-size: 16px !important;
+        padding: 4px 0 !important;
       }
     }
   `]
