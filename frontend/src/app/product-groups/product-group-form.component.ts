@@ -75,11 +75,11 @@ export class ProductGroupFormComponent implements OnInit {
       description: ['']
     });
     
-    this.isEditMode = this.data && this.data.id ? true : false;
+    this.isEditMode = !!this.data?.id;
   }
 
   ngOnInit() {
-    if (this.data) {
+    if (this.data?.id) {
       this.productGroupForm.patchValue({
         name: this.data.name,
         description: this.data.description

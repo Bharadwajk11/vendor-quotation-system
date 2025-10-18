@@ -27,7 +27,7 @@ import { ProductFormComponent } from '../products/product-form.component';
     MatTooltipModule
   ],
   template: `
-    <h2 mat-dialog-title>{{ data ? 'Edit' : 'Add' }} Quotation</h2>
+    <h2 mat-dialog-title>{{ data?.id ? 'Edit' : 'Add' }} Quotation</h2>
     <form [formGroup]="quotationForm" (ngSubmit)="onSubmit()">
       <mat-dialog-content>
         <div class="field-container">
@@ -136,7 +136,7 @@ import { ProductFormComponent } from '../products/product-form.component';
       <mat-dialog-actions align="end">
         <button mat-button type="button" (click)="dialogRef.close()">Cancel</button>
         <button mat-raised-button color="primary" type="submit" [disabled]="!quotationForm.valid">
-          {{ data ? 'Update' : 'Create' }}
+          {{ data?.id ? 'Update' : 'Create' }}
         </button>
       </mat-dialog-actions>
     </form>
@@ -237,7 +237,7 @@ export class QuotationFormComponent implements OnInit {
     this.loadVendors();
     this.loadProducts();
     
-    if (this.data) {
+    if (this.data?.id) {
       this.quotationForm.patchValue(this.data);
       this.calculateLandingPrice();
     }
@@ -260,7 +260,7 @@ export class QuotationFormComponent implements OnInit {
   addVendor() {
     const dialogRef = this.dialog.open(VendorFormComponent, {
       width: '600px',
-      data: {}
+      data: null
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -307,7 +307,7 @@ export class QuotationFormComponent implements OnInit {
   addProduct() {
     const dialogRef = this.dialog.open(ProductFormComponent, {
       width: '600px',
-      data: {}
+      data: null
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -365,7 +365,7 @@ export class QuotationFormComponent implements OnInit {
         kilo_price: formValue.landing_price || formValue.product_price
       };
       
-      if (this.data) {
+      if (this.data?.id) {
         this.apiService.updateQuotation(this.data.id, quotationData).subscribe({
           next: () => this.dialogRef.close(true),
           error: (err: any) => console.error('Error updating quotation:', err)

@@ -21,7 +21,7 @@ import { ApiService } from '../services/api.service';
     MatSelectModule
   ],
   template: `
-    <h2 mat-dialog-title>{{ data ? 'Edit' : 'Add' }} Vendor</h2>
+    <h2 mat-dialog-title>{{ data?.id ? 'Edit' : 'Add' }} Vendor</h2>
     <form [formGroup]="vendorForm" (ngSubmit)="onSubmit()">
       <mat-dialog-content>
         <mat-form-field appearance="outline" class="full-width">
@@ -53,7 +53,7 @@ import { ApiService } from '../services/api.service';
       <mat-dialog-actions align="end">
         <button mat-button type="button" (click)="dialogRef.close()">Cancel</button>
         <button mat-raised-button color="primary" type="submit" [disabled]="!vendorForm.valid">
-          {{ data ? 'Update' : 'Create' }}
+          {{ data?.id ? 'Update' : 'Create' }}
         </button>
       </mat-dialog-actions>
     </form>
@@ -89,7 +89,7 @@ export class VendorFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.data) {
+    if (this.data?.id) {
       this.vendorForm.patchValue(this.data);
     }
   }
@@ -98,7 +98,7 @@ export class VendorFormComponent implements OnInit {
     if (this.vendorForm.valid) {
       const vendorData = this.vendorForm.value;
       
-      if (this.data) {
+      if (this.data?.id) {
         this.apiService.updateVendor(this.data.id, vendorData).subscribe({
           next: () => this.dialogRef.close(true),
           error: (err: any) => console.error('Error updating vendor:', err)

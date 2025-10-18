@@ -27,7 +27,7 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
     MatTooltipModule
   ],
   template: `
-    <h2 mat-dialog-title>{{ data ? 'Edit' : 'Add' }} Product</h2>
+    <h2 mat-dialog-title>{{ data?.id ? 'Edit' : 'Add' }} Product</h2>
     <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
       <mat-dialog-content>
         <div class="product-group-container">
@@ -126,7 +126,7 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
       <mat-dialog-actions align="end">
         <button mat-button type="button" (click)="dialogRef.close()">Cancel</button>
         <button mat-raised-button color="primary" type="submit" [disabled]="!productForm.valid">
-          {{ data ? 'Update' : 'Create' }}
+          {{ data?.id ? 'Update' : 'Create' }}
         </button>
       </mat-dialog-actions>
     </form>
@@ -197,7 +197,7 @@ export class ProductFormComponent implements OnInit {
     this.loadProductGroups();
     this.loadProductCategories();
     
-    if (this.data) {
+    if (this.data?.id) {
       this.productForm.patchValue(this.data);
     }
   }
@@ -219,7 +219,7 @@ export class ProductFormComponent implements OnInit {
   addProductGroup() {
     const dialogRef = this.dialog.open(ProductGroupFormComponent, {
       width: '500px',
-      data: {}
+      data: null
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -266,7 +266,7 @@ export class ProductFormComponent implements OnInit {
   addProductCategory() {
     const dialogRef = this.dialog.open(ProductCategoryFormComponent, {
       width: '500px',
-      data: {}
+      data: null
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -317,7 +317,7 @@ export class ProductFormComponent implements OnInit {
         kilo_price: this.productForm.value.unit_price
       };
       
-      if (this.data) {
+      if (this.data?.id) {
         this.apiService.updateProduct(this.data.id, productData).subscribe({
           next: () => this.dialogRef.close(true),
           error: (err: any) => console.error('Error updating product:', err)

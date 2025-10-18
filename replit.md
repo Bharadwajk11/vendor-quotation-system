@@ -1,6 +1,6 @@
 # Overview
 
-This project is a single-tenant vendor quotation comparison platform for manufacturing companies, initially focused on plastic manufacturing. Its purpose is to help manufacturers compare vendor quotes efficiently and select optimal suppliers based on cost, quality, and delivery. The platform includes vendor management, product cataloging, quotation entry, and an automated comparison engine with scoring and ranking capabilities.
+This project is a single-tenant vendor quotation comparison platform for manufacturing companies, initially focused on plastic manufacturing. Its purpose is to help manufacturers compare vendor quotes efficiently and select optimal suppliers based on cost, quality, and delivery. The platform includes vendor management, product cataloging with categories and groups, quotation entry with inline CRUD operations, and an automated comparison engine with scoring and ranking capabilities.
 
 # User Preferences
 
@@ -18,9 +18,9 @@ The backend is built with Django 5.2+ and Django REST Framework, offering a REST
 
 ## System Design Choices
 
--   **UI/UX**: Professional enterprise UI with Angular Material (indigo-pink theme), shell layout, dashboard analytics, and consistent CRUD interfaces. Enhanced comparison views use badges, color-coding, and result highlighting. Quotation forms display real-time calculated Total Landing Price and Landing Price per kg.
+-   **UI/UX**: Professional enterprise UI with Angular Material (indigo-pink theme), shell layout, dashboard analytics, and consistent CRUD interfaces. Enhanced comparison views use badges, color-coding, and result highlighting. Quotation forms display real-time calculated Total Landing Price and Landing Price per kg. Inline CRUD operations allow adding/editing/deleting related entities (vendors, products, product groups, product categories) directly from forms without navigation.
 -   **Technical Implementations**: Standalone Angular components, service-based state management, Django REST Framework ViewSets, Django ORM.
--   **Feature Specifications**: Automated vendor comparison with a scoring algorithm, dynamic delivery cost calculation (including a 20% interstate surcharge when applicable), real-time landing price calculation in quotation forms, and comprehensive product grouping.
+-   **Feature Specifications**: Automated vendor comparison with a scoring algorithm, dynamic delivery cost calculation (including a 20% interstate surcharge when applicable), real-time landing price calculation in quotation forms, comprehensive product grouping and categorization, and inline CRUD operations for seamless data management (uses `data: null` for add mode and `data?.id` checks for edit-mode detection).
 -   **Single-Tenant Architecture**: Each instance serves a single company, with automatic association of all data to a default company and removal of multi-company selection fields for simplified user experience and enhanced data isolation.
 -   **Security**: Writable ViewSets enforce default company assignment, read operations filter by the default company, and the `compare_vendors` endpoint validates product and vendor ownership to ensure complete tenant isolation. CompanyViewSet allows updating company information but blocks creation and deletion. ComparisonResultViewSet is read-only.
 
