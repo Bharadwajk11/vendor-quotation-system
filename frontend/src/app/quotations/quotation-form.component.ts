@@ -149,7 +149,12 @@ import { ProductFormComponent } from '../products/product-form.component';
 
     mat-dialog-content {
       padding: 20px 24px;
-      min-width: 600px;
+      min-width: 500px;
+    }
+
+    mat-dialog-actions {
+      padding: 12px 24px;
+      gap: 8px;
     }
 
     .field-container {
@@ -177,6 +182,57 @@ import { ProductFormComponent } from '../products/product-form.component';
 
     .field-actions mat-icon {
       font-size: 20px;
+    }
+
+    @media (max-width: 600px) {
+      mat-dialog-content {
+        min-width: unset;
+        padding: 16px;
+      }
+
+      mat-dialog-actions {
+        padding: 12px 16px;
+        flex-direction: column-reverse;
+        align-items: stretch;
+      }
+
+      mat-dialog-actions button {
+        width: 100%;
+        margin: 4px 0 !important;
+      }
+
+      .full-width {
+        margin-bottom: 12px;
+      }
+
+      h2 {
+        font-size: 18px;
+        padding: 12px 16px;
+      }
+
+      .field-container {
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .field-select {
+        width: 100%;
+      }
+
+      .field-actions {
+        width: 100%;
+        justify-content: center;
+        padding-top: 0;
+      }
+
+      .field-actions button {
+        width: 44px;
+        height: 44px;
+      }
+
+      .field-actions mat-icon {
+        font-size: 22px;
+      }
     }
   `]
 })

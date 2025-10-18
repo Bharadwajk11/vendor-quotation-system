@@ -106,8 +106,13 @@ import { ApiService } from '../services/api.service';
   `,
   styles: [`
     mat-dialog-content {
-      min-width: 500px;
-      padding: 20px;
+      min-width: 450px;
+      padding: 20px 24px;
+    }
+
+    mat-dialog-actions {
+      padding: 12px 24px;
+      gap: 8px;
     }
 
     .form-row {
@@ -122,6 +127,39 @@ import { ApiService } from '../services/api.service';
 
     mat-checkbox {
       margin-top: 10px;
+    }
+
+    @media (max-width: 600px) {
+      mat-dialog-content {
+        min-width: unset;
+        padding: 16px;
+      }
+
+      mat-dialog-actions {
+        padding: 12px 16px;
+        flex-direction: column-reverse;
+        align-items: stretch;
+      }
+
+      mat-dialog-actions button {
+        width: 100%;
+        margin: 4px 0 !important;
+      }
+
+      h2 {
+        font-size: 18px;
+        padding: 12px 16px;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .form-row mat-form-field {
+        width: 100%;
+      }
     }
   `]
 })
