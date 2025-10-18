@@ -242,24 +242,16 @@ import { ProductFormComponent } from './product-form.component';
 
     table {
       width: 100%;
-      table-layout: auto;
     }
 
     th {
       background-color: #f9f9f9;
       font-weight: bold;
       color: #333;
-      white-space: nowrap;
-      padding: 12px 16px;
     }
 
     td {
       color: #555;
-      padding: 12px 16px;
-    }
-
-    td strong {
-      font-weight: 500;
     }
 
     .mat-chip-set {
@@ -275,10 +267,6 @@ import { ProductFormComponent } from './product-form.component';
     .no-data {
       color: #ccc;
       font-style: italic;
-    }
-
-    mat-card {
-      overflow-x: auto;
     }
 
     @media (max-width: 768px) {
