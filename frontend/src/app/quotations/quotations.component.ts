@@ -8,6 +8,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { QuotationFormComponent } from './quotation-form.component.js';
 
@@ -177,7 +178,6 @@ import { QuotationFormComponent } from './quotation-form.component.js';
 })
 export class QuotationsComponent implements OnInit {
   quotations: any[] = [];
-  filteredQuotations: any[] = [];
   allQuotations: any[] = [];
   displayedColumns: string[] = ['id', 'vendor', 'product', 'product_price', 'quantity', 'delivery_price', 'total_landing_price', 'landing_price', 'lead_time', 'grade_spec', 'actions'];
 
@@ -195,44 +195,33 @@ export class QuotationsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loadQuotations();
-    this.loadVendors();
-    this.loadProducts();
-    this.loadProductGroups();
+    this.loadAllData();
   }
 
-  loadQuotations() {
-    this.apiService.getQuotations().subscribe({
+  loadAllData() {
+    forkJoin({
+      quotations: this.apiService.getQuotations(),
+      vendors: this.apiService.getVendors(),
+      products: this.apiService.getProducts(),
+      productGroups: this.apiService.getProductGroups()
+    }).subscribe({
       next: (data) => {
-        this.allQuotations = data.results || data;
-        this.quotations = [...this.allQuotations];
+        this.allQuotations = data.quotations.results || data.quotations;
+        this.vendors = data.vendors.results || data.vendors;
+        this.products = data.products.results || data.products;
+        this.productGroups = data.productGroups.results || data.productGroups;
+        this.applyFilters();
       },
-      error: (err: any) => console.error('Error loading quotations:', err)
-    });
-  }
-
-  loadVendors() {
-    this.apiService.getVendors().subscribe({
-      next: (data) => this.vendors = data.results || data,
-      error: (err: any) => console.error('Error loading vendors:', err)
-    });
-  }
-
-  loadProducts() {
-    this.apiService.getProducts().subscribe({
-      next: (data) => this.products = data.results || data,
-      error: (err: any) => console.error('Error loading products:', err)
-    });
-  }
-
-  loadProductGroups() {
-    this.apiService.getProductGroups().subscribe({
-      next: (data) => this.productGroups = data.results || data,
-      error: (err: any) => console.error('Error loading product groups:', err)
+      error: (err: any) => console.error('Error loading data:', err)
     });
   }
 
   applyFilters() {
+    if (this.selectedVendor === null && this.selectedProduct === null && this.selectedProductGroup === null) {
+      this.quotations = [...this.allQuotations];
+      return;
+    }
+
     this.quotations = this.allQuotations.filter(quote => {
       let matchesVendor = true;
       let matchesProduct = true;
@@ -270,7 +259,7 @@ export class QuotationsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadQuotations();
+        this.loadAllData();
       }
     });
   }
@@ -278,7 +267,7 @@ export class QuotationsComponent implements OnInit {
   deleteQuotation(id: number) {
     if (confirm('Are you sure you want to delete this quotation?')) {
       this.apiService.deleteQuotation(id).subscribe({
-        next: () => this.loadQuotations(),
+        next: () => this.loadAllData(),
         error: (err: any) => console.error('Error deleting quotation:', err)
       });
     }
