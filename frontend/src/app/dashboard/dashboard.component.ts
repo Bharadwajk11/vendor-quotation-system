@@ -143,10 +143,9 @@ export class DashboardComponent implements OnInit {
   };
 
   barChartData: ChartConfiguration['data'] = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: [],
     datasets: [
-      { data: [65, 59, 80, 81, 56, 55], label: 'Quotations', backgroundColor: '#3f51b5' },
-      { data: [28, 48, 40, 19, 86, 27], label: 'Orders', backgroundColor: '#ff4081' }
+      { data: [], label: 'Quotations', backgroundColor: '#3f51b5' }
     ]
   };
 
@@ -155,6 +154,14 @@ export class DashboardComponent implements OnInit {
     maintainAspectRatio: true,
     plugins: {
       legend: { display: true, position: 'bottom' }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 1
+        }
+      }
     }
   };
 
@@ -179,6 +186,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.loadStats();
     this.loadVendorDistribution();
+    this.loadRecentActivity();
   }
 
   loadStats() {
@@ -224,6 +232,43 @@ export class DashboardComponent implements OnInit {
         };
       },
       error: (err: any) => console.error('Error loading vendor distribution:', err)
+    });
+  }
+
+  loadRecentActivity() {
+    this.apiService.getQuotations().subscribe({
+      next: (data) => {
+        const quotations = data.results || data;
+        
+        // Group quotations by month
+        const monthCount: { [key: string]: number } = {};
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        quotations.forEach((quotation: any) => {
+          if (quotation.created_at) {
+            const date = new Date(quotation.created_at);
+            const monthYear = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+            monthCount[monthYear] = (monthCount[monthYear] || 0) + 1;
+          }
+        });
+
+        // Sort by date and get last 6 months
+        const sortedMonths = Object.keys(monthCount).sort((a, b) => {
+          const dateA = new Date(a);
+          const dateB = new Date(b);
+          return dateA.getTime() - dateB.getTime();
+        }).slice(-6);
+
+        const counts = sortedMonths.map(month => monthCount[month]);
+
+        this.barChartData = {
+          labels: sortedMonths,
+          datasets: [
+            { data: counts, label: 'Quotations', backgroundColor: '#3f51b5' }
+          ]
+        };
+      },
+      error: (err: any) => console.error('Error loading recent activity:', err)
     });
   }
 }
