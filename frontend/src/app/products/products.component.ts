@@ -165,34 +165,21 @@ import { ProductFormComponent } from './product-form.component';
       margin: 0 auto;
     }
 
-    .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-
     .page-title {
-      font-size: 28px;
-      font-weight: bold;
+      font-size: 24px;
+      font-weight: 500;
       color: #333;
-      margin-bottom: 4px;
+      margin: 0;
     }
 
     .page-subtitle {
-      font-size: 13px;
+      font-size: 14px;
       color: #666;
+      margin: 4px 0 0 0;
     }
 
     mat-card {
       padding: 16px;
-    }
-
-    .add-button {
-      padding: 10px 20px;
-      font-size: 14px;
-      font-weight: bold;
-      border-radius: 8px;
     }
 
     .filters-card {
