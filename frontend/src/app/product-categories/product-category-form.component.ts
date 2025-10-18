@@ -21,7 +21,9 @@ import { ApiService } from '../services/api.service';
     MatSelectModule
   ],
   template: `
-    <h2 mat-dialog-title>{{ isEditMode ? 'Edit' : 'Add' }} Product Category</h2>
+    <div class="dialog-header">
+      <h2 mat-dialog-title>{{ isEditMode ? 'Edit' : 'Add' }} Product Category</h2>
+    </div>
     <form [formGroup]="productCategoryForm" (ngSubmit)="onSubmit()">
       <mat-dialog-content>
         <mat-form-field appearance="outline" class="full-width">
@@ -45,6 +47,13 @@ import { ApiService } from '../services/api.service';
     </form>
   `,
   styles: [`
+    .dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0;
+    }
+
     .full-width {
       width: 100%;
       margin-bottom: 16px;
@@ -62,6 +71,10 @@ import { ApiService } from '../services/api.service';
     }
 
     @media (max-width: 600px) {
+      .dialog-header {
+        padding: 12px;
+        padding-bottom: 0;
+      }
       mat-dialog-content {
         min-width: unset;
         min-height: unset;

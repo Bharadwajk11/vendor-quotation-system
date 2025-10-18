@@ -28,7 +28,9 @@ import { ProductFormComponent } from '../products/product-form.component';
     MatTooltipModule
   ],
   template: `
-    <h2 mat-dialog-title>{{ data?.id ? 'Edit' : 'Add' }} Quotation</h2>
+    <div class="dialog-header">
+      <h2 mat-dialog-title>{{ data?.id ? 'Edit' : 'Add' }} Quotation</h2>
+    </div>
     
     <mat-dialog-content>
       <form [formGroup]="quotationForm">
@@ -130,6 +132,13 @@ import { ProductFormComponent } from '../products/product-form.component';
     </mat-dialog-actions>
   `,
   styles: [`
+    .dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0;
+    }
+
     mat-dialog-content {
       min-width: 500px;
     }
@@ -145,6 +154,10 @@ import { ProductFormComponent } from '../products/product-form.component';
     }
 
     @media (max-width: 600px) {
+      .dialog-header {
+        padding: 12px;
+        padding-bottom: 0;
+      }
       mat-dialog-content {
         min-width: unset;
         padding: 12px !important;
