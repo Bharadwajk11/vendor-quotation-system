@@ -132,6 +132,46 @@ import { ChartConfiguration } from 'chart.js';
       align-items: center;
       gap: 8px;
     }
+
+    @media (max-width: 600px) {
+      .quick-actions {
+        padding: 16px;
+        margin-bottom: 20px;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+      }
+
+      .action-buttons button {
+        flex-shrink: 0;
+        font-size: 12px;
+        padding: 8px 12px;
+        min-width: auto;
+        white-space: nowrap;
+      }
+
+      .action-buttons button mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+
+      .stats-grid {
+        gap: 12px;
+      }
+
+      .stat-card {
+        padding: 16px;
+      }
+
+      .charts-grid {
+        gap: 16px;
+      }
+    }
   `]
 })
 export class DashboardComponent implements OnInit {
