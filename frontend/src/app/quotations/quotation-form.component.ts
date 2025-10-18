@@ -116,17 +116,17 @@ import { ProductFormComponent } from '../products/product-form.component';
             
             <mat-form-field appearance="outline" class="compact-field full-width">
               <mat-label>Product Price (₹/kg)</mat-label>
-              <input matInput formControlName="product_price" type="number" step="0.01" required (input)="calculateLandingPrice()" placeholder="Enter price per kg">
+              <input matInput formControlName="product_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="compact-field full-width">
               <mat-label>Quantity (kg)</mat-label>
-              <input matInput formControlName="quantity" type="number" step="1" required (input)="calculateLandingPrice()" placeholder="Enter quantity">
+              <input matInput formControlName="quantity" type="number" step="1" required (input)="calculateLandingPrice()">
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="compact-field full-width">
               <mat-label>Delivery Charges (₹)</mat-label>
-              <input matInput formControlName="delivery_price" type="number" step="0.01" required (input)="calculateLandingPrice()" placeholder="Enter delivery cost">
+              <input matInput formControlName="delivery_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
             </mat-form-field>
           </div>
 
@@ -136,16 +136,15 @@ import { ProductFormComponent } from '../products/product-form.component';
           <div class="form-section calculated-section">
             <label class="section-label">Calculated Costs</label>
             
-            <div class="calculated-field">
-              <label class="calc-label">Total Landing Price</label>
-              <div class="calc-value">₹{{ quotationForm.get('total_landing_price')?.value || '0.00' }}</div>
-              <div class="calc-formula">Product Price × Quantity + Delivery</div>
-            </div>
-
-            <div class="calculated-field">
-              <label class="calc-label">Landing Price per kg</label>
-              <div class="calc-value">₹{{ quotationForm.get('landing_price')?.value || '0.00' }}/kg</div>
-              <div class="calc-formula">Total Landing Price ÷ Quantity</div>
+            <div class="calc-row">
+              <div class="calc-item">
+                <span class="calc-label">Total Landing Price</span>
+                <span class="calc-value">₹{{ quotationForm.get('total_landing_price')?.value || '0.00' }}</span>
+              </div>
+              <div class="calc-item">
+                <span class="calc-label">Per kg</span>
+                <span class="calc-value">₹{{ quotationForm.get('landing_price')?.value || '0.00' }}/kg</span>
+              </div>
             </div>
           </div>
 
@@ -157,12 +156,12 @@ import { ProductFormComponent } from '../products/product-form.component';
             
             <mat-form-field appearance="outline" class="compact-field full-width">
               <mat-label>Lead Time (days)</mat-label>
-              <input matInput formControlName="lead_time_days" type="number" required placeholder="Number of days">
+              <input matInput formControlName="lead_time_days" type="number" required>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="compact-field full-width">
               <mat-label>Grade/Specification</mat-label>
-              <input matInput formControlName="grade_spec" placeholder="Enter grade or spec (optional)">
+              <input matInput formControlName="grade_spec">
             </mat-form-field>
           </div>
         </div>
@@ -261,42 +260,40 @@ import { ProductFormComponent } from '../products/product-form.component';
 
     .calculated-section {
       background: #f0f9ff;
-      padding: 12px;
-      border-radius: 8px;
+      padding: 10px 12px;
+      border-radius: 6px;
       border: 1px solid #bfdbfe;
     }
 
-    .calculated-field {
-      background: #ffffff;
-      padding: 10px 12px;
-      border-radius: 6px;
-      margin-bottom: 10px;
-      border: 1px solid #e0e7ff;
+    .calc-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
     }
 
-    .calculated-field:last-child {
-      margin-bottom: 0;
+    .calc-item {
+      flex: 1;
+      background: #ffffff;
+      padding: 8px 10px;
+      border-radius: 4px;
+      border: 1px solid #e0e7ff;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
     .calc-label {
-      font-size: 11px;
+      font-size: 10px;
       color: #6b7280;
       font-weight: 500;
-      display: block;
-      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
 
     .calc-value {
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 700;
       color: #1e40af;
-      margin-bottom: 4px;
-    }
-
-    .calc-formula {
-      font-size: 10px;
-      color: #9ca3af;
-      font-style: italic;
     }
 
     .form-actions {
@@ -390,24 +387,24 @@ import { ProductFormComponent } from '../products/product-form.component';
       }
 
       .calculated-section {
-        padding: 10px;
+        padding: 8px 10px;
       }
 
-      .calculated-field {
-        padding: 8px 10px;
-        margin-bottom: 8px;
+      .calc-row {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .calc-item {
+        padding: 6px 8px;
       }
 
       .calc-label {
-        font-size: 10px;
+        font-size: 9px;
       }
 
       .calc-value {
-        font-size: 16px;
-      }
-
-      .calc-formula {
-        font-size: 9px;
+        font-size: 14px;
       }
 
       .form-actions {
