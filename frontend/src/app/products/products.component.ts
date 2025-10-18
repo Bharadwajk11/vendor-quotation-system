@@ -184,10 +184,6 @@ import { ProductFormComponent } from './product-form.component';
       color: #666;
     }
 
-    mat-card {
-      padding: 16px;
-    }
-
     .add-button {
       padding: 10px 20px;
       font-size: 14px;
@@ -249,15 +245,13 @@ import { ProductFormComponent } from './product-form.component';
     }
 
     th {
-      background-color: #3f51b5;
-      font-weight: 600;
-      color: white;
-      padding: 16px;
+      background-color: #f9f9f9;
+      font-weight: bold;
+      color: #333;
     }
 
     td {
       color: #555;
-      padding: 12px 16px;
     }
 
     .mat-chip-set {
@@ -292,10 +286,6 @@ import { ProductFormComponent } from './product-form.component';
 
       .page-subtitle {
         font-size: 13px;
-      }
-
-      mat-card {
-        padding: 12px;
       }
 
       .add-button {
