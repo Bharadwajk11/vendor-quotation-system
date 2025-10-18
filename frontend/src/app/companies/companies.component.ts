@@ -70,6 +70,11 @@ import { CompanyFormComponent } from './company-form.component';
             <td mat-cell *matCellDef="let company">{{ company.industry_type }}</td>
           </ng-container>
 
+          <ng-container matColumnDef="state">
+            <th mat-header-cell *matHeaderCellDef>State</th>
+            <td mat-cell *matCellDef="let company">{{ company.state || '-' }}</td>
+          </ng-container>
+
           <ng-container matColumnDef="contact_email">
             <th mat-header-cell *matHeaderCellDef>Email</th>
             <td mat-cell *matCellDef="let company">{{ company.contact_email }}</td>
@@ -157,7 +162,7 @@ import { CompanyFormComponent } from './company-form.component';
 export class CompaniesComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   allCompanies: any[] = [];
-  displayedColumns: string[] = ['id', 'name', 'industry_type', 'contact_email', 'address', 'actions'];
+  displayedColumns: string[] = ['id', 'name', 'industry_type', 'state', 'contact_email', 'address', 'actions'];
   searchText: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -194,6 +199,7 @@ export class CompaniesComponent implements OnInit, AfterViewInit {
         return (
           company.name?.toLowerCase().includes(searchTerm) ||
           company.industry_type?.toLowerCase().includes(searchTerm) ||
+          company.state?.toLowerCase().includes(searchTerm) ||
           company.address?.toLowerCase().includes(searchTerm) ||
           company.contact_email?.toLowerCase().includes(searchTerm)
         );
