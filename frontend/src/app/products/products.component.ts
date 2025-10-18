@@ -49,12 +49,23 @@ import { ProductFormComponent } from './product-form.component.js';
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="category">
-            <th mat-header-cell *matHeaderCellDef>Category</th>
+          <ng-container matColumnDef="product_group">
+            <th mat-header-cell *matHeaderCellDef>Product Group</th>
             <td mat-cell *matCellDef="let product">
-              <mat-chip-set>
-                <mat-chip>{{ product.category }}</mat-chip>
+              <mat-chip-set *ngIf="product.product_group_name">
+                <mat-chip color="primary">{{ product.product_group_name }}</mat-chip>
               </mat-chip-set>
+              <span *ngIf="!product.product_group_name" class="no-data">—</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="product_category">
+            <th mat-header-cell *matHeaderCellDef>Product Category</th>
+            <td mat-cell *matCellDef="let product">
+              <mat-chip-set *ngIf="product.product_category_name">
+                <mat-chip color="accent">{{ product.product_category_name }}</mat-chip>
+              </mat-chip-set>
+              <span *ngIf="!product.product_category_name" class="no-data">—</span>
             </td>
           </ng-container>
 
@@ -91,7 +102,7 @@ import { ProductFormComponent } from './product-form.component.js';
 })
 export class ProductsComponent implements OnInit {
   products: any[] = [];
-  displayedColumns: string[] = ['id', 'name', 'category', 'grade_spec', 'unit_price', 'actions'];
+  displayedColumns: string[] = ['id', 'name', 'product_group', 'product_category', 'grade_spec', 'unit_price', 'actions'];
 
   constructor(
     private apiService: ApiService,

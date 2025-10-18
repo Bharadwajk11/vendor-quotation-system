@@ -1,12 +1,16 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ApiService } from '../services/api.service';
+import { VendorFormComponent } from '../vendors/vendor-form.component';
+import { ProductFormComponent } from '../products/product-form.component';
 
 @Component({
   selector: 'app-quotation-form',
@@ -18,29 +22,77 @@ import { ApiService } from '../services/api.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatSelectModule
+    MatSelectModule,
+    MatIconModule,
+    MatTooltipModule
   ],
   template: `
     <h2 mat-dialog-title>{{ data ? 'Edit' : 'Add' }} Quotation</h2>
     <form [formGroup]="quotationForm" (ngSubmit)="onSubmit()">
       <mat-dialog-content>
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Vendor</mat-label>
-          <mat-select formControlName="vendor" required>
-            <mat-option *ngFor="let vendor of vendors" [value]="vendor.id">
-              {{ vendor.name }} - {{ vendor.city }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div class="field-container">
+          <mat-form-field appearance="outline" class="field-select">
+            <mat-label>Vendor</mat-label>
+            <mat-select formControlName="vendor" required>
+              <mat-option *ngFor="let vendor of vendors" [value]="vendor.id">
+                {{ vendor.name }} - {{ vendor.city }}
+              </mat-option>
+            </mat-select>
+            <mat-hint>Manage vendors using the buttons →</mat-hint>
+          </mat-form-field>
+          
+          <div class="field-actions">
+            <button mat-icon-button type="button" color="primary" 
+                    (click)="addVendor()" 
+                    matTooltip="Add New Vendor">
+              <mat-icon>add</mat-icon>
+            </button>
+            <button mat-icon-button type="button" color="accent" 
+                    (click)="editVendor()" 
+                    [disabled]="!quotationForm.get('vendor')?.value"
+                    matTooltip="Edit Selected Vendor">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button type="button" color="warn" 
+                    (click)="deleteVendor()" 
+                    [disabled]="!quotationForm.get('vendor')?.value"
+                    matTooltip="Delete Selected Vendor">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Product</mat-label>
-          <mat-select formControlName="product" required>
-            <mat-option *ngFor="let product of products" [value]="product.id">
-              {{ product.name }} ({{ product.grade_spec }})
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div class="field-container">
+          <mat-form-field appearance="outline" class="field-select">
+            <mat-label>Product</mat-label>
+            <mat-select formControlName="product" required>
+              <mat-option *ngFor="let product of products" [value]="product.id">
+                {{ product.name }} ({{ product.grade_spec }})
+              </mat-option>
+            </mat-select>
+            <mat-hint>Manage products using the buttons →</mat-hint>
+          </mat-form-field>
+          
+          <div class="field-actions">
+            <button mat-icon-button type="button" color="primary" 
+                    (click)="addProduct()" 
+                    matTooltip="Add New Product">
+              <mat-icon>add</mat-icon>
+            </button>
+            <button mat-icon-button type="button" color="accent" 
+                    (click)="editProduct()" 
+                    [disabled]="!quotationForm.get('product')?.value"
+                    matTooltip="Edit Selected Product">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button type="button" color="warn" 
+                    (click)="deleteProduct()" 
+                    [disabled]="!quotationForm.get('product')?.value"
+                    matTooltip="Delete Selected Product">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
 
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Product Price (₹/kg)</mat-label>
@@ -99,6 +151,33 @@ import { ApiService } from '../services/api.service';
       padding: 20px 24px;
       min-width: 600px;
     }
+
+    .field-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .field-select {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .field-actions {
+      display: flex;
+      gap: 4px;
+      padding-top: 8px;
+    }
+
+    .field-actions button {
+      width: 36px;
+      height: 36px;
+    }
+
+    .field-actions mat-icon {
+      font-size: 20px;
+    }
   `]
 })
 export class QuotationFormComponent implements OnInit {
@@ -110,7 +189,8 @@ export class QuotationFormComponent implements OnInit {
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<QuotationFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private dialog: MatDialog
   ) {
     this.quotationForm = this.fb.group({
       vendor: ['', Validators.required],
@@ -175,6 +255,100 @@ export class QuotationFormComponent implements OnInit {
       next: (data) => this.products = data.results || data,
       error: (err: any) => console.error('Error loading products:', err)
     });
+  }
+
+  addVendor() {
+    const dialogRef = this.dialog.open(VendorFormComponent, {
+      width: '600px',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadVendors();
+      }
+    });
+  }
+
+  editVendor() {
+    const vendorId = this.quotationForm.get('vendor')?.value;
+    if (!vendorId) return;
+
+    const selectedVendor = this.vendors.find(v => v.id === vendorId);
+    if (!selectedVendor) return;
+
+    const dialogRef = this.dialog.open(VendorFormComponent, {
+      width: '600px',
+      data: selectedVendor
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadVendors();
+      }
+    });
+  }
+
+  deleteVendor() {
+    const vendorId = this.quotationForm.get('vendor')?.value;
+    if (!vendorId) return;
+
+    if (confirm('Are you sure you want to delete this vendor?')) {
+      this.apiService.deleteVendor(vendorId).subscribe({
+        next: () => {
+          this.quotationForm.patchValue({ vendor: '' });
+          this.loadVendors();
+        },
+        error: (err: any) => console.error('Error deleting vendor:', err)
+      });
+    }
+  }
+
+  addProduct() {
+    const dialogRef = this.dialog.open(ProductFormComponent, {
+      width: '600px',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadProducts();
+      }
+    });
+  }
+
+  editProduct() {
+    const productId = this.quotationForm.get('product')?.value;
+    if (!productId) return;
+
+    const selectedProduct = this.products.find(p => p.id === productId);
+    if (!selectedProduct) return;
+
+    const dialogRef = this.dialog.open(ProductFormComponent, {
+      width: '600px',
+      data: selectedProduct
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadProducts();
+      }
+    });
+  }
+
+  deleteProduct() {
+    const productId = this.quotationForm.get('product')?.value;
+    if (!productId) return;
+
+    if (confirm('Are you sure you want to delete this product?')) {
+      this.apiService.deleteProduct(productId).subscribe({
+        next: () => {
+          this.quotationForm.patchValue({ product: '' });
+          this.loadProducts();
+        },
+        error: (err: any) => console.error('Error deleting product:', err)
+      });
+    }
   }
 
   onSubmit() {

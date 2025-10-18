@@ -92,7 +92,7 @@ class Product(models.Model):
     product_group = models.ForeignKey(ProductGroup, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
     product_category = models.ForeignKey(ProductCategory, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
     name = models.CharField(max_length=200)
-    category = models.CharField(max_length=100)
+    category = models.CharField(max_length=100, null=True, blank=True)
     grade_spec = models.CharField(max_length=200)
     unit_type = models.CharField(max_length=50)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)

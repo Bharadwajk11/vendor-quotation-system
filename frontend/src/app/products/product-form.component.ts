@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ApiService } from '../services/api.service';
 import { ProductGroupFormComponent } from '../product-groups/product-group-form.component';
+import { ProductCategoryFormComponent } from '../product-categories/product-category-form.component';
 
 @Component({
   selector: 'app-product-form',
@@ -62,19 +63,42 @@ import { ProductGroupFormComponent } from '../product-groups/product-group-form.
           </div>
         </div>
 
+        <div class="product-group-container">
+          <mat-form-field appearance="outline" class="product-group-field">
+            <mat-label>Product Category (Optional)</mat-label>
+            <mat-select formControlName="product_category">
+              <mat-option [value]="null">None</mat-option>
+              <mat-option *ngFor="let category of productCategories" [value]="category.id">
+                {{ category.name }}
+              </mat-option>
+            </mat-select>
+            <mat-hint>Manage categories using the buttons →</mat-hint>
+          </mat-form-field>
+          
+          <div class="group-actions">
+            <button mat-icon-button type="button" color="primary" 
+                    (click)="addProductCategory()" 
+                    matTooltip="Add New Category">
+              <mat-icon>add</mat-icon>
+            </button>
+            <button mat-icon-button type="button" color="accent" 
+                    (click)="editProductCategory()" 
+                    [disabled]="!productForm.get('product_category')?.value"
+                    matTooltip="Edit Selected Category">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button type="button" color="warn" 
+                    (click)="deleteProductCategory()" 
+                    [disabled]="!productForm.get('product_category')?.value"
+                    matTooltip="Delete Selected Category">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Product Name</mat-label>
           <input matInput formControlName="name" required>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Category</mat-label>
-          <mat-select formControlName="category" required>
-            <mat-option value="Raw Material">Raw Material</mat-option>
-            <mat-option value="Component">Component</mat-option>
-            <mat-option value="Finished Goods">Finished Goods</mat-option>
-            <mat-option value="Packaging">Packaging</mat-option>
-          </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
@@ -149,6 +173,7 @@ import { ProductGroupFormComponent } from '../product-groups/product-group-form.
 export class ProductFormComponent implements OnInit {
   productForm: FormGroup;
   productGroups: any[] = [];
+  productCategories: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -159,8 +184,9 @@ export class ProductFormComponent implements OnInit {
   ) {
     this.productForm = this.fb.group({
       product_group: [''],
+      product_category: [''],
       name: ['', Validators.required],
-      category: ['', Validators.required],
+      category: [''],
       grade_spec: [''],
       unit_type: ['', Validators.required],
       unit_price: ['', [Validators.required, Validators.min(0)]]
@@ -169,6 +195,7 @@ export class ProductFormComponent implements OnInit {
 
   ngOnInit() {
     this.loadProductGroups();
+    this.loadProductCategories();
     
     if (this.data) {
       this.productForm.patchValue(this.data);
@@ -179,6 +206,13 @@ export class ProductFormComponent implements OnInit {
     this.apiService.getProductGroups().subscribe({
       next: (data) => this.productGroups = data.results || data,
       error: (err: any) => console.error('Error loading product groups:', err)
+    });
+  }
+
+  loadProductCategories() {
+    this.apiService.getProductCategories().subscribe({
+      next: (data) => this.productCategories = data.results || data,
+      error: (err: any) => console.error('Error loading product categories:', err)
     });
   }
 
@@ -225,6 +259,53 @@ export class ProductFormComponent implements OnInit {
           this.loadProductGroups();
         },
         error: (err: any) => console.error('Error deleting product group:', err)
+      });
+    }
+  }
+
+  addProductCategory() {
+    const dialogRef = this.dialog.open(ProductCategoryFormComponent, {
+      width: '500px',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadProductCategories();
+      }
+    });
+  }
+
+  editProductCategory() {
+    const categoryId = this.productForm.get('product_category')?.value;
+    if (!categoryId) return;
+
+    const selectedCategory = this.productCategories.find(c => c.id === categoryId);
+    if (!selectedCategory) return;
+
+    const dialogRef = this.dialog.open(ProductCategoryFormComponent, {
+      width: '500px',
+      data: selectedCategory
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadProductCategories();
+      }
+    });
+  }
+
+  deleteProductCategory() {
+    const categoryId = this.productForm.get('product_category')?.value;
+    if (!categoryId) return;
+
+    if (confirm('Are you sure you want to delete this product category? Products in this category will not be deleted.')) {
+      this.apiService.deleteProductCategory(categoryId).subscribe({
+        next: () => {
+          this.productForm.patchValue({ product_category: null });
+          this.loadProductCategories();
+        },
+        error: (err: any) => console.error('Error deleting product category:', err)
       });
     }
   }
