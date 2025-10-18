@@ -149,7 +149,8 @@ import { ProductFormComponent } from '../products/product-form.component';
 
     mat-dialog-content {
       padding: 20px 24px;
-      min-width: 600px;
+      min-width: 300px;
+      max-width: 600px;
     }
 
     .field-container {
@@ -177,6 +178,63 @@ import { ProductFormComponent } from '../products/product-form.component';
 
     .field-actions mat-icon {
       font-size: 20px;
+    }
+
+    @media (max-width: 599px) {
+      mat-dialog-content {
+        padding: 16px;
+        min-width: 100%;
+        max-width: 100%;
+      }
+
+      .full-width {
+        margin-bottom: 12px;
+      }
+
+      .field-container {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .field-select {
+        width: 100%;
+      }
+
+      .field-actions {
+        width: 100%;
+        justify-content: flex-end;
+        padding-top: 0;
+      }
+
+      .field-actions button {
+        width: 44px;
+        height: 44px;
+      }
+
+      ::ng-deep .mat-mdc-dialog-container {
+        max-width: 95vw !important;
+        margin: 8px;
+      }
+
+      ::ng-deep .mat-mdc-form-field {
+        font-size: 14px;
+      }
+
+      ::ng-deep h2.mat-mdc-dialog-title {
+        font-size: 18px;
+        margin-bottom: 12px;
+      }
+
+      ::ng-deep mat-dialog-actions {
+        padding: 12px 16px;
+        flex-direction: column-reverse;
+        gap: 8px;
+      }
+
+      ::ng-deep mat-dialog-actions button {
+        width: 100%;
+        margin: 0 !important;
+      }
     }
   `]
 })

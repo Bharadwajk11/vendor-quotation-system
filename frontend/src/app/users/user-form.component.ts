@@ -105,23 +105,52 @@ import { ApiService } from '../services/api.service';
     </mat-dialog-actions>
   `,
   styles: [`
-    mat-dialog-content {
-      min-width: 500px;
-      padding: 20px;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 16px;
+    .full-width {
+      width: 100%;
       margin-bottom: 16px;
     }
 
-    .form-row mat-form-field {
-      flex: 1;
+    mat-dialog-content {
+      padding: 20px 24px;
+      min-width: 300px;
+      max-width: 500px;
     }
 
-    mat-checkbox {
-      margin-top: 10px;
+    @media (max-width: 599px) {
+      mat-dialog-content {
+        padding: 16px;
+        min-width: 100%;
+        max-width: 100%;
+      }
+
+      .full-width {
+        margin-bottom: 12px;
+      }
+
+      ::ng-deep .mat-mdc-dialog-container {
+        max-width: 95vw !important;
+        margin: 8px;
+      }
+
+      ::ng-deep .mat-mdc-form-field {
+        font-size: 14px;
+      }
+
+      ::ng-deep h2.mat-mdc-dialog-title {
+        font-size: 18px;
+        margin-bottom: 12px;
+      }
+
+      ::ng-deep mat-dialog-actions {
+        padding: 12px 16px;
+        flex-direction: column-reverse;
+        gap: 8px;
+      }
+
+      ::ng-deep mat-dialog-actions button {
+        width: 100%;
+        margin: 0 !important;
+      }
     }
   `]
 })
@@ -138,7 +167,7 @@ export class UserFormComponent implements OnInit {
     is_active: true,
     password: ''
   };
-  
+
   companies: any[] = [];
 
   constructor(
