@@ -27,9 +27,7 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
     MatTooltipModule
   ],
   template: `
-    <div class="dialog-header">
-      <h2 mat-dialog-title>{{ data?.id ? 'Edit' : 'Add' }} Product</h2>
-    </div>
+    <h2 mat-dialog-title>{{ data?.id ? 'Edit' : 'Add' }} Product</h2>
     <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
       <mat-dialog-content>
         <div class="product-group-container">
@@ -134,13 +132,6 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
     </form>
   `,
   styles: [`
-    .dialog-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0;
-    }
-
     .full-width {
       width: 100%;
       margin-bottom: 16px;
@@ -184,11 +175,6 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
     }
 
     @media (max-width: 600px) {
-      .dialog-header {
-        padding: 12px;
-        padding-bottom: 0;
-      }
-
       mat-dialog-content {
         min-width: unset;
         padding: 12px !important;
