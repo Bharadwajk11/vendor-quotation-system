@@ -37,15 +37,8 @@ import { QuotationFormComponent } from './quotation-form.component.js';
         <p class="page-subtitle">Manage vendor quotations and pricing</p>
       </div>
 
-      <div class="action-buttons">
-        <button mat-raised-button color="primary" (click)="openDialog()">
-          <mat-icon>add</mat-icon>
-          Add Quotation
-        </button>
-      </div>
-
       <mat-card class="filters-card">
-        <div class="search-container">
+        <div class="search-and-action">
           <mat-form-field appearance="outline" class="search-field">
             <mat-label>Search</mat-label>
             <input matInput [(ngModel)]="searchText" (input)="applySearch()" 
@@ -55,6 +48,11 @@ import { QuotationFormComponent } from './quotation-form.component.js';
               <mat-icon>clear</mat-icon>
             </button>
           </mat-form-field>
+
+          <button mat-raised-button color="primary" (click)="openDialog()" class="add-button">
+            <mat-icon>add</mat-icon>
+            Add Quotation
+          </button>
         </div>
 
         <div class="filters-container">
@@ -66,6 +64,9 @@ import { QuotationFormComponent } from './quotation-form.component.js';
                 {{ vendor.name }}
               </mat-option>
             </mat-select>
+            <button mat-icon-button matSuffix *ngIf="selectedVendor !== null" (click)="clearVendorFilter($event)">
+              <mat-icon>clear</mat-icon>
+            </button>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="filter-field">
@@ -76,6 +77,9 @@ import { QuotationFormComponent } from './quotation-form.component.js';
                 {{ product.name }}
               </mat-option>
             </mat-select>
+            <button mat-icon-button matSuffix *ngIf="selectedProduct !== null" (click)="clearProductFilter($event)">
+              <mat-icon>clear</mat-icon>
+            </button>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="filter-field">
@@ -86,12 +90,10 @@ import { QuotationFormComponent } from './quotation-form.component.js';
                 {{ group.name }}
               </mat-option>
             </mat-select>
+            <button mat-icon-button matSuffix *ngIf="selectedProductGroup !== null" (click)="clearProductGroupFilter($event)">
+              <mat-icon>clear</mat-icon>
+            </button>
           </mat-form-field>
-
-          <button mat-stroked-button color="primary" (click)="clearFilters()" class="clear-filters-btn">
-            <mat-icon>clear</mat-icon>
-            Clear Filters
-          </button>
         </div>
       </mat-card>
 
@@ -180,28 +182,36 @@ import { QuotationFormComponent } from './quotation-form.component.js';
       padding: 16px;
     }
 
-    .search-container {
+    .search-and-action {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
       margin-bottom: 16px;
     }
 
     .search-field {
-      width: 100%;
+      flex: 1;
+    }
+
+    .add-button {
+      margin-top: 4px;
+      white-space: nowrap;
     }
 
     .filters-container {
       display: flex;
       gap: 16px;
-      align-items: center;
+      align-items: flex-start;
       flex-wrap: wrap;
     }
 
     .filter-field {
-      min-width: 200px;
+      min-width: 250px;
       flex: 1;
     }
 
-    .clear-filters-btn {
-      margin-top: 8px;
+    .filter-field button[matsuffix] {
+      margin-right: 8px;
     }
   `]
 })
@@ -309,9 +319,20 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
     this.applyFilters();
   }
 
-  clearFilters() {
+  clearVendorFilter(event: Event) {
+    event.stopPropagation();
     this.selectedVendor = null;
+    this.applyFilters();
+  }
+
+  clearProductFilter(event: Event) {
+    event.stopPropagation();
     this.selectedProduct = null;
+    this.applyFilters();
+  }
+
+  clearProductGroupFilter(event: Event) {
+    event.stopPropagation();
     this.selectedProductGroup = null;
     this.applyFilters();
   }
