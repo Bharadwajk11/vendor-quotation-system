@@ -66,33 +66,7 @@ import { ApiService } from '../services/api.service';
 
     mat-dialog-content {
       padding: 20px 24px;
-      min-width: 300px;
-      max-width: 500px;
-    }
-
-    @media (max-width: 599px) {
-      mat-dialog-content {
-        padding: 16px;
-        min-width: 100%;
-        max-width: 100%;
-      }
-
-      .full-width {
-        margin-bottom: 12px;
-      }
-
-      ::ng-deep .mat-mdc-dialog-container {
-        max-width: 95vw !important;
-        margin: 8px;
-      }
-
-      ::ng-deep .mat-mdc-form-field {
-        font-size: 14px;
-      }
-
-      ::ng-deep .mat-mdc-text-field-wrapper {
-        padding: 0;
-      }
+      min-width: 500px;
     }
   `]
 })

@@ -139,8 +139,7 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
 
     mat-dialog-content {
       padding: 20px 24px;
-      min-width: 300px;
-      max-width: 500px;
+      min-width: 500px;
     }
 
     .product-group-container {
@@ -168,52 +167,6 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
 
     .group-actions mat-icon {
       font-size: 20px;
-    }
-
-    @media (max-width: 599px) {
-      mat-dialog-content {
-        padding: 16px;
-        min-width: 100%;
-        max-width: 100%;
-      }
-
-      .full-width {
-        margin-bottom: 12px;
-      }
-
-      .product-group-container {
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .product-group-field {
-        width: 100%;
-      }
-
-      .group-actions {
-        width: 100%;
-        justify-content: flex-end;
-        padding-top: 0;
-      }
-
-      .group-actions button {
-        width: 44px;
-        height: 44px;
-      }
-
-      ::ng-deep .mat-mdc-dialog-container {
-        max-width: 95vw !important;
-        margin: 8px;
-      }
-
-      ::ng-deep .mat-mdc-form-field {
-        font-size: 14px;
-      }
-
-      ::ng-deep h2.mat-mdc-dialog-title {
-        font-size: 18px;
-        margin-bottom: 12px;
-      }
     }
   `]
 })
