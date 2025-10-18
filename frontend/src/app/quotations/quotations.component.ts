@@ -101,61 +101,61 @@ import { QuotationFormComponent } from './quotation-form.component.js';
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>ID</th>
-            <td mat-cell *matCellDef="let quote">{{ quote.id }}</td>
+            <td mat-cell *matCellDef="let quote" data-label="ID">{{ quote.id }}</td>
           </ng-container>
 
           <ng-container matColumnDef="vendor">
             <th mat-header-cell *matHeaderCellDef>Vendor</th>
-            <td mat-cell *matCellDef="let quote">
+            <td mat-cell *matCellDef="let quote" data-label="Vendor">
               <strong>{{ quote.vendor_name }}</strong>
             </td>
           </ng-container>
 
           <ng-container matColumnDef="product">
             <th mat-header-cell *matHeaderCellDef>Product</th>
-            <td mat-cell *matCellDef="let quote">{{ quote.product_name }}</td>
+            <td mat-cell *matCellDef="let quote" data-label="Product">{{ quote.product_name }}</td>
           </ng-container>
 
           <ng-container matColumnDef="product_group">
             <th mat-header-cell *matHeaderCellDef>Product Group</th>
-            <td mat-cell *matCellDef="let quote">{{ quote.product_group_name || '-' }}</td>
+            <td mat-cell *matCellDef="let quote" data-label="Group">{{ quote.product_group_name || '-' }}</td>
           </ng-container>
 
           <ng-container matColumnDef="product_price">
             <th mat-header-cell *matHeaderCellDef>Product Price</th>
-            <td mat-cell *matCellDef="let quote">₹{{ quote.product_price }}</td>
+            <td mat-cell *matCellDef="let quote" data-label="Price">₹{{ quote.product_price }}</td>
           </ng-container>
 
           <ng-container matColumnDef="quantity">
             <th mat-header-cell *matHeaderCellDef>Quantity (kg)</th>
-            <td mat-cell *matCellDef="let quote">{{ quote.quantity || '-' }}</td>
+            <td mat-cell *matCellDef="let quote" data-label="Qty (kg)">{{ quote.quantity || '-' }}</td>
           </ng-container>
 
           <ng-container matColumnDef="delivery_price">
             <th mat-header-cell *matHeaderCellDef>Delivery Charges</th>
-            <td mat-cell *matCellDef="let quote">₹{{ quote.delivery_price }}</td>
+            <td mat-cell *matCellDef="let quote" data-label="Delivery">₹{{ quote.delivery_price }}</td>
           </ng-container>
 
           <ng-container matColumnDef="total_landing_price">
             <th mat-header-cell *matHeaderCellDef>Total Landing Price (₹)</th>
-            <td mat-cell *matCellDef="let quote">
+            <td mat-cell *matCellDef="let quote" data-label="Total">
               <strong>{{ calculateTotalLandingPrice(quote) }}</strong>
             </td>
           </ng-container>
 
           <ng-container matColumnDef="landing_price">
             <th mat-header-cell *matHeaderCellDef>Landing Price (₹/kg)</th>
-            <td mat-cell *matCellDef="let quote">₹{{ quote.kilo_price }}</td>
+            <td mat-cell *matCellDef="let quote" data-label="Landing/kg">₹{{ quote.kilo_price }}</td>
           </ng-container>
 
           <ng-container matColumnDef="lead_time">
             <th mat-header-cell *matHeaderCellDef>Lead Time</th>
-            <td mat-cell *matCellDef="let quote">{{ quote.lead_time_days }} days</td>
+            <td mat-cell *matCellDef="let quote" data-label="Lead Time">{{ quote.lead_time_days }} days</td>
           </ng-container>
 
           <ng-container matColumnDef="grade_spec">
             <th mat-header-cell *matHeaderCellDef>Grade</th>
-            <td mat-cell *matCellDef="let quote">{{ quote.grade_spec }}</td>
+            <td mat-cell *matCellDef="let quote" data-label="Grade">{{ quote.grade_spec }}</td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
@@ -218,6 +218,20 @@ import { QuotationFormComponent } from './quotation-form.component.js';
     .compact-filter {
       min-width: 180px;
       flex: 0 1 auto;
+    }
+
+    @media (max-width: 599px) {
+      .compact-filters {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .compact-search,
+      .compact-filter {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+      }
     }
 
     .compact-search, .compact-filter {
