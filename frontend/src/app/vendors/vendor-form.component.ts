@@ -66,7 +66,39 @@ import { ApiService } from '../services/api.service';
 
     mat-dialog-content {
       padding: 20px 24px;
-      min-width: 500px;
+      min-width: 400px;
+    }
+
+    mat-dialog-actions {
+      padding: 12px 24px;
+      gap: 8px;
+    }
+
+    @media (max-width: 600px) {
+      mat-dialog-content {
+        min-width: unset;
+        padding: 16px;
+      }
+
+      mat-dialog-actions {
+        padding: 12px 16px;
+        flex-direction: column-reverse;
+        align-items: stretch;
+      }
+
+      mat-dialog-actions button {
+        width: 100%;
+        margin: 4px 0 !important;
+      }
+
+      .full-width {
+        margin-bottom: 12px;
+      }
+
+      h2 {
+        font-size: 18px;
+        padding: 12px 16px;
+      }
     }
   `]
 })
