@@ -1,13 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/api.service';
-import { ProductFormComponent } from './product-form.component.js';
+import { ProductFormComponent } from './product-form.component';
 
 @Component({
   selector: 'app-products',
@@ -19,7 +23,11 @@ import { ProductFormComponent } from './product-form.component.js';
     MatIconModule,
     MatCardModule,
     MatDialogModule,
-    MatChipsModule
+    MatFormFieldModule,
+    MatInputModule,
+    MatChipsModule,
+    MatPaginatorModule,
+    FormsModule
   ],
   template: `
     <div class="page-container">
@@ -36,7 +44,13 @@ import { ProductFormComponent } from './product-form.component.js';
       </div>
 
       <mat-card>
-        <table mat-table [dataSource]="products" class="mat-elevation-z0">
+        <mat-form-field appearance="fill">
+          <mat-label>Search Products</mat-label>
+          <input matInput [(ngModel)]="searchText" (input)="applySearch()">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>ID</th>
             <td mat-cell *matCellDef="let product">{{ product.id }}</td>
@@ -96,13 +110,22 @@ import { ProductFormComponent } from './product-form.component.js';
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
+
+        <mat-paginator [pageSizeOptions]="[10, 25, 50]" 
+                       [pageSize]="10"
+                       showFirstLastButtons>
+        </mat-paginator>
       </mat-card>
     </div>
   `
 })
-export class ProductsComponent implements OnInit {
-  products: any[] = [];
+export class ProductsComponent implements OnInit, AfterViewInit {
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+  allProducts: any[] = [];
   displayedColumns: string[] = ['id', 'name', 'product_group', 'product_category', 'grade_spec', 'unit_price', 'actions'];
+  searchText: string = '';
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private apiService: ApiService,
@@ -113,9 +136,19 @@ export class ProductsComponent implements OnInit {
     this.loadProducts();
   }
 
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  }
+
   loadProducts() {
     this.apiService.getProducts().subscribe({
-      next: (data) => this.products = data.results || data,
+      next: (data) => {
+        this.allProducts = data.results || data;
+        this.dataSource.data = this.allProducts;
+        if (this.paginator) {
+          this.paginator.firstPage();
+        }
+      },
       error: (err: any) => console.error('Error loading products:', err)
     });
   }
@@ -139,6 +172,27 @@ export class ProductsComponent implements OnInit {
         next: () => this.loadProducts(),
         error: (err: any) => console.error('Error deleting product:', err)
       });
+    }
+  }
+
+  applySearch() {
+    let filteredData = [...this.allProducts];
+
+    if (this.searchText && this.searchText.trim() !== '') {
+      const searchTerm = this.searchText.toLowerCase().trim();
+      filteredData = filteredData.filter(product => {
+        return (
+          product.name?.toLowerCase().includes(searchTerm) ||
+          product.product_group_name?.toLowerCase().includes(searchTerm) ||
+          product.product_category_name?.toLowerCase().includes(searchTerm) ||
+          product.grade_spec?.toLowerCase().includes(searchTerm)
+        );
+      });
+    }
+
+    this.dataSource.data = filteredData;
+    if (this.paginator) {
+      this.paginator.firstPage();
     }
   }
 }

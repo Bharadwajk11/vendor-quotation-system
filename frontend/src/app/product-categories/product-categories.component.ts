@@ -1,3 +1,4 @@
+
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -10,10 +11,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/api.service';
-import { CompanyFormComponent } from './company-form.component';
+import { ProductCategoryFormComponent } from './product-category-form.component';
 
 @Component({
-  selector: 'app-companies',
+  selector: 'app-product-categories',
   standalone: true,
   imports: [
     CommonModule,
@@ -30,17 +31,17 @@ import { CompanyFormComponent } from './company-form.component';
   template: `
     <div class="page-container">
       <div class="page-header">
-        <h1 class="page-title">Company Management</h1>
+        <h1 class="page-title">Product Categories</h1>
         <button mat-raised-button color="primary" (click)="openDialog()" class="add-button">
           <mat-icon>add</mat-icon>
-          Add Company
+          Add Product Category
         </button>
       </div>
 
       <mat-card class="filters-card">
         <mat-form-field appearance="outline" class="search-field">
           <mat-icon matPrefix>search</mat-icon>
-          <input matInput [(ngModel)]="searchText" (input)="applySearch()" placeholder="Search companies...">
+          <input matInput [(ngModel)]="searchText" (input)="applySearch()" placeholder="Search product categories...">
           <button mat-icon-button matSuffix *ngIf="searchText" (click)="clearSearch()">
             <mat-icon>close</mat-icon>
           </button>
@@ -49,38 +50,28 @@ import { CompanyFormComponent } from './company-form.component';
 
       <mat-card>
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
-          <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef>ID</th>
-            <td mat-cell *matCellDef="let company">{{ company.id }}</td>
-          </ng-container>
-
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Company Name</th>
-            <td mat-cell *matCellDef="let company">{{ company.name }}</td>
+            <th mat-header-cell *matHeaderCellDef>Category Name</th>
+            <td mat-cell *matCellDef="let category"><strong>{{ category.name }}</strong></td>
           </ng-container>
 
-          <ng-container matColumnDef="industry_type">
-            <th mat-header-cell *matHeaderCellDef>Industry</th>
-            <td mat-cell *matCellDef="let company">{{ company.industry_type }}</td>
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Description</th>
+            <td mat-cell *matCellDef="let category">{{ category.description || '-' }}</td>
           </ng-container>
 
-          <ng-container matColumnDef="contact_email">
-            <th mat-header-cell *matHeaderCellDef>Email</th>
-            <td mat-cell *matCellDef="let company">{{ company.contact_email }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="address">
-            <th mat-header-cell *matHeaderCellDef>Address</th>
-            <td mat-cell *matCellDef="let company">{{ company.address }}</td>
+          <ng-container matColumnDef="product_count">
+            <th mat-header-cell *matHeaderCellDef>Products</th>
+            <td mat-cell *matCellDef="let category">{{ category.product_count || 0 }}</td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let company">
-              <button mat-icon-button color="primary" (click)="openDialog(company)">
+            <td mat-cell *matCellDef="let category">
+              <button mat-icon-button color="primary" (click)="openDialog(category)">
                 <mat-icon>edit</mat-icon>
               </button>
-              <button mat-icon-button color="warn" (click)="deleteCompany(company.id)">
+              <button mat-icon-button color="warn" (click)="deleteProductCategory(category.id)">
                 <mat-icon>delete</mat-icon>
               </button>
             </td>
@@ -90,7 +81,7 @@ import { CompanyFormComponent } from './company-form.component';
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
 
-        <mat-paginator [pageSizeOptions]="[5, 10, 25]" 
+        <mat-paginator [pageSizeOptions]="[10, 25, 50]" 
                        [pageSize]="10"
                        showFirstLastButtons>
         </mat-paginator>
@@ -109,10 +100,10 @@ import { CompanyFormComponent } from './company-form.component';
     }
   `]
 })
-export class CompaniesComponent implements OnInit, AfterViewInit {
+export class ProductCategoriesComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-  allCompanies: any[] = [];
-  displayedColumns: string[] = ['id', 'name', 'industry_type', 'contact_email', 'address', 'actions'];
+  allProductCategories: any[] = [];
+  displayedColumns: string[] = ['name', 'description', 'product_count', 'actions'];
   searchText: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -123,34 +114,32 @@ export class CompaniesComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.loadCompanies();
+    this.loadProductCategories();
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
   }
 
-  loadCompanies() {
-    this.apiService.getCompanies().subscribe({
+  loadProductCategories() {
+    this.apiService.getProductCategories().subscribe({
       next: (data) => {
-        this.allCompanies = data.results || data;
+        this.allProductCategories = data.results || data;
         this.applySearch();
       },
-      error: (err: any) => console.error('Error loading companies:', err)
+      error: (err: any) => console.error('Error loading product categories:', err)
     });
   }
 
   applySearch() {
-    let filteredData = [...this.allCompanies];
+    let filteredData = [...this.allProductCategories];
 
     if (this.searchText && this.searchText.trim() !== '') {
       const searchTerm = this.searchText.toLowerCase().trim();
-      filteredData = filteredData.filter(company => {
+      filteredData = filteredData.filter(category => {
         return (
-          company.name?.toLowerCase().includes(searchTerm) ||
-          company.industry_type?.toLowerCase().includes(searchTerm) ||
-          company.address?.toLowerCase().includes(searchTerm) ||
-          company.contact_email?.toLowerCase().includes(searchTerm)
+          category.name?.toLowerCase().includes(searchTerm) ||
+          category.description?.toLowerCase().includes(searchTerm)
         );
       });
     }
@@ -166,24 +155,24 @@ export class CompaniesComponent implements OnInit, AfterViewInit {
     this.applySearch();
   }
 
-  openDialog(company?: any) {
-    const dialogRef = this.dialog.open(CompanyFormComponent, {
-      width: '600px',
-      data: company
+  openDialog(productCategory?: any) {
+    const dialogRef = this.dialog.open(ProductCategoryFormComponent, {
+      width: '500px',
+      data: productCategory
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadCompanies();
+        this.loadProductCategories();
       }
     });
   }
 
-  deleteCompany(id: number) {
-    if (confirm('Are you sure you want to delete this company?')) {
-      this.apiService.deleteCompany(id).subscribe({
-        next: () => this.loadCompanies(),
-        error: (err) => console.error('Error deleting company:', err)
+  deleteProductCategory(id: number) {
+    if (confirm('Are you sure you want to delete this product category?')) {
+      this.apiService.deleteProductCategory(id).subscribe({
+        next: () => this.loadProductCategories(),
+        error: (err: any) => console.error('Error deleting product category:', err)
       });
     }
   }

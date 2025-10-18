@@ -1,12 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/api.service';
 import { UserFormComponent } from './user-form.component';
 
@@ -21,12 +24,14 @@ import { UserFormComponent } from './user-form.component';
     MatCardModule,
     MatDialogModule,
     MatChipsModule,
-    MatTooltipModule
+    MatPaginatorModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule
   ],
   template: `
     <div class="users-container">
-      <mat-card>
-        <mat-card-header>
+      <mat-card-header>
           <mat-card-title>
             <h2>User Management</h2>
           </mat-card-title>
@@ -34,9 +39,21 @@ import { UserFormComponent } from './user-form.component';
             <mat-icon>add</mat-icon> Add User
           </button>
         </mat-card-header>
+
+      <mat-card class="filters-card">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-icon matPrefix>search</mat-icon>
+          <input matInput [(ngModel)]="searchText" (input)="applySearch()" placeholder="Search users...">
+          <button mat-icon-button matSuffix *ngIf="searchText" (click)="clearSearch()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </mat-card>
+
+      <mat-card>
         <mat-card-content>
-          <table mat-table [dataSource]="userProfiles" class="mat-elevation-z2">
-            
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
+
             <ng-container matColumnDef="username">
               <th mat-header-cell *matHeaderCellDef>Username</th>
               <td mat-cell *matCellDef="let user">{{ user.username }}</td>
@@ -100,6 +117,11 @@ import { UserFormComponent } from './user-form.component';
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
+
+          <mat-paginator [pageSizeOptions]="[10, 25, 50]" 
+                         [pageSize]="10"
+                         showFirstLastButtons>
+          </mat-paginator>
         </mat-card-content>
       </mat-card>
     </div>
@@ -120,6 +142,16 @@ import { UserFormComponent } from './user-form.component';
       margin: 0;
       font-size: 24px;
       font-weight: 500;
+    }
+
+    .filters-card {
+      margin-bottom: 20px;
+      padding: 16px;
+    }
+
+    .search-field {
+      width: 100%;
+      max-width: 500px;
     }
 
     table {
@@ -157,9 +189,13 @@ import { UserFormComponent } from './user-form.component';
     }
   `]
 })
-export class UsersComponent implements OnInit {
-  userProfiles: any[] = [];
+export class UsersComponent implements OnInit, AfterViewInit {
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+  allUsers: any[] = [];
   displayedColumns: string[] = ['username', 'full_name', 'email', 'role', 'department', 'phone', 'company', 'status', 'actions'];
+  searchText: string = '';
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private apiService: ApiService,
@@ -170,10 +206,47 @@ export class UsersComponent implements OnInit {
     this.loadUsers();
   }
 
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  }
+
   loadUsers() {
-    this.apiService.getUserProfiles().subscribe((data: any) => {
-      this.userProfiles = data.results || data;
+    this.apiService.getUserProfiles().subscribe({
+      next: (data) => {
+        this.allUsers = data.results || data;
+        this.applySearch();
+      },
+      error: (err: any) => console.error('Error loading users:', err)
     });
+  }
+
+  applySearch() {
+    let filteredData = [...this.allUsers];
+
+    if (this.searchText && this.searchText.trim() !== '') {
+      const searchTerm = this.searchText.toLowerCase().trim();
+      filteredData = filteredData.filter(user => {
+        return (
+          user.username?.toLowerCase().includes(searchTerm) ||
+          user.full_name?.toLowerCase().includes(searchTerm) ||
+          user.email?.toLowerCase().includes(searchTerm) ||
+          user.role?.toLowerCase().includes(searchTerm) ||
+          user.department?.toLowerCase().includes(searchTerm) ||
+          user.phone?.toLowerCase().includes(searchTerm) ||
+          user.company_name?.toLowerCase().includes(searchTerm)
+        );
+      });
+    }
+
+    this.dataSource.data = filteredData;
+    if (this.paginator) {
+      this.paginator.firstPage();
+    }
+  }
+
+  clearSearch() {
+    this.searchText = '';
+    this.applySearch();
   }
 
   getRoleClass(role: string): string {
