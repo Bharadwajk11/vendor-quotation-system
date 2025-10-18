@@ -53,14 +53,10 @@ import { ApiService } from '../../services/api.service';
               <input matInput type="number" [(ngModel)]="orderQty" placeholder="Enter quantity" />
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Delivery Location (State)</mat-label>
-              <input matInput [(ngModel)]="deliveryLocation" placeholder="e.g., Andhra Pradesh" />
-              <mat-hint
-                >Enter your delivery state. Local vendors (same state) have lower shipping
-                costs.</mat-hint
-              >
-            </mat-form-field>
+            <div class="info-box" *ngIf="company">
+              <mat-icon>location_on</mat-icon>
+              <span><strong>Delivery Location:</strong> {{ company.state || 'Not set - Please update company profile' }}</span>
+            </div>
           </div>
 
           <button
@@ -202,6 +198,22 @@ import { ApiService } from '../../services/api.service';
 
       .full-width {
         width: 100%;
+      }
+
+      .info-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px;
+        background-color: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #1565c0;
+      }
+
+      .info-box mat-icon {
+        color: #2196f3;
       }
 
       .compare-btn {
@@ -355,6 +367,7 @@ export class CompareComponent implements OnInit {
   selectedProductId: string = '';
   orderQty: number = 100;
   deliveryLocation: string = '';
+  company: any = null;
   comparisonResults: any = null;
   errorMessage: string = '';
   displayedColumns: string[] = [
@@ -377,6 +390,17 @@ export class CompareComponent implements OnInit {
       next: (data) => (this.products = data.results || data),
       error: (err: any) => console.error('Error loading products:', err),
     });
+    
+    this.apiService.getCompanies().subscribe({
+      next: (data) => {
+        const companies = data.results || data;
+        if (companies && companies.length > 0) {
+          this.company = companies[0];
+          this.deliveryLocation = this.company.state || '';
+        }
+      },
+      error: (err: any) => console.error('Error loading company:', err),
+    });
   }
 
   onProductChange() {
@@ -396,11 +420,16 @@ export class CompareComponent implements OnInit {
       return;
     }
 
+    if (!this.company || !this.company.id) {
+      this.errorMessage = 'Company information not available. Please refresh the page.';
+      return;
+    }
+
     const requestData = {
       product_id: parseInt(this.selectedProductId),
       order_qty: this.orderQty,
       delivery_location: this.deliveryLocation,
-      company_id: 1,
+      company_id: this.company.id,
     };
 
     this.apiService.compareVendors(requestData).subscribe({

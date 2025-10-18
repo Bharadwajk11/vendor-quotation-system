@@ -47,6 +47,12 @@ import { ApiService } from '../services/api.service';
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
+          <mat-label>State</mat-label>
+          <input matInput formControlName="state" placeholder="e.g., Maharashtra, Tamil Nadu">
+          <mat-hint>State is used to calculate interstate shipping charges</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
           <mat-label>Contact Email</mat-label>
           <input matInput formControlName="contact_email" type="email">
         </mat-form-field>
@@ -85,6 +91,7 @@ export class CompanyFormComponent implements OnInit {
       name: ['', Validators.required],
       industry_type: ['', Validators.required],
       address: [''],
+      state: [''],
       contact_email: ['', [Validators.email]]
     });
   }
