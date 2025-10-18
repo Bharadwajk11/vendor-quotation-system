@@ -1,3 +1,4 @@
+
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -36,8 +37,8 @@ import { ProductFormComponent } from '../products/product-form.component';
           <!-- Vendor Selection Section -->
           <div class="form-section">
             <label class="section-label">Select Vendor</label>
-            <div class="input-with-actions">
-              <mat-form-field appearance="outline" class="flex-input">
+            <div class="input-with-icons">
+              <mat-form-field appearance="outline" class="compact-field">
                 <mat-select formControlName="vendor" required placeholder="Choose vendor">
                   <mat-option *ngFor="let vendor of vendors" [value]="vendor.id">
                     {{ vendor.name }} - {{ vendor.city }}
@@ -45,25 +46,25 @@ import { ProductFormComponent } from '../products/product-form.component';
                 </mat-select>
               </mat-form-field>
               
-              <div class="action-buttons">
-                <button mat-raised-button color="primary" type="button" 
+              <div class="inline-icons">
+                <button mat-icon-button color="primary" type="button" 
                         (click)="addVendor()" 
-                        matTooltip="Add Vendor"
-                        class="action-btn">
+                        matTooltip="Add"
+                        class="icon-btn">
                   <mat-icon>add</mat-icon>
                 </button>
-                <button mat-raised-button color="accent" type="button" 
+                <button mat-icon-button color="accent" type="button" 
                         (click)="editVendor()" 
                         [disabled]="!quotationForm.get('vendor')?.value"
-                        matTooltip="Edit Vendor"
-                        class="action-btn">
+                        matTooltip="Edit"
+                        class="icon-btn">
                   <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-raised-button color="warn" type="button" 
+                <button mat-icon-button color="warn" type="button" 
                         (click)="deleteVendor()" 
                         [disabled]="!quotationForm.get('vendor')?.value"
-                        matTooltip="Delete Vendor"
-                        class="action-btn">
+                        matTooltip="Delete"
+                        class="icon-btn">
                   <mat-icon>delete</mat-icon>
                 </button>
               </div>
@@ -73,8 +74,8 @@ import { ProductFormComponent } from '../products/product-form.component';
           <!-- Product Selection Section -->
           <div class="form-section">
             <label class="section-label">Select Product</label>
-            <div class="input-with-actions">
-              <mat-form-field appearance="outline" class="flex-input">
+            <div class="input-with-icons">
+              <mat-form-field appearance="outline" class="compact-field">
                 <mat-select formControlName="product" required placeholder="Choose product">
                   <mat-option *ngFor="let product of products" [value]="product.id">
                     {{ product.name }} ({{ product.grade_spec }})
@@ -82,25 +83,25 @@ import { ProductFormComponent } from '../products/product-form.component';
                 </mat-select>
               </mat-form-field>
               
-              <div class="action-buttons">
-                <button mat-raised-button color="primary" type="button" 
+              <div class="inline-icons">
+                <button mat-icon-button color="primary" type="button" 
                         (click)="addProduct()" 
-                        matTooltip="Add Product"
-                        class="action-btn">
+                        matTooltip="Add"
+                        class="icon-btn">
                   <mat-icon>add</mat-icon>
                 </button>
-                <button mat-raised-button color="accent" type="button" 
+                <button mat-icon-button color="accent" type="button" 
                         (click)="editProduct()" 
                         [disabled]="!quotationForm.get('product')?.value"
-                        matTooltip="Edit Product"
-                        class="action-btn">
+                        matTooltip="Edit"
+                        class="icon-btn">
                   <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-raised-button color="warn" type="button" 
+                <button mat-icon-button color="warn" type="button" 
                         (click)="deleteProduct()" 
                         [disabled]="!quotationForm.get('product')?.value"
-                        matTooltip="Delete Product"
-                        class="action-btn">
+                        matTooltip="Delete"
+                        class="icon-btn">
                   <mat-icon>delete</mat-icon>
                 </button>
               </div>
@@ -113,17 +114,17 @@ import { ProductFormComponent } from '../products/product-form.component';
           <div class="form-section">
             <label class="section-label">Pricing Details</label>
             
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field appearance="outline" class="compact-field full-width">
               <mat-label>Product Price (₹/kg)</mat-label>
               <input matInput formControlName="product_price" type="number" step="0.01" required (input)="calculateLandingPrice()" placeholder="Enter price per kg">
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field appearance="outline" class="compact-field full-width">
               <mat-label>Quantity (kg)</mat-label>
               <input matInput formControlName="quantity" type="number" step="1" required (input)="calculateLandingPrice()" placeholder="Enter quantity">
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field appearance="outline" class="compact-field full-width">
               <mat-label>Delivery Charges (₹)</mat-label>
               <input matInput formControlName="delivery_price" type="number" step="0.01" required (input)="calculateLandingPrice()" placeholder="Enter delivery cost">
             </mat-form-field>
@@ -154,12 +155,12 @@ import { ProductFormComponent } from '../products/product-form.component';
           <div class="form-section">
             <label class="section-label">Additional Information</label>
             
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field appearance="outline" class="compact-field full-width">
               <mat-label>Lead Time (days)</mat-label>
               <input matInput formControlName="lead_time_days" type="number" required placeholder="Number of days">
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field appearance="outline" class="compact-field full-width">
               <mat-label>Grade/Specification</mat-label>
               <input matInput formControlName="grade_spec" placeholder="Enter grade or spec (optional)">
             </mat-form-field>
@@ -169,7 +170,7 @@ import { ProductFormComponent } from '../products/product-form.component';
         <!-- Action Buttons -->
         <div class="form-actions">
           <button mat-raised-button color="primary" type="submit" [disabled]="!quotationForm.valid" class="submit-btn">
-            {{ data?.id ? 'Update Quotation' : 'Create Quotation' }}
+            {{ data?.id ? 'Update' : 'Create' }}
           </button>
           <button mat-stroked-button type="button" (click)="dialogRef.close()" class="cancel-btn">
             Cancel
@@ -187,11 +188,11 @@ import { ProductFormComponent } from '../products/product-form.component';
     }
 
     .form-title {
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 600;
       color: #1a1a1a;
       margin: 0;
-      padding: 20px 24px;
+      padding: 16px 20px;
       border-bottom: 1px solid #e5e7eb;
       background: #f9fafb;
     }
@@ -199,84 +200,77 @@ import { ProductFormComponent } from '../products/product-form.component';
     .form-content {
       flex: 1;
       overflow-y: auto;
-      padding: 24px;
+      padding: 16px 20px;
     }
 
     .form-section {
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
 
     .section-label {
       display: block;
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 600;
       color: #6b7280;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
-    .input-with-actions {
+    .input-with-icons {
       display: flex;
-      align-items: flex-start;
-      gap: 8px;
+      align-items: center;
+      gap: 6px;
     }
 
-    .flex-input {
+    .compact-field {
       flex: 1;
       margin-bottom: 0;
     }
 
-    .action-buttons {
+    .inline-icons {
       display: flex;
-      gap: 8px;
-      padding-top: 4px;
+      gap: 2px;
+      flex-shrink: 0;
     }
 
-    .action-buttons button {
-      width: 40px;
-      height: 40px;
-      min-height: 40px;
-      min-width: 40px;
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      padding: 0;
     }
 
-    .action-buttons mat-icon {
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
-      margin: 0;
-    }
-
-    .action-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 !important;
+    .icon-btn mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      line-height: 18px;
     }
 
     .full-width {
       width: 100%;
-      margin-bottom: 16px;
+      margin-bottom: 10px;
     }
 
     .divider {
       height: 1px;
       background: #e5e7eb;
-      margin: 24px 0;
+      margin: 16px 0;
     }
 
     .calculated-section {
       background: #f0f9ff;
-      padding: 16px;
+      padding: 12px;
       border-radius: 8px;
       border: 1px solid #bfdbfe;
     }
 
     .calculated-field {
       background: #ffffff;
-      padding: 12px 16px;
+      padding: 10px 12px;
       border-radius: 6px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       border: 1px solid #e0e7ff;
     }
 
@@ -285,7 +279,7 @@ import { ProductFormComponent } from '../products/product-form.component';
     }
 
     .calc-label {
-      font-size: 12px;
+      font-size: 11px;
       color: #6b7280;
       font-weight: 500;
       display: block;
@@ -293,167 +287,227 @@ import { ProductFormComponent } from '../products/product-form.component';
     }
 
     .calc-value {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
       color: #1e40af;
       margin-bottom: 4px;
     }
 
     .calc-formula {
-      font-size: 11px;
+      font-size: 10px;
       color: #9ca3af;
       font-style: italic;
     }
 
     .form-actions {
-      padding: 16px 24px;
+      padding: 12px 20px;
       border-top: 1px solid #e5e7eb;
       background: #f9fafb;
       display: flex;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .submit-btn {
+    .submit-btn,
+    .cancel-btn {
       flex: 1;
-      height: 48px;
-      font-size: 16px;
+      height: 42px;
+      font-size: 14px;
       font-weight: 600;
       border-radius: 8px;
     }
 
-    .cancel-btn {
-      flex: 1;
-      height: 48px;
-      font-size: 16px;
-      font-weight: 500;
-      border-radius: 8px;
+    /* Compact Material Form Fields */
+    ::ng-deep .compact-field .mat-mdc-text-field-wrapper {
+      padding-bottom: 0;
     }
 
-    mat-form-field {
-      font-size: 15px;
-    }
-
-    ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    ::ng-deep .compact-field .mat-mdc-form-field-subscript-wrapper {
       display: none;
     }
 
-    ::ng-deep .mat-mdc-text-field-wrapper {
-      background: #ffffff;
+    ::ng-deep .compact-field .mat-mdc-form-field-infix {
+      min-height: 36px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+    ::ng-deep .compact-field input,
+    ::ng-deep .compact-field .mat-mdc-select {
+      font-size: 13px;
+    }
+
+    ::ng-deep .compact-field .mat-mdc-floating-label {
+      font-size: 12px;
     }
 
     /* Mobile Responsive Styles */
     @media (max-width: 600px) {
       .form-title {
-        font-size: 20px;
-        padding: 16px;
+        font-size: 18px;
+        padding: 14px 16px;
       }
 
       .form-content {
-        padding: 16px;
+        padding: 14px 16px;
       }
 
       .form-section {
-        margin-bottom: 24px;
-      }
-
-      .section-label {
-        font-size: 11px;
-        margin-bottom: 12px;
-      }
-
-      .input-with-actions {
-        flex-direction: column;
-        gap: 10px;
-      }
-
-      .flex-input {
-        width: 100%;
-      }
-
-      .action-buttons {
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-        padding-top: 0;
-      }
-
-      .action-buttons button {
-        width: 100%;
-        height: 44px;
-        min-height: 44px;
-        border-radius: 8px;
-      }
-
-      .action-buttons button mat-icon {
-        font-size: 20px;
-        width: 20px;
-        height: 20px;
-      }
-
-      .full-width {
         margin-bottom: 14px;
       }
 
+      .section-label {
+        font-size: 10px;
+        margin-bottom: 6px;
+      }
+
+      .input-with-icons {
+        gap: 4px;
+      }
+
+      .inline-icons {
+        gap: 1px;
+      }
+
+      .icon-btn {
+        width: 28px;
+        height: 28px;
+        line-height: 28px;
+      }
+
+      .icon-btn mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+      }
+
+      .full-width {
+        margin-bottom: 8px;
+      }
+
       .divider {
-        margin: 20px 0;
+        margin: 12px 0;
       }
 
       .calculated-section {
-        padding: 14px;
+        padding: 10px;
       }
 
       .calculated-field {
-        padding: 12px 14px;
+        padding: 8px 10px;
+        margin-bottom: 8px;
+      }
+
+      .calc-label {
+        font-size: 10px;
       }
 
       .calc-value {
-        font-size: 18px;
+        font-size: 16px;
+      }
+
+      .calc-formula {
+        font-size: 9px;
       }
 
       .form-actions {
-        flex-direction: column-reverse;
-        padding: 16px;
-        gap: 10px;
+        padding: 10px 16px;
+        gap: 8px;
       }
 
       .submit-btn,
       .cancel-btn {
-        width: 100%;
-        height: 50px;
-        font-size: 16px;
+        height: 38px;
+        font-size: 13px;
       }
 
-      mat-form-field {
-        font-size: 16px;
+      /* Even more compact form fields on mobile */
+      ::ng-deep .compact-field .mat-mdc-form-field-infix {
+        min-height: 32px;
+        padding-top: 6px;
+        padding-bottom: 6px;
       }
 
-      input {
-        font-size: 16px !important;
+      ::ng-deep .compact-field input,
+      ::ng-deep .compact-field .mat-mdc-select {
+        font-size: 12px;
+      }
+
+      ::ng-deep .compact-field .mat-mdc-floating-label {
+        font-size: 11px;
+      }
+
+      ::ng-deep .compact-field .mat-mdc-select-value {
+        font-size: 12px;
       }
     }
 
     /* Tablet Portrait */
     @media (min-width: 601px) and (max-width: 900px) {
       .form-title {
-        font-size: 22px;
-        padding: 18px 20px;
+        font-size: 19px;
+        padding: 15px 18px;
       }
 
       .form-content {
-        padding: 20px;
+        padding: 15px 18px;
       }
 
-      .action-buttons button {
-        width: 44px;
-        height: 44px;
-        min-height: 44px;
+      .icon-btn {
+        width: 30px;
+        height: 30px;
       }
 
-      .action-buttons mat-icon {
+      .icon-btn mat-icon {
+        font-size: 17px;
+        width: 17px;
+        height: 17px;
+      }
+
+      ::ng-deep .compact-field .mat-mdc-form-field-infix {
+        min-height: 34px;
+        padding-top: 7px;
+        padding-bottom: 7px;
+      }
+
+      ::ng-deep .compact-field input,
+      ::ng-deep .compact-field .mat-mdc-select {
+        font-size: 12.5px;
+      }
+    }
+
+    /* Desktop */
+    @media (min-width: 901px) {
+      .form-title {
         font-size: 22px;
-        width: 22px;
-        height: 22px;
+        padding: 18px 24px;
+      }
+
+      .form-content {
+        padding: 20px 24px;
+      }
+
+      .form-section {
+        margin-bottom: 20px;
+      }
+
+      .section-label {
+        font-size: 12px;
+        margin-bottom: 10px;
+      }
+
+      .divider {
+        margin: 20px 0;
+      }
+
+      .form-actions {
+        padding: 14px 24px;
+      }
+
+      .submit-btn,
+      .cancel-btn {
+        height: 44px;
+        font-size: 15px;
       }
     }
   `]
