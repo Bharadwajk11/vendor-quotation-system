@@ -177,76 +177,58 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
     @media (max-width: 600px) {
       mat-dialog-content {
         min-width: unset;
-        padding: 16px 12px;
-        max-height: 70vh;
-        overflow-y: auto;
+        padding: 20px 16px;
       }
 
       mat-dialog-actions {
-        padding: 12px;
+        padding: 16px;
         flex-direction: column-reverse;
         align-items: stretch;
-        gap: 10px;
-        position: sticky;
-        bottom: 0;
-        background: white;
-        border-top: 1px solid #e0e0e0;
-        margin: 0 -12px -12px -12px;
+        gap: 12px;
       }
 
       mat-dialog-actions button {
         width: 100%;
         margin: 0 !important;
-        height: 48px;
+        height: 44px;
         font-size: 16px;
-        border-radius: 8px;
       }
 
       .full-width {
-        margin-bottom: 14px;
+        margin-bottom: 16px;
       }
 
       h2 {
-        font-size: 18px;
-        padding: 12px;
-        margin: 0 -12px 12px -12px;
-        border-bottom: 1px solid #e0e0e0;
-        background: #fafafa;
+        font-size: 20px;
+        padding: 16px;
+        margin: 0;
       }
 
       .product-group-container {
-        flex-direction: column;
-        gap: 10px;
-        margin-bottom: 18px;
-        padding: 12px;
-        background: #f9f9f9;
-        border-radius: 8px;
-        border: 1px solid #e8e8e8;
+        flex-wrap: wrap;
+        gap: 0;
+        margin-bottom: 20px;
       }
 
       .product-group-field {
         width: 100%;
-        margin-bottom: 0;
       }
 
       .group-actions {
         width: 100%;
-        justify-content: space-evenly;
-        padding-top: 4px;
-        gap: 8px;
-        border-top: 1px dashed #ddd;
-        padding-top: 10px;
+        justify-content: center;
+        padding-top: 8px;
+        gap: 12px;
       }
 
       .group-actions button {
-        width: 44px;
-        height: 44px;
+        width: 48px;
+        height: 48px;
         flex-shrink: 0;
-        border-radius: 8px;
       }
 
       .group-actions mat-icon {
-        font-size: 22px;
+        font-size: 24px;
       }
 
       /* Hide helper text on mobile for cleaner look */
@@ -259,23 +241,8 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
         font-size: 16px;
       }
 
-      ::ng-deep mat-form-field .mat-mdc-text-field-wrapper {
-        background-color: white;
-      }
-
-      ::ng-deep mat-form-field .mat-mdc-form-field-infix {
-        padding-top: 12px;
-        padding-bottom: 12px;
-        min-height: 48px;
-      }
-
-      input, select {
+      input {
         font-size: 16px !important;
-        padding: 4px 0 !important;
-      }
-
-      ::ng-deep .mat-mdc-select-trigger {
-        min-height: 48px;
       }
     }
   `]
