@@ -69,18 +69,33 @@ body {
 
 .filters-card {
   margin-bottom: 16px;
-  padding: 12px 16px;
+  padding: 16px;
   background: white;
   border-radius: 8px;
 }
 
 .search-field {
   width: 100%;
-  max-width: 500px;
+  max-width: 350px;
 }
 
 .search-field mat-icon {
   color: #78909c;
+  font-size: 20px;
+}
+
+.search-field ::ng-deep .mat-mdc-text-field-wrapper {
+  padding-bottom: 0;
+}
+
+.search-field ::ng-deep .mat-mdc-form-field-infix {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  min-height: 44px;
+}
+
+.search-field ::ng-deep input {
+  font-size: 14px;
 }
 
 .stats-grid {
