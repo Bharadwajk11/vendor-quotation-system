@@ -118,8 +118,9 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Unit Price (₹)</mat-label>
-          <input matInput formControlName="unit_price" type="number" step="0.01" required>
+          <mat-label>Unit Price (₹) - Optional</mat-label>
+          <input matInput formControlName="unit_price" type="number" step="0.01">
+          <mat-hint>Reference price only, not used in quotations</mat-hint>
         </mat-form-field>
       </mat-dialog-content>
 
@@ -320,7 +321,7 @@ export class ProductFormComponent implements OnInit {
       category: [''],
       grade_spec: [''],
       unit_type: ['', Validators.required],
-      unit_price: ['', [Validators.required, Validators.min(0)]]
+      unit_price: ['', [Validators.min(0)]]
     });
   }
 
