@@ -133,19 +133,18 @@ import { ProductFormComponent } from '../products/product-form.component';
           <div class="divider"></div>
 
           <!-- Calculated Results Section -->
-          <div class="form-section calculated-section">
+          <div class="form-section">
             <label class="section-label">Calculated Costs</label>
             
-            <div class="calc-row">
-              <div class="calc-item">
-                <span class="calc-label">Total Landing Price</span>
-                <span class="calc-value">₹{{ quotationForm.get('total_landing_price')?.value || '0.00' }}</span>
-              </div>
-              <div class="calc-item">
-                <span class="calc-label">Per kg</span>
-                <span class="calc-value">₹{{ quotationForm.get('landing_price')?.value || '0.00' }}/kg</span>
-              </div>
-            </div>
+            <mat-form-field appearance="outline" class="compact-field full-width">
+              <mat-label>Total Landing Price (₹)</mat-label>
+              <input matInput [value]="quotationForm.get('total_landing_price')?.value || '0.00'" readonly>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="compact-field full-width">
+              <mat-label>Landing Price per kg (₹/kg)</mat-label>
+              <input matInput [value]="quotationForm.get('landing_price')?.value || '0.00'" readonly>
+            </mat-form-field>
           </div>
 
           <div class="divider"></div>
@@ -258,43 +257,7 @@ import { ProductFormComponent } from '../products/product-form.component';
       margin: 16px 0;
     }
 
-    .calculated-section {
-      background: #f0f9ff;
-      padding: 10px 12px;
-      border-radius: 6px;
-      border: 1px solid #bfdbfe;
-    }
-
-    .calc-row {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .calc-item {
-      flex: 1;
-      background: #ffffff;
-      padding: 8px 10px;
-      border-radius: 4px;
-      border: 1px solid #e0e7ff;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .calc-label {
-      font-size: 10px;
-      color: #6b7280;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-
-    .calc-value {
-      font-size: 15px;
-      font-weight: 700;
-      color: #1e40af;
-    }
+    
 
     .form-actions {
       padding: 12px 20px;
@@ -335,6 +298,14 @@ import { ProductFormComponent } from '../products/product-form.component';
 
     ::ng-deep .compact-field .mat-mdc-floating-label {
       font-size: 12px;
+    }
+
+    ::ng-deep .compact-field input::placeholder {
+      text-align: left;
+    }
+
+    ::ng-deep .compact-field .mat-mdc-select-placeholder {
+      text-align: left;
     }
 
     /* Mobile Responsive Styles */
@@ -386,26 +357,7 @@ import { ProductFormComponent } from '../products/product-form.component';
         margin: 12px 0;
       }
 
-      .calculated-section {
-        padding: 8px 10px;
-      }
-
-      .calc-row {
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .calc-item {
-        padding: 6px 8px;
-      }
-
-      .calc-label {
-        font-size: 9px;
-      }
-
-      .calc-value {
-        font-size: 14px;
-      }
+      
 
       .form-actions {
         padding: 10px 16px;
