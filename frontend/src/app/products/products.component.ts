@@ -180,8 +180,12 @@ import { ProductFormComponent } from './product-form.component';
     }
 
     .page-subtitle {
-      font-size: 16px;
+      font-size: 13px;
       color: #666;
+    }
+
+    mat-card {
+      padding: 16px;
     }
 
     .add-button {
@@ -285,7 +289,11 @@ import { ProductFormComponent } from './product-form.component';
       }
 
       .page-subtitle {
-        font-size: 14px;
+        font-size: 13px;
+      }
+
+      mat-card {
+        padding: 12px;
       }
 
       .add-button {
