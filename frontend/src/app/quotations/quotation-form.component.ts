@@ -34,8 +34,9 @@ import { ProductFormComponent } from '../products/product-form.component';
       <form [formGroup]="quotationForm" (ngSubmit)="onSubmit()">
         <div class="form-content">
           
-          <!-- Vendor Selection -->
+          <!-- Vendor Selection Section -->
           <div class="form-section">
+            <label class="section-label">Select Vendor</label>
             <div class="input-with-icons">
               <mat-form-field appearance="outline" class="compact-field">
                 <mat-select formControlName="vendor" required placeholder="Choose vendor">
@@ -70,8 +71,9 @@ import { ProductFormComponent } from '../products/product-form.component';
             </div>
           </div>
 
-          <!-- Product Selection -->
+          <!-- Product Selection Section -->
           <div class="form-section">
+            <label class="section-label">Select Product</label>
             <div class="input-with-icons">
               <mat-form-field appearance="outline" class="compact-field">
                 <mat-select formControlName="product" required placeholder="Choose product">
@@ -106,8 +108,12 @@ import { ProductFormComponent } from '../products/product-form.component';
             </div>
           </div>
 
-          <!-- Pricing Fields -->
+          <div class="divider"></div>
+
+          <!-- Pricing Section -->
           <div class="form-section">
+            <label class="section-label">Pricing Details</label>
+            
             <mat-form-field appearance="outline" class="compact-field full-width">
               <mat-label>Product Price (₹/kg)</mat-label>
               <input matInput formControlName="product_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
@@ -124,8 +130,12 @@ import { ProductFormComponent } from '../products/product-form.component';
             </mat-form-field>
           </div>
 
-          <!-- Calculated Results -->
+          <div class="divider"></div>
+
+          <!-- Calculated Results Section -->
           <div class="form-section">
+            <label class="section-label">Calculated Costs</label>
+            
             <mat-form-field appearance="outline" class="compact-field full-width">
               <mat-label>Total Landing Price (₹)</mat-label>
               <input matInput [value]="quotationForm.get('total_landing_price')?.value || '0.00'" readonly>
@@ -137,8 +147,12 @@ import { ProductFormComponent } from '../products/product-form.component';
             </mat-form-field>
           </div>
 
-          <!-- Additional Details -->
+          <div class="divider"></div>
+
+          <!-- Additional Details Section -->
           <div class="form-section">
+            <label class="section-label">Additional Information</label>
+            
             <mat-form-field appearance="outline" class="compact-field full-width">
               <mat-label>Lead Time (days)</mat-label>
               <input matInput formControlName="lead_time_days" type="number" required>
@@ -188,7 +202,17 @@ import { ProductFormComponent } from '../products/product-form.component';
     }
 
     .form-section {
-      margin-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .section-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
     }
 
     .input-with-icons {
@@ -225,6 +249,12 @@ import { ProductFormComponent } from '../products/product-form.component';
     .full-width {
       width: 100%;
       margin-bottom: 10px;
+    }
+
+    .divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 16px 0;
     }
 
     
@@ -290,7 +320,12 @@ import { ProductFormComponent } from '../products/product-form.component';
       }
 
       .form-section {
-        margin-bottom: 10px;
+        margin-bottom: 14px;
+      }
+
+      .section-label {
+        font-size: 10px;
+        margin-bottom: 6px;
       }
 
       .input-with-icons {
@@ -316,6 +351,10 @@ import { ProductFormComponent } from '../products/product-form.component';
 
       .full-width {
         margin-bottom: 8px;
+      }
+
+      .divider {
+        margin: 12px 0;
       }
 
       
@@ -398,7 +437,16 @@ import { ProductFormComponent } from '../products/product-form.component';
       }
 
       .form-section {
-        margin-bottom: 16px;
+        margin-bottom: 20px;
+      }
+
+      .section-label {
+        font-size: 12px;
+        margin-bottom: 10px;
+      }
+
+      .divider {
+        margin: 20px 0;
       }
 
       .form-actions {
