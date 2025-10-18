@@ -204,26 +204,21 @@ th {
 
   .page-header {
     flex-direction: column;
-    align-items: stretch;
+    align-items: flex-start;
     gap: 12px;
   }
 
   .page-title {
-    font-size: 22px;
-    font-weight: 600;
+    font-size: 20px;
   }
 
   .page-subtitle {
-    font-size: 13px;
-    margin-top: 2px;
+    font-size: 12px;
   }
 
   .add-button {
     width: 100%;
     justify-content: center;
-    height: 48px;
-    font-size: 15px;
-    font-weight: 600;
   }
 
   .stats-grid {
@@ -333,65 +328,16 @@ th {
   }
 }
 
-/* Table responsiveness - Card layout for mobile */
+/* Table responsiveness */
 @media (max-width: 959px) {
   .mat-mdc-table {
     display: block;
-  }
-
-  .mat-mdc-table thead {
-    display: none;
-  }
-
-  .mat-mdc-table tbody {
-    display: block;
-  }
-
-  .mat-mdc-table tr {
-    display: block;
-    margin-bottom: 16px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background: white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 12px;
-  }
-
-  .mat-mdc-table tr.success-row {
-    border-left: 4px solid #4caf50;
-  }
-
-  .mat-mdc-table td {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 4px !important;
-    border-bottom: 1px solid #f0f0f0;
-    text-align: left !important;
-  }
-
-  .mat-mdc-table td:last-child {
-    border-bottom: none;
-    justify-content: flex-end;
-  }
-
-  .mat-mdc-table td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: #666;
-    font-size: 12px;
-    text-transform: uppercase;
-    margin-right: 8px;
-    flex: 0 0 45%;
-  }
-
-  .mat-mdc-table td:last-child::before {
-    content: '';
-    display: none;
+    overflow-x: auto;
+    white-space: nowrap;
   }
 
   table {
-    width: 100%;
+    min-width: 100%;
   }
 }
 
