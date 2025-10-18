@@ -28,14 +28,13 @@ import { ProductFormComponent } from '../products/product-form.component';
     MatTooltipModule
   ],
   template: `
-    <h2 mat-dialog-title class="dialog-title">{{ data?.id ? 'Edit' : 'Add' }} Quotation</h2>
+    <h2 mat-dialog-title>{{ data?.id ? 'Edit' : 'Add' }} Quotation</h2>
     
-    <mat-dialog-content class="dialog-content">
-      <form [formGroup]="quotationForm" class="quotation-form">
-        
+    <mat-dialog-content>
+      <form [formGroup]="quotationForm">
         <!-- Vendor Selection -->
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="form-field">
+        <div style="display: flex; gap: 8px; align-items: flex-start;">
+          <mat-form-field appearance="outline" style="flex: 1;">
             <mat-label>Vendor</mat-label>
             <mat-select formControlName="vendor" required>
               <mat-option *ngFor="let vendor of vendors" [value]="vendor.id">
@@ -44,24 +43,22 @@ import { ProductFormComponent } from '../products/product-form.component';
             </mat-select>
           </mat-form-field>
           
-          <div class="action-buttons">
-            <button mat-icon-button color="primary" type="button" (click)="addVendor()" matTooltip="Add Vendor" class="icon-btn">
-              <mat-icon>add</mat-icon>
-            </button>
-            <button mat-icon-button color="accent" type="button" (click)="editVendor()" 
-                    [disabled]="!quotationForm.get('vendor')?.value" matTooltip="Edit Vendor" class="icon-btn">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" type="button" (click)="deleteVendor()" 
-                    [disabled]="!quotationForm.get('vendor')?.value" matTooltip="Delete Vendor" class="icon-btn">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
+          <button mat-mini-fab color="primary" type="button" (click)="addVendor()" matTooltip="Add Vendor">
+            <mat-icon>add</mat-icon>
+          </button>
+          <button mat-mini-fab color="accent" type="button" (click)="editVendor()" 
+                  [disabled]="!quotationForm.get('vendor')?.value" matTooltip="Edit Vendor">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-mini-fab color="warn" type="button" (click)="deleteVendor()" 
+                  [disabled]="!quotationForm.get('vendor')?.value" matTooltip="Delete Vendor">
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
 
         <!-- Product Selection -->
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="form-field">
+        <div style="display: flex; gap: 8px; align-items: flex-start;">
+          <mat-form-field appearance="outline" style="flex: 1;">
             <mat-label>Product</mat-label>
             <mat-select formControlName="product" required>
               <mat-option *ngFor="let product of products" [value]="product.id">
@@ -70,305 +67,81 @@ import { ProductFormComponent } from '../products/product-form.component';
             </mat-select>
           </mat-form-field>
           
-          <div class="action-buttons">
-            <button mat-icon-button color="primary" type="button" (click)="addProduct()" matTooltip="Add Product" class="icon-btn">
-              <mat-icon>add</mat-icon>
-            </button>
-            <button mat-icon-button color="accent" type="button" (click)="editProduct()" 
-                    [disabled]="!quotationForm.get('product')?.value" matTooltip="Edit Product" class="icon-btn">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" type="button" (click)="deleteProduct()" 
-                    [disabled]="!quotationForm.get('product')?.value" matTooltip="Delete Product" class="icon-btn">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
+          <button mat-mini-fab color="primary" type="button" (click)="addProduct()" matTooltip="Add Product">
+            <mat-icon>add</mat-icon>
+          </button>
+          <button mat-mini-fab color="accent" type="button" (click)="editProduct()" 
+                  [disabled]="!quotationForm.get('product')?.value" matTooltip="Edit Product">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-mini-fab color="warn" type="button" (click)="deleteProduct()" 
+                  [disabled]="!quotationForm.get('product')?.value" matTooltip="Delete Product">
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
 
-        <!-- Pricing Fields -->
-        <div class="form-grid">
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Product Price (₹/kg)</mat-label>
-            <input matInput formControlName="product_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
-          </mat-form-field>
+        <!-- Pricing Details -->
+        <mat-form-field appearance="outline">
+          <mat-label>Product Price (₹/kg)</mat-label>
+          <input matInput formControlName="product_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
+        </mat-form-field>
 
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Quantity (kg)</mat-label>
-            <input matInput formControlName="quantity" type="number" step="1" required (input)="calculateLandingPrice()">
-          </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Quantity (kg)</mat-label>
+          <input matInput formControlName="quantity" type="number" step="1" required (input)="calculateLandingPrice()">
+        </mat-form-field>
 
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Delivery Charges (₹)</mat-label>
-            <input matInput formControlName="delivery_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Lead Time (days)</mat-label>
-            <input matInput formControlName="lead_time_days" type="number" required>
-          </mat-form-field>
-        </div>
+        <mat-form-field appearance="outline">
+          <mat-label>Delivery Charges (₹)</mat-label>
+          <input matInput formControlName="delivery_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
+        </mat-form-field>
 
         <!-- Calculated Values -->
-        <div class="calculated-section">
-          <div class="calculated-item">
-            <span class="calc-label">Total Landing Price</span>
-            <span class="calc-value">₹{{ quotationForm.get('total_landing_price')?.value || '0.00' }}</span>
-          </div>
-          <div class="calculated-item">
-            <span class="calc-label">Landing Price per kg</span>
-            <span class="calc-value">₹{{ quotationForm.get('landing_price')?.value || '0.00' }}/kg</span>
-          </div>
-        </div>
+        <mat-form-field appearance="outline">
+          <mat-label>Total Landing Price (₹)</mat-label>
+          <input matInput [value]="quotationForm.get('total_landing_price')?.value || '0.00'" readonly>
+          <mat-hint>Product Price × Quantity + Delivery Charges</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Landing Price per kg (₹/kg)</mat-label>
+          <input matInput [value]="quotationForm.get('landing_price')?.value || '0.00'" readonly>
+          <mat-hint>Total Landing Price ÷ Quantity</mat-hint>
+        </mat-form-field>
 
         <!-- Additional Information -->
-        <mat-form-field appearance="outline" class="form-field full-width">
+        <mat-form-field appearance="outline">
+          <mat-label>Lead Time (days)</mat-label>
+          <input matInput formControlName="lead_time_days" type="number" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
           <mat-label>Grade/Specification</mat-label>
           <input matInput formControlName="grade_spec">
         </mat-form-field>
       </form>
     </mat-dialog-content>
 
-    <mat-dialog-actions class="dialog-actions">
-      <button mat-button (click)="dialogRef.close()" class="action-btn cancel-btn">Cancel</button>
-      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!quotationForm.valid" class="action-btn submit-btn">
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="dialogRef.close()">Cancel</button>
+      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!quotationForm.valid">
         {{ data?.id ? 'Update' : 'Create' }}
       </button>
     </mat-dialog-actions>
   `,
   styles: [`
-    .dialog-title {
-      font-size: 18px;
-      font-weight: 500;
-      margin: 0;
-      padding: 16px 20px;
-    }
-
-    .dialog-content {
-      padding: 0 20px 16px;
+    mat-dialog-content {
       min-width: 500px;
     }
 
-    .quotation-form {
+    form {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
     }
 
-    .form-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-    }
-
-    .form-field {
-      flex: 1;
-      font-size: 14px;
-    }
-
-    .form-field ::ng-deep .mat-mdc-form-field-infix {
-      min-height: 48px;
-      padding-top: 12px;
-      padding-bottom: 12px;
-    }
-
-    .form-field ::ng-deep input,
-    .form-field ::ng-deep .mat-mdc-select {
-      font-size: 14px;
-    }
-
-    .form-field ::ng-deep .mat-mdc-floating-label {
-      font-size: 13px;
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 4px;
-      align-items: center;
-      padding-top: 4px;
-    }
-
-    .icon-btn {
-      width: 36px;
-      height: 36px;
-      line-height: 36px;
-    }
-
-    .icon-btn ::ng-deep .mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
-      line-height: 18px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-
-    .full-width {
+    mat-form-field {
       width: 100%;
-    }
-
-    .calculated-section {
-      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-      border-radius: 8px;
-      padding: 12px 16px;
-      margin: 8px 0;
-    }
-
-    .calculated-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 0;
-    }
-
-    .calculated-item + .calculated-item {
-      border-top: 1px solid rgba(0, 0, 0, 0.08);
-      margin-top: 6px;
-      padding-top: 10px;
-    }
-
-    .calc-label {
-      font-size: 12px;
-      color: rgba(0, 0, 0, 0.6);
-      font-weight: 500;
-    }
-
-    .calc-value {
-      font-size: 16px;
-      font-weight: 600;
-      color: #1976d2;
-    }
-
-    .dialog-actions {
-      padding: 12px 20px;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-
-    .action-btn {
-      min-width: 90px;
-      height: 40px;
-      font-size: 14px;
-    }
-
-    /* Mobile Responsive Styles */
-    @media (max-width: 600px) {
-      .dialog-title {
-        font-size: 16px;
-        padding: 12px 16px;
-      }
-
-      .dialog-content {
-        min-width: unset;
-        padding: 0 12px 12px;
-      }
-
-      .quotation-form {
-        gap: 10px;
-      }
-
-      .form-row {
-        flex-direction: column;
-        gap: 6px;
-      }
-
-      .form-field {
-        width: 100%;
-        font-size: 13px;
-      }
-
-      .form-field ::ng-deep .mat-mdc-form-field-infix {
-        min-height: 42px;
-        padding-top: 10px;
-        padding-bottom: 10px;
-      }
-
-      .form-field ::ng-deep input,
-      .form-field ::ng-deep .mat-mdc-select {
-        font-size: 13px;
-      }
-
-      .form-field ::ng-deep .mat-mdc-floating-label {
-        font-size: 12px;
-      }
-
-      .action-buttons {
-        flex-direction: row;
-        justify-content: flex-start;
-        gap: 6px;
-        padding-top: 0;
-        width: 100%;
-      }
-
-      .icon-btn {
-        width: 32px;
-        height: 32px;
-        line-height: 32px;
-      }
-
-      .icon-btn ::ng-deep .mat-icon {
-        font-size: 16px;
-        width: 16px;
-        height: 16px;
-        line-height: 16px;
-      }
-
-      .form-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-
-      .calculated-section {
-        padding: 10px 12px;
-        margin: 6px 0;
-      }
-
-      .calculated-item {
-        padding: 4px 0;
-      }
-
-      .calc-label {
-        font-size: 11px;
-      }
-
-      .calc-value {
-        font-size: 14px;
-      }
-
-      .dialog-actions {
-        flex-direction: column-reverse;
-        padding: 10px 12px;
-        gap: 8px;
-      }
-
-      .action-btn {
-        width: 100%;
-        min-width: unset;
-        height: 44px;
-        font-size: 13px;
-      }
-    }
-
-    @media (max-width: 400px) {
-      .icon-btn {
-        width: 28px;
-        height: 28px;
-        line-height: 28px;
-      }
-
-      .icon-btn ::ng-deep .mat-icon {
-        font-size: 14px;
-        width: 14px;
-        height: 14px;
-        line-height: 14px;
-      }
-
-      .calc-value {
-        font-size: 13px;
-      }
     }
   `]
 })
@@ -449,7 +222,6 @@ export class QuotationFormComponent implements OnInit {
   addVendor() {
     const dialogRef = this.dialog.open(VendorFormComponent, {
       width: '600px',
-      maxWidth: '95vw',
       data: null
     });
 
@@ -468,7 +240,6 @@ export class QuotationFormComponent implements OnInit {
     const vendor = this.vendors.find(v => v.id === vendorId);
     const dialogRef = this.dialog.open(VendorFormComponent, {
       width: '600px',
-      maxWidth: '95vw',
       data: vendor
     });
 
@@ -497,7 +268,6 @@ export class QuotationFormComponent implements OnInit {
   addProduct() {
     const dialogRef = this.dialog.open(ProductFormComponent, {
       width: '600px',
-      maxWidth: '95vw',
       data: null
     });
 
@@ -516,7 +286,6 @@ export class QuotationFormComponent implements OnInit {
     const product = this.products.find(p => p.id === productId);
     const dialogRef = this.dialog.open(ProductFormComponent, {
       width: '600px',
-      maxWidth: '95vw',
       data: product
     });
 
