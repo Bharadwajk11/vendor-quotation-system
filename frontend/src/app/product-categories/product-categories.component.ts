@@ -1,4 +1,3 @@
-
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -42,13 +41,16 @@ import { ProductCategoryFormComponent } from './product-category-form.component'
       </div>
 
       <mat-card class="filters-card">
-        <mat-form-field appearance="outline" class="search-field">
-          <mat-icon matPrefix>search</mat-icon>
-          <input matInput [(ngModel)]="searchText" (input)="applySearch()" placeholder="Search product categories...">
-          <button mat-icon-button matSuffix *ngIf="searchText" (click)="clearSearch()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-form-field>
+        <div class="compact-filters">
+          <mat-form-field appearance="outline" class="compact-search">
+            <mat-icon matPrefix class="search-icon">search</mat-icon>
+            <input matInput [(ngModel)]="searchText" (input)="applySearch()" 
+                   placeholder="Search product categories...">
+            <button mat-icon-button matSuffix *ngIf="searchText" (click)="clearSearch()" class="clear-btn">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
       </mat-card>
 
       <mat-card>
@@ -91,7 +93,56 @@ import { ProductCategoryFormComponent } from './product-category-form.component'
       </mat-card>
     </div>
   `,
-  styles: []
+  styles: [`
+    .filters-card {
+      margin-bottom: 20px;
+      padding: 12px 16px;
+    }
+
+    .compact-filters {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .compact-search {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .compact-search ::ng-deep .mat-mdc-form-field-infix {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      min-height: 40px;
+    }
+
+    .search-icon {
+      color: #666;
+      font-size: 20px;
+      margin-right: 4px;
+    }
+
+    .clear-btn {
+      width: 32px;
+      height: 32px;
+    }
+
+    .clear-btn mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      line-height: 18px;
+    }
+
+    ::ng-deep .compact-search .mat-mdc-text-field-wrapper {
+      padding-bottom: 0;
+    }
+
+    ::ng-deep .compact-search .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+  `]
 })
 export class ProductCategoriesComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);

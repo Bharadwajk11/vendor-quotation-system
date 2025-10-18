@@ -43,13 +43,16 @@ import { ProductFormComponent } from './product-form.component';
       </div>
 
       <mat-card class="filters-card">
-        <mat-form-field appearance="outline" class="search-field">
-          <mat-icon matPrefix>search</mat-icon>
-          <input matInput [(ngModel)]="searchText" (input)="applySearch()" placeholder="Search products...">
-          <button mat-icon-button matSuffix *ngIf="searchText" (click)="clearSearch()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-form-field>
+        <div class="compact-filters">
+          <mat-form-field appearance="outline" class="compact-search">
+            <mat-icon matPrefix class="search-icon">search</mat-icon>
+            <input matInput [(ngModel)]="searchText" (input)="applySearch()" 
+                   placeholder="Search products...">
+            <button mat-icon-button matSuffix *ngIf="searchText" (click)="clearSearch()" class="clear-btn">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
       </mat-card>
 
       <mat-card>
@@ -121,7 +124,118 @@ import { ProductFormComponent } from './product-form.component';
         </mat-paginator>
       </mat-card>
     </div>
-  `
+  `,
+  styles: [`
+    .page-container {
+      padding: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .add-button {
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 8px;
+    }
+
+    .filters-card {
+      margin-bottom: 20px;
+      padding: 12px 16px;
+    }
+
+    .compact-filters {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .compact-search {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .compact-search ::ng-deep .mat-mdc-form-field-infix {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      min-height: 40px;
+    }
+
+    .search-icon {
+      color: #666;
+      font-size: 20px;
+      margin-right: 4px;
+    }
+
+    .clear-btn {
+      width: 32px;
+      height: 32px;
+    }
+
+    .clear-btn mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      line-height: 18px;
+    }
+
+    ::ng-deep .compact-search .mat-mdc-text-field-wrapper {
+      padding-bottom: 0;
+    }
+
+    ::ng-deep .compact-search .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+
+    table {
+      width: 100%;
+    }
+
+    th {
+      background-color: #f9f9f9;
+      font-weight: bold;
+      color: #333;
+    }
+
+    td {
+      color: #555;
+    }
+
+    .mat-chip-set {
+      margin: 0;
+    }
+
+    .mat-chip {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 12px;
+    }
+
+    .no-data {
+      color: #ccc;
+      font-style: italic;
+    }
+  `]
 })
 export class ProductsComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
