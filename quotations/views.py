@@ -4,11 +4,11 @@ from rest_framework.response import Response
 from django.db.models import Q
 from decimal import Decimal
 from django.contrib.auth.models import User
-from .models import Company, Vendor, Product, Quotation, OrderRequest, ComparisonResult, UserProfile, ProductGroup
+from .models import Company, Vendor, Product, Quotation, OrderRequest, ComparisonResult, UserProfile, ProductGroup, ProductCategory
 from .serializers import (
     CompanySerializer, VendorSerializer, ProductSerializer, 
     QuotationSerializer, OrderRequestSerializer, ComparisonResultSerializer,
-    CompareVendorsInputSerializer, UserProfileSerializer, UserWithProfileSerializer, ProductGroupSerializer
+    CompareVendorsInputSerializer, UserProfileSerializer, UserWithProfileSerializer, ProductGroupSerializer, ProductCategorySerializer
 )
 
 
@@ -65,6 +65,23 @@ class ProductGroupViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         # Return all product groups for the default company
         return ProductGroup.objects.filter(company=get_default_company())
+
+
+class ProductCategoryViewSet(viewsets.ModelViewSet):
+    queryset = ProductCategory.objects.all()
+    serializer_class = ProductCategorySerializer
+
+    def perform_create(self, serializer):
+        # Auto-assign default company (force it to prevent override)
+        serializer.save(company=get_default_company())
+
+    def perform_update(self, serializer):
+        # Force default company on update to prevent override
+        serializer.save(company=get_default_company())
+
+    def get_queryset(self):
+        # Return all product categories for the default company
+        return ProductCategory.objects.filter(company=get_default_company())
 
 
 class VendorViewSet(viewsets.ModelViewSet):

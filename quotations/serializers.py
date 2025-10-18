@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Company, Vendor, Product, Quotation, OrderRequest, ComparisonResult, UserProfile, ProductGroup
+from .models import Company, Vendor, Product, Quotation, OrderRequest, ComparisonResult, UserProfile, ProductGroup, ProductCategory
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -22,6 +22,19 @@ class ProductGroupSerializer(serializers.ModelSerializer):
         return obj.products.count()
 
 
+class ProductCategorySerializer(serializers.ModelSerializer):
+    company_name = serializers.CharField(source='company.name', read_only=True)
+    product_count = serializers.SerializerMethodField()
+    company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all(), required=False)
+    
+    class Meta:
+        model = ProductCategory
+        fields = '__all__'
+    
+    def get_product_count(self, obj):
+        return obj.products.count()
+
+
 class VendorSerializer(serializers.ModelSerializer):
     company_name = serializers.CharField(source='company.name', read_only=True)
     company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all(), required=False)
@@ -34,6 +47,7 @@ class VendorSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     company_name = serializers.CharField(source='company.name', read_only=True)
     product_group_name = serializers.CharField(source='product_group.name', read_only=True)
+    product_category_name = serializers.CharField(source='product_category.name', read_only=True)
     company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all(), required=False)
     
     class Meta:

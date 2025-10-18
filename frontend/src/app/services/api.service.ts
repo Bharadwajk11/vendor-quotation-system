@@ -95,6 +95,23 @@ export class ApiService {
     return this.http.delete(`${this.apiUrl}/product-groups/${id}/`);
   }
 
+  getProductCategories(companyId?: number): Observable<any> {
+    const url = companyId ? `${this.apiUrl}/product-categories/?company_id=${companyId}` : `${this.apiUrl}/product-categories/`;
+    return this.http.get(url);
+  }
+
+  createProductCategory(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/product-categories/`, data);
+  }
+
+  updateProductCategory(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/product-categories/${id}/`, data);
+  }
+
+  deleteProductCategory(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/product-categories/${id}/`);
+  }
+
   createQuotation(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/quotations/`, data);
   }
