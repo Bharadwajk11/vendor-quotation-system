@@ -178,40 +178,93 @@ import { ProductFormComponent } from '../products/product-form.component';
       mat-dialog-content {
         min-width: unset;
         width: 100%;
+        padding: 12px 16px;
+      }
+
+      form {
+        gap: 10px;
       }
 
       .input-with-actions {
-        flex-direction: column;
-        gap: 12px;
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
       }
 
       .flex-input {
-        width: 100%;
+        flex: 1;
+        min-width: 0;
       }
 
       .action-buttons {
-        width: 100%;
-        justify-content: center;
-        gap: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
         padding-top: 0;
       }
 
       .action-buttons button {
-        width: 48px;
-        height: 48px;
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+      }
+
+      .action-buttons mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
       }
 
       mat-form-field {
-        font-size: 16px;
+        font-size: 14px;
+      }
+
+      /* Compact Material Form Fields on Mobile */
+      ::ng-deep mat-form-field .mat-mdc-text-field-wrapper {
+        padding-bottom: 0;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-form-field-subscript-wrapper {
+        display: none;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-form-field-infix {
+        min-height: 40px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
+
+      ::ng-deep mat-form-field input,
+      ::ng-deep mat-form-field .mat-mdc-select {
+        font-size: 14px;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-floating-label {
+        font-size: 13px;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-select-value {
+        font-size: 14px;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-form-field-hint {
+        display: none;
       }
 
       mat-dialog-actions {
         flex-direction: column-reverse;
+        padding: 12px 16px;
       }
 
       mat-dialog-actions button {
         width: 100%;
-        height: 48px;
+        height: 44px;
+      }
+
+      h2 {
+        font-size: 18px;
+        margin: 0;
+        padding: 12px 16px;
       }
     }
   `]
