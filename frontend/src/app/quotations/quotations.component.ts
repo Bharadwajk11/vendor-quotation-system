@@ -116,6 +116,11 @@ import { QuotationFormComponent } from './quotation-form.component.js';
             <td mat-cell *matCellDef="let quote">{{ quote.product_name }}</td>
           </ng-container>
 
+          <ng-container matColumnDef="product_group">
+            <th mat-header-cell *matHeaderCellDef>Product Group</th>
+            <td mat-cell *matCellDef="let quote">{{ quote.product_group_name || '-' }}</td>
+          </ng-container>
+
           <ng-container matColumnDef="product_price">
             <th mat-header-cell *matHeaderCellDef>Product Price</th>
             <td mat-cell *matCellDef="let quote">₹{{ quote.product_price }}</td>
@@ -263,7 +268,7 @@ import { QuotationFormComponent } from './quotation-form.component.js';
 export class QuotationsComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   allQuotations: any[] = [];
-  displayedColumns: string[] = ['id', 'vendor', 'product', 'product_price', 'quantity', 'delivery_price', 'total_landing_price', 'landing_price', 'lead_time', 'grade_spec', 'actions'];
+  displayedColumns: string[] = ['id', 'vendor', 'product', 'product_group', 'product_price', 'quantity', 'delivery_price', 'total_landing_price', 'landing_price', 'lead_time', 'grade_spec', 'actions'];
 
   vendors: any[] = [];
   products: any[] = [];

@@ -59,6 +59,7 @@ class QuotationSerializer(serializers.ModelSerializer):
     vendor_name = serializers.CharField(source='vendor.name', read_only=True)
     vendor_city = serializers.CharField(source='vendor.city', read_only=True)
     product_name = serializers.CharField(source='product.name', read_only=True)
+    product_group_name = serializers.CharField(source='product.product_group.name', read_only=True)
     
     class Meta:
         model = Quotation
