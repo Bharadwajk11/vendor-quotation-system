@@ -23,8 +23,13 @@ import { MatButtonModule } from '@angular/material/button';
     <mat-sidenav-container class="sidenav-container">
       <mat-sidenav #sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" class="sidenav">
         <div class="logo-section">
-          <h2>VendorCompare</h2>
-          <p>Enterprise Edition</p>
+          <div class="logo-container">
+            <img src="assets/logo.png" alt="VendorCompare Logo" class="logo-image">
+            <div class="logo-text">
+              <h2>VendorCompare</h2>
+              <p>Enterprise Edition</p>
+            </div>
+          </div>
         </div>
         
         <nav class="nav-menu">
@@ -93,9 +98,28 @@ import { MatButtonModule } from '@angular/material/button';
     }
 
     .logo-section {
-      padding: 24px 16px;
-      background: #1a2327;
+      padding: 20px 16px;
+      background: linear-gradient(135deg, #1a2327 0%, #263238 100%);
       border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-image {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      flex: 1;
+      min-width: 0;
     }
 
     .logo-section h2 {
@@ -103,12 +127,17 @@ import { MatButtonModule } from '@angular/material/button';
       font-size: 20px;
       font-weight: 600;
       color: #fff;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
     }
 
     .logo-section p {
       margin: 4px 0 0 0;
-      font-size: 12px;
+      font-size: 11px;
       color: #90a4ae;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .nav-menu {
@@ -181,8 +210,17 @@ import { MatButtonModule } from '@angular/material/button';
         font-size: 14px;
       }
 
+      .logo-image {
+        width: 42px;
+        height: 42px;
+      }
+
       .logo-section h2 {
         font-size: 18px;
+      }
+
+      .logo-section p {
+        font-size: 10px;
       }
 
       .nav-link {
@@ -202,6 +240,27 @@ import { MatButtonModule } from '@angular/material/button';
     @media (max-width: 599px) {
       .sidenav {
         width: 200px;
+      }
+
+      .logo-section {
+        padding: 16px 12px;
+      }
+
+      .logo-container {
+        gap: 10px;
+      }
+
+      .logo-image {
+        width: 36px;
+        height: 36px;
+      }
+
+      .logo-section h2 {
+        font-size: 16px;
+      }
+
+      .logo-section p {
+        font-size: 9px;
       }
 
       .toolbar-title {
