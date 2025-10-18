@@ -65,27 +65,83 @@ import { ApiService } from '../services/api.service';
       mat-dialog-content {
         min-width: unset;
         min-height: unset;
-        padding: 16px;
-      }
-
-      mat-dialog-actions {
-        padding: 12px 16px;
-        flex-direction: column-reverse;
-        align-items: stretch;
-      }
-
-      mat-dialog-actions button {
-        width: 100%;
-        margin: 4px 0 !important;
-      }
-
-      .full-width {
-        margin-bottom: 12px;
+        padding: 12px !important;
       }
 
       h2 {
-        font-size: 18px;
-        padding: 12px 16px;
+        font-size: 16px !important;
+        padding: 12px !important;
+        margin: 0 !important;
+      }
+
+      form {
+        gap: 10px;
+      }
+
+      mat-form-field {
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-text-field-wrapper {
+        padding-bottom: 0;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-form-field-infix {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        min-height: 36px;
+      }
+
+      ::ng-deep mat-form-field input,
+      ::ng-deep mat-form-field textarea {
+        font-size: 13px !important;
+        padding: 6px 0;
+      }
+
+      ::ng-deep mat-form-field label {
+        font-size: 12px !important;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-form-field-subscript-wrapper {
+        margin-top: 2px;
+      }
+
+      mat-dialog-actions {
+        padding: 10px 12px !important;
+        gap: 8px;
+      }
+
+      mat-dialog-actions button {
+        font-size: 13px;
+        padding: 8px 12px;
+        min-width: 70px;
+        height: 36px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      h2 {
+        font-size: 14px !important;
+      }
+
+      mat-form-field {
+        font-size: 12px;
+      }
+
+      ::ng-deep mat-form-field input,
+      ::ng-deep mat-form-field textarea {
+        font-size: 12px !important;
+      }
+
+      ::ng-deep mat-form-field label {
+        font-size: 11px !important;
+      }
+
+      mat-dialog-actions button {
+        font-size: 12px;
+        padding: 6px 10px;
+        height: 32px;
       }
     }
   `]

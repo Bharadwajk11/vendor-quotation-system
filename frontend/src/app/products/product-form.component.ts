@@ -177,72 +177,126 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
     @media (max-width: 600px) {
       mat-dialog-content {
         min-width: unset;
-        padding: 20px 16px;
-      }
-
-      mat-dialog-actions {
-        padding: 16px;
-        flex-direction: column-reverse;
-        align-items: stretch;
-        gap: 12px;
-      }
-
-      mat-dialog-actions button {
-        width: 100%;
-        margin: 0 !important;
-        height: 44px;
-        font-size: 16px;
-      }
-
-      .full-width {
-        margin-bottom: 16px;
+        padding: 12px !important;
       }
 
       h2 {
-        font-size: 20px;
-        padding: 16px;
-        margin: 0;
+        font-size: 16px !important;
+        padding: 12px !important;
+        margin: 0 !important;
+      }
+
+      form {
+        gap: 10px;
+      }
+
+      mat-form-field {
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-text-field-wrapper {
+        padding-bottom: 0;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-form-field-infix {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        min-height: 36px;
+      }
+
+      ::ng-deep mat-form-field input {
+        font-size: 13px !important;
+        padding: 6px 0;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-select {
+        font-size: 13px !important;
+      }
+
+      ::ng-deep mat-form-field label {
+        font-size: 12px !important;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-form-field-hint {
+        font-size: 11px !important;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-form-field-subscript-wrapper {
+        margin-top: 2px;
       }
 
       .product-group-container {
-        flex-wrap: wrap;
-        gap: 0;
-        margin-bottom: 20px;
-      }
-
-      .product-group-field {
-        width: 100%;
-      }
-
-      .group-actions {
-        width: 100%;
-        justify-content: center;
-        padding-top: 8px;
-        gap: 12px;
+        gap: 8px;
+        margin-bottom: 10px;
       }
 
       .group-actions button {
-        width: 48px;
-        height: 48px;
-        flex-shrink: 0;
+        width: 32px !important;
+        height: 32px !important;
       }
 
-      .group-actions mat-icon {
-        font-size: 24px;
+      .group-actions button mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        line-height: 18px;
       }
 
-      /* Hide helper text on mobile for cleaner look */
+      mat-dialog-actions {
+        padding: 10px 12px !important;
+        gap: 8px;
+      }
+
+      mat-dialog-actions button {
+        font-size: 13px;
+        padding: 8px 12px;
+        min-width: 70px;
+        height: 36px;
+      }
+
       .desktop-only-hint {
         display: none;
       }
+    }
 
-      /* Larger touch targets for inputs */
-      mat-form-field {
-        font-size: 16px;
+    @media (max-width: 400px) {
+      h2 {
+        font-size: 14px !important;
       }
 
-      input {
-        font-size: 16px !important;
+      mat-form-field {
+        font-size: 12px;
+      }
+
+      ::ng-deep mat-form-field input {
+        font-size: 12px !important;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-select {
+        font-size: 12px !important;
+      }
+
+      ::ng-deep mat-form-field label {
+        font-size: 11px !important;
+      }
+
+      .group-actions button {
+        width: 28px !important;
+        height: 28px !important;
+      }
+
+      .group-actions button mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+      }
+
+      mat-dialog-actions button {
+        font-size: 12px;
+        padding: 6px 10px;
+        height: 32px;
       }
     }
   `]
