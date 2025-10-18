@@ -150,6 +150,7 @@ body {
   display: flex;
   gap: 12px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 table {
@@ -193,4 +194,158 @@ th {
   padding: 16px 12px !important;
   text-align: left !important;
   border-bottom: 2px solid #303f9f !important;
+}
+
+/* Responsive Design - Mobile First */
+@media (max-width: 599px) {
+  .page-container {
+    padding: 12px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .page-title {
+    font-size: 20px;
+  }
+
+  .page-subtitle {
+    font-size: 12px;
+  }
+
+  .add-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .search-field {
+    max-width: 100%;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .action-buttons button {
+    width: 100%;
+  }
+
+  .compact-filters {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .compact-search,
+  .compact-filter {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+  }
+
+  .mat-mdc-table {
+    font-size: 12px;
+  }
+
+  .mat-mdc-header-cell,
+  th {
+    font-size: 12px !important;
+    padding: 8px 6px !important;
+  }
+
+  td {
+    padding: 8px 6px !important;
+    font-size: 12px;
+  }
+
+  .card {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  .filters-card {
+    padding: 8px 12px;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 600px) and (max-width: 959px) {
+  .page-container {
+    padding: 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .page-title {
+    font-size: 22px;
+  }
+
+  .compact-filters {
+    flex-wrap: wrap;
+  }
+
+  .compact-search {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+
+  .compact-filter {
+    flex: 1 1 calc(50% - 6px);
+    min-width: calc(50% - 6px);
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 960px) and (max-width: 1279px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .compact-filter {
+    flex: 0 1 200px;
+  }
+}
+
+/* Large desktop */
+@media (min-width: 1280px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .page-container {
+    max-width: 1400px;
+  }
+}
+
+/* Table responsiveness */
+@media (max-width: 959px) {
+  .mat-mdc-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  table {
+    min-width: 100%;
+  }
+}
+
+/* Print styles */
+@media print {
+  .page-header button,
+  .filters-card,
+  .action-buttons {
+    display: none;
+  }
 }

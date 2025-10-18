@@ -21,7 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
   ],
   template: `
     <mat-sidenav-container class="sidenav-container">
-      <mat-sidenav #sidenav mode="side" opened class="sidenav">
+      <mat-sidenav #sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" class="sidenav">
         <div class="logo-section">
           <h2>VendorCompare</h2>
           <p>Enterprise Edition</p>
@@ -171,6 +171,58 @@ import { MatButtonModule } from '@angular/material/button';
       background: #f5f5f5;
       min-height: calc(100vh - 64px);
     }
+
+    @media (max-width: 959px) {
+      .sidenav {
+        width: 220px;
+      }
+
+      .toolbar-title {
+        font-size: 14px;
+      }
+
+      .logo-section h2 {
+        font-size: 18px;
+      }
+
+      .nav-link {
+        padding: 10px 12px;
+      }
+
+      .nav-link mat-icon {
+        margin-right: 12px;
+        font-size: 18px;
+      }
+
+      .nav-link span {
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 599px) {
+      .sidenav {
+        width: 200px;
+      }
+
+      .toolbar-title {
+        display: none;
+      }
+
+      .top-toolbar {
+        padding: 0 8px;
+      }
+    }
   `]
 })
-export class LayoutComponent {}
+export class LayoutComponent {
+  isMobile: boolean = false;
+
+  constructor() {
+    this.checkScreenSize();
+    window.addEventListener('resize', () => this.checkScreenSize());
+  }
+
+  checkScreenSize() {
+    this.isMobile = window.innerWidth < 960;
+  }
+}
