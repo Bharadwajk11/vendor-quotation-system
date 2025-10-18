@@ -9,6 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ApiService } from '../../services/api.service';
 
 @Component({
@@ -25,6 +27,7 @@ import { ApiService } from '../../services/api.service';
     MatIconModule,
     MatTableModule,
     MatChipsModule,
+    MatDividerModule,
   ],
   template: `
     <div class="page-container">
@@ -72,105 +75,197 @@ import { ApiService } from '../../services/api.service';
         </mat-card-content>
       </mat-card>
 
-      <mat-card class="results-card" *ngIf="comparisonResults">
-        <mat-card-header>
-          <mat-card-title
-            >Comparison Results for {{ comparisonResults.product_name }}</mat-card-title
+      <!-- Mobile Card View -->
+      <div class="mobile-cards" *ngIf="comparisonResults && isMobile">
+        <div class="results-header">
+          <h2>{{ comparisonResults.product_name }}</h2>
+          <div class="results-meta">
+            <span><mat-icon class="meta-icon">shopping_cart</mat-icon> {{ comparisonResults.order_qty }} kg</span>
+            <span><mat-icon class="meta-icon">location_on</mat-icon> {{ comparisonResults.delivery_location }}</span>
+          </div>
+        </div>
+
+        <div class="vendor-cards">
+          <mat-card
+            *ngFor="let result of comparisonResults.comparisons; let i = index"
+            class="vendor-card"
+            [class.winner-card]="result.rank === 1"
           >
+            <div class="card-header">
+              <div class="rank-badge" [class.rank-1]="result.rank === 1" [class.rank-2]="result.rank === 2" [class.rank-3]="result.rank === 3">
+                <span class="rank-icon" *ngIf="result.rank === 1">🏆</span>
+                <span class="rank-icon" *ngIf="result.rank === 2">🥈</span>
+                <span class="rank-icon" *ngIf="result.rank === 3">🥉</span>
+                <span class="rank-text">#{{ result.rank }}</span>
+              </div>
+              <div class="vendor-info">
+                <h3>{{ result.vendor_name }}</h3>
+                <p class="vendor-location">
+                  <mat-icon>location_city</mat-icon>
+                  {{ result.vendor_city }}, {{ result.vendor_state }}
+                </p>
+                <mat-chip-set>
+                  <mat-chip [class.interstate-chip]="result.is_interstate" [class.local-chip]="!result.is_interstate">
+                    {{ result.is_interstate ? 'Interstate' : 'Local' }}
+                  </mat-chip>
+                </mat-chip-set>
+              </div>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="card-body">
+              <div class="pricing-highlight">
+                <div class="price-item main-price">
+                  <span class="price-label">Total Landing Price</span>
+                  <span class="price-value">₹{{ result.total_order_cost }}</span>
+                </div>
+                <div class="price-item secondary-price">
+                  <span class="price-label">Per kg</span>
+                  <span class="price-value">₹{{ result.total_cost_per_unit }}/kg</span>
+                </div>
+              </div>
+
+              <div class="details-grid">
+                <div class="detail-item">
+                  <mat-icon class="detail-icon">attach_money</mat-icon>
+                  <div class="detail-content">
+                    <span class="detail-label">Product Price</span>
+                    <span class="detail-value">₹{{ result.product_price }}/kg</span>
+                  </div>
+                </div>
+
+                <div class="detail-item">
+                  <mat-icon class="detail-icon">local_shipping</mat-icon>
+                  <div class="detail-content">
+                    <span class="detail-label">Delivery Charges</span>
+                    <span class="detail-value">₹{{ result.adjusted_delivery_price || result.delivery_price }}</span>
+                    <span class="surcharge-note" *ngIf="result.is_interstate">+20% interstate</span>
+                  </div>
+                </div>
+
+                <div class="detail-item">
+                  <mat-icon class="detail-icon">schedule</mat-icon>
+                  <div class="detail-content">
+                    <span class="detail-label">Lead Time</span>
+                    <mat-chip [class]="getLeadTimeClass(result.lead_time_days)">
+                      {{ result.lead_time_days }} days
+                    </mat-chip>
+                  </div>
+                </div>
+
+                <div class="detail-item">
+                  <mat-icon class="detail-icon">grade</mat-icon>
+                  <div class="detail-content">
+                    <span class="detail-label">Grade</span>
+                    <span class="detail-value">{{ result.grade_spec }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+      </div>
+
+      <!-- Desktop Table View -->
+      <mat-card class="results-card" *ngIf="comparisonResults && !isMobile">
+        <mat-card-header>
+          <mat-card-title>Comparison Results for {{ comparisonResults.product_name }}</mat-card-title>
           <mat-card-subtitle>
-            Order Quantity: {{ comparisonResults.order_qty }} | Delivery Location:
-            {{ comparisonResults.delivery_location }}
+            Order Quantity: {{ comparisonResults.order_qty }} | Delivery Location: {{ comparisonResults.delivery_location }}
           </mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-          <table mat-table [dataSource]="comparisonResults.comparisons" class="mat-elevation-z0">
-            <ng-container matColumnDef="rank">
-              <th mat-header-cell *matHeaderCellDef>Rank</th>
-              <td mat-cell *matCellDef="let result">
-                <strong class="rank-number">{{ result.rank }}</strong>
-                <mat-chip-set *ngIf="result.rank === 1">
-                  <mat-chip class="rank-badge">🏆</mat-chip>
-                </mat-chip-set>
-              </td>
-            </ng-container>
+          <div class="table-container">
+            <table mat-table [dataSource]="comparisonResults.comparisons" class="mat-elevation-z0">
+              <ng-container matColumnDef="rank">
+                <th mat-header-cell *matHeaderCellDef>Rank</th>
+                <td mat-cell *matCellDef="let result">
+                  <strong class="rank-number">{{ result.rank }}</strong>
+                  <mat-chip-set *ngIf="result.rank === 1">
+                    <mat-chip class="rank-badge">🏆</mat-chip>
+                  </mat-chip-set>
+                </td>
+              </ng-container>
 
-            <ng-container matColumnDef="vendor_name">
-              <th mat-header-cell *matHeaderCellDef>Vendor Name</th>
-              <td mat-cell *matCellDef="let result">
-                <strong>{{ result.vendor_name }}</strong>
-              </td>
-            </ng-container>
+              <ng-container matColumnDef="vendor_name">
+                <th mat-header-cell *matHeaderCellDef>Vendor Name</th>
+                <td mat-cell *matCellDef="let result">
+                  <strong>{{ result.vendor_name }}</strong>
+                </td>
+              </ng-container>
 
-            <ng-container matColumnDef="place">
-              <th mat-header-cell *matHeaderCellDef>Place</th>
-              <td mat-cell *matCellDef="let result">
-                {{ result.vendor_city }}, {{ result.vendor_state }}
-                <span *ngIf="result.is_interstate" class="interstate-tag">
-                  <br /><small>Interstate</small>
-                </span>
-                <span *ngIf="!result.is_interstate" class="local-tag">
-                  <br /><small>Local</small>
-                </span>
-              </td>
-            </ng-container>
+              <ng-container matColumnDef="place">
+                <th mat-header-cell *matHeaderCellDef>Place</th>
+                <td mat-cell *matCellDef="let result">
+                  {{ result.vendor_city }}, {{ result.vendor_state }}
+                  <span *ngIf="result.is_interstate" class="interstate-tag">
+                    <br /><small>Interstate</small>
+                  </span>
+                  <span *ngIf="!result.is_interstate" class="local-tag">
+                    <br /><small>Local</small>
+                  </span>
+                </td>
+              </ng-container>
 
-            <ng-container matColumnDef="product_price">
-              <th mat-header-cell *matHeaderCellDef>Product Price (₹/kg)</th>
-              <td mat-cell *matCellDef="let result">₹{{ result.product_price }}</td>
-            </ng-container>
+              <ng-container matColumnDef="product_price">
+                <th mat-header-cell *matHeaderCellDef>Product Price (₹/kg)</th>
+                <td mat-cell *matCellDef="let result">₹{{ result.product_price }}</td>
+              </ng-container>
 
-            <ng-container matColumnDef="quantity">
-              <th mat-header-cell *matHeaderCellDef>Quantity (kg)</th>
-              <td mat-cell *matCellDef="let result">{{ comparisonResults.order_qty }} kg</td>
-            </ng-container>
+              <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef>Quantity (kg)</th>
+                <td mat-cell *matCellDef="let result">{{ comparisonResults.order_qty }} kg</td>
+              </ng-container>
 
-            <ng-container matColumnDef="delivery_charges">
-              <th mat-header-cell *matHeaderCellDef>Delivery Charges (₹)</th>
-              <td mat-cell *matCellDef="let result">
-                ₹{{ result.adjusted_delivery_price || result.delivery_price }}
-                <span *ngIf="result.is_interstate">
-                  <br /><small class="surcharge-note">Includes 20% surcharge</small>
-                </span>
-              </td>
-            </ng-container>
+              <ng-container matColumnDef="delivery_charges">
+                <th mat-header-cell *matHeaderCellDef>Delivery Charges (₹)</th>
+                <td mat-cell *matCellDef="let result">
+                  ₹{{ result.adjusted_delivery_price || result.delivery_price }}
+                  <span *ngIf="result.is_interstate">
+                    <br /><small class="surcharge-note">Includes 20% surcharge</small>
+                  </span>
+                </td>
+              </ng-container>
 
-            <ng-container matColumnDef="landing_price">
-              <th mat-header-cell *matHeaderCellDef>Landing Price (₹/kg)</th>
-              <td mat-cell *matCellDef="let result">
-                <strong class="landing-price">₹{{ result.total_cost_per_unit }}</strong>
-              </td>
-            </ng-container>
+              <ng-container matColumnDef="landing_price">
+                <th mat-header-cell *matHeaderCellDef>Landing Price (₹/kg)</th>
+                <td mat-cell *matCellDef="let result">
+                  <strong class="landing-price">₹{{ result.total_cost_per_unit }}</strong>
+                </td>
+              </ng-container>
 
-            <ng-container matColumnDef="total_landing_price">
-              <th mat-header-cell *matHeaderCellDef>Total Landing Price (₹)</th>
-              <td mat-cell *matCellDef="let result">
-                <strong class="total-landing-price">₹{{ result.total_order_cost }}</strong>
-              </td>
-            </ng-container>
+              <ng-container matColumnDef="total_landing_price">
+                <th mat-header-cell *matHeaderCellDef>Total Landing Price (₹)</th>
+                <td mat-cell *matCellDef="let result">
+                  <strong class="total-landing-price">₹{{ result.total_order_cost }}</strong>
+                </td>
+              </ng-container>
 
-            <ng-container matColumnDef="grade">
-              <th mat-header-cell *matHeaderCellDef>Grade</th>
-              <td mat-cell *matCellDef="let result">{{ result.grade_spec }}</td>
-            </ng-container>
+              <ng-container matColumnDef="grade">
+                <th mat-header-cell *matHeaderCellDef>Grade</th>
+                <td mat-cell *matCellDef="let result">{{ result.grade_spec }}</td>
+              </ng-container>
 
-            <ng-container matColumnDef="lead_time">
-              <th mat-header-cell *matHeaderCellDef>Lead Time</th>
-              <td mat-cell *matCellDef="let result">
-                <mat-chip-set>
-                  <mat-chip [class]="getLeadTimeClass(result.lead_time_days)">
-                    {{ result.lead_time_days }} days
-                  </mat-chip>
-                </mat-chip-set>
-              </td>
-            </ng-container>
+              <ng-container matColumnDef="lead_time">
+                <th mat-header-cell *matHeaderCellDef>Lead Time</th>
+                <td mat-cell *matCellDef="let result">
+                  <mat-chip-set>
+                    <mat-chip [class]="getLeadTimeClass(result.lead_time_days)">
+                      {{ result.lead_time_days }} days
+                    </mat-chip>
+                  </mat-chip-set>
+                </td>
+              </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr
-              mat-row
-              *matRowDef="let row; columns: displayedColumns"
-              [class.success-row]="row.rank === 1"
-            ></tr>
-          </table>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr
+                mat-row
+                *matRowDef="let row; columns: displayedColumns"
+                [class.success-row]="row.rank === 1"
+              ></tr>
+            </table>
+          </div>
         </mat-card-content>
       </mat-card>
 
@@ -184,9 +279,56 @@ import { ApiService } from '../../services/api.service';
   `,
   styles: [
     `
+      .page-container {
+        padding: 16px;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      @media (max-width: 768px) {
+        .page-container {
+          padding: 12px;
+        }
+      }
+
+      .page-header {
+        margin-bottom: 24px;
+      }
+
+      .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        margin: 0 0 8px 0;
+        color: #1a237e;
+      }
+
+      .page-subtitle {
+        font-size: 14px;
+        color: #666;
+        margin: 0;
+      }
+
+      @media (max-width: 768px) {
+        .page-title {
+          font-size: 22px;
+        }
+        .page-subtitle {
+          font-size: 13px;
+        }
+      }
+
       .form-card {
         margin-bottom: 24px;
         padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      @media (max-width: 768px) {
+        .form-card {
+          padding: 16px;
+          border-radius: 16px;
+        }
       }
 
       .form-grid {
@@ -194,6 +336,13 @@ import { ApiService } from '../../services/api.service';
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 20px;
         margin-bottom: 20px;
+      }
+
+      @media (max-width: 768px) {
+        .form-grid {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
       }
 
       .full-width {
@@ -205,11 +354,18 @@ import { ApiService } from '../../services/api.service';
         align-items: center;
         gap: 12px;
         padding: 16px;
-        background-color: #e3f2fd;
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
         border-left: 4px solid #2196f3;
-        border-radius: 4px;
+        border-radius: 8px;
         font-size: 14px;
         color: #1565c0;
+      }
+
+      @media (max-width: 768px) {
+        .info-box {
+          padding: 14px;
+          font-size: 13px;
+        }
       }
 
       .info-box mat-icon {
@@ -221,10 +377,280 @@ import { ApiService } from '../../services/api.service';
         align-items: center;
         gap: 8px;
         font-size: 16px;
+        padding: 12px 24px;
+        height: auto;
       }
 
+      @media (max-width: 768px) {
+        .compare-btn {
+          width: 100%;
+          justify-content: center;
+          font-size: 15px;
+          padding: 14px 24px;
+        }
+      }
+
+      /* Mobile Cards */
+      .mobile-cards {
+        margin-top: 24px;
+      }
+
+      .results-header {
+        background: linear-gradient(135deg, #3f51b5 0%, #5c6bc0 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 16px 16px 0 0;
+        margin-bottom: 16px;
+      }
+
+      .results-header h2 {
+        margin: 0 0 12px 0;
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      .results-meta {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        font-size: 14px;
+        opacity: 0.95;
+      }
+
+      .results-meta span {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .meta-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+
+      .vendor-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .vendor-card {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .vendor-card:active {
+        transform: scale(0.98);
+      }
+
+      .winner-card {
+        border: 3px solid #4caf50;
+        box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+      }
+
+      .card-header {
+        padding: 16px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8eaf6 100%);
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+      }
+
+      .rank-badge {
+        min-width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .rank-badge.rank-1 {
+        background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+        color: #f57f17;
+      }
+
+      .rank-badge.rank-2 {
+        background: linear-gradient(135deg, #c0c0c0 0%, #e0e0e0 100%);
+        color: #424242;
+      }
+
+      .rank-badge.rank-3 {
+        background: linear-gradient(135deg, #cd7f32 0%, #d4a574 100%);
+        color: #4e342e;
+      }
+
+      .rank-badge:not(.rank-1):not(.rank-2):not(.rank-3) {
+        background: linear-gradient(135deg, #90caf9 0%, #64b5f6 100%);
+        color: #0d47a1;
+      }
+
+      .rank-icon {
+        font-size: 24px;
+        line-height: 1;
+      }
+
+      .rank-text {
+        font-size: 16px;
+        margin-top: 4px;
+      }
+
+      .vendor-info {
+        flex: 1;
+      }
+
+      .vendor-info h3 {
+        margin: 0 0 8px 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: #1a237e;
+      }
+
+      .vendor-location {
+        margin: 0 0 8px 0;
+        font-size: 13px;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .vendor-location mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+      }
+
+      .interstate-chip {
+        background-color: #ffebee !important;
+        color: #c62828 !important;
+        font-weight: 500;
+      }
+
+      .local-chip {
+        background-color: #e8f5e9 !important;
+        color: #2e7d32 !important;
+        font-weight: 500;
+      }
+
+      .card-body {
+        padding: 16px;
+      }
+
+      .pricing-highlight {
+        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 16px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      @media (max-width: 480px) {
+        .pricing-highlight {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .price-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .price-label {
+        font-size: 12px;
+        color: #2e7d32;
+        font-weight: 500;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .price-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1b5e20;
+      }
+
+      .main-price .price-value {
+        font-size: 24px;
+      }
+
+      .details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      @media (max-width: 480px) {
+        .details-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .detail-item {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 12px;
+        background: #f5f7fa;
+        border-radius: 10px;
+      }
+
+      .detail-icon {
+        color: #3f51b5;
+        font-size: 22px;
+        width: 22px;
+        height: 22px;
+        margin-top: 2px;
+      }
+
+      .detail-content {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+      }
+
+      .detail-label {
+        font-size: 11px;
+        color: #666;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      .detail-value {
+        font-size: 15px;
+        font-weight: 600;
+        color: #1a237e;
+      }
+
+      .surcharge-note {
+        color: #d32f2f;
+        font-size: 11px;
+        font-style: italic;
+      }
+
+      /* Desktop Table View */
       .results-card {
         padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .table-container {
+        overflow-x: auto;
+        border-radius: 8px;
       }
 
       .rank-number {
@@ -261,6 +687,7 @@ import { ApiService } from '../../services/api.service';
         display: flex;
         align-items: center;
         gap: 12px;
+        border-radius: 8px;
       }
 
       .error-card mat-icon {
@@ -287,11 +714,6 @@ import { ApiService } from '../../services/api.service';
       .landing-price {
         color: #3f51b5;
         font-size: 16px;
-      }
-
-      .surcharge-note {
-        color: #666;
-        font-style: italic;
       }
 
       .success-row {
@@ -346,19 +768,6 @@ import { ApiService } from '../../services/api.service';
         border-spacing: 0;
         display: table !important;
       }
-
-      .best-vendor {
-        background: #c8e6c9;
-        font-weight: bold;
-      }
-
-      .error {
-        color: red;
-        padding: 10px;
-        background: #ffebee;
-        border-radius: 4px;
-        margin-top: 10px;
-      }
     `,
   ],
 })
@@ -370,6 +779,7 @@ export class CompareComponent implements OnInit {
   company: any = null;
   comparisonResults: any = null;
   errorMessage: string = '';
+  isMobile: boolean = false;
   displayedColumns: string[] = [
     'rank',
     'vendor_name',
@@ -383,9 +793,18 @@ export class CompareComponent implements OnInit {
     'lead_time',
   ];
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private breakpointObserver: BreakpointObserver
+  ) {}
 
   ngOnInit() {
+    this.breakpointObserver
+      .observe([Breakpoints.Handset, Breakpoints.TabletPortrait, Breakpoints.TabletLandscape])
+      .subscribe(result => {
+        this.isMobile = result.matches;
+      });
+
     this.apiService.getProducts().subscribe({
       next: (data) => (this.products = data.results || data),
       error: (err: any) => console.error('Error loading products:', err),
