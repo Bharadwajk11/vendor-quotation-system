@@ -30,7 +30,10 @@ import { CompanyFormComponent } from './company-form.component';
   template: `
     <div class="page-container">
       <div class="page-header">
-        <h1 class="page-title">Company Management</h1>
+        <div>
+          <h1 class="page-title">Companies</h1>
+          <p class="page-subtitle">Manage your company profiles</p>
+        </div>
         <button mat-raised-button color="primary" (click)="openDialog()" class="add-button">
           <mat-icon>add</mat-icon>
           Add Company
@@ -97,17 +100,7 @@ import { CompanyFormComponent } from './company-form.component';
       </mat-card>
     </div>
   `,
-  styles: [`
-    .filters-card {
-      margin-bottom: 20px;
-      padding: 16px;
-    }
-
-    .search-field {
-      width: 100%;
-      max-width: 500px;
-    }
-  `]
+  styles: []
 })
 export class CompaniesComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);

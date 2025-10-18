@@ -32,24 +32,25 @@ import { VendorFormComponent } from './vendor-form.component';
   template: `
     <div class="page-container">
       <div class="page-header">
-        <h1 class="page-title">Vendors</h1>
-        <p class="page-subtitle">Manage your supplier network</p>
-      </div>
-
-      <div class="search-and-actions">
-        <mat-form-field class="search-field">
-          <mat-label>Search Vendors</mat-label>
-          <input matInput [(ngModel)]="searchText" (keyup)="applySearch()" placeholder="Ex. Vendor Name, City">
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-
-        <div class="action-buttons">
-          <button mat-raised-button color="primary" (click)="openDialog()">
-            <mat-icon>add</mat-icon>
-            Add Vendor
-          </button>
+        <div>
+          <h1 class="page-title">Vendors</h1>
+          <p class="page-subtitle">Manage your supplier network</p>
         </div>
+        <button mat-raised-button color="primary" (click)="openDialog()" class="add-button">
+          <mat-icon>add</mat-icon>
+          Add Vendor
+        </button>
       </div>
+
+      <mat-card class="filters-card">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-icon matPrefix>search</mat-icon>
+          <input matInput [(ngModel)]="searchText" (input)="applySearch()" placeholder="Search vendors...">
+          <button mat-icon-button matSuffix *ngIf="searchText" (click)="clearSearch()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </mat-card>
 
       <mat-card>
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
@@ -115,56 +116,8 @@ import { VendorFormComponent } from './vendor-form.component';
     </div>
   `,
   styles: [`
-    .page-container {
-      padding: 20px;
-    }
-    .page-header {
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .page-title {
-      font-size: 2em;
-      font-weight: bold;
-      color: #333;
-    }
-    .page-subtitle {
-      font-size: 1.1em;
-      color: #666;
-    }
-    .search-and-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .search-field {
-      flex-grow: 1;
-      margin-right: 20px;
-      min-width: 250px;
-    }
-    .action-buttons {
-      white-space: nowrap;
-    }
-    mat-card {
-      margin-top: 20px;
-      padding: 20px;
-    }
-    table {
-      width: 100%;
-    }
-    th.mat-header-cell {
-      font-weight: bold;
-      color: #333;
-    }
-    td.mat-cell strong {
-      color: #007bff;
-    }
     mat-chip {
       min-height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
     .rating-high {
       background-color: #4caf50 !important;
@@ -261,5 +214,10 @@ export class VendorsComponent implements OnInit, AfterViewInit {
     if (this.paginator) {
       this.paginator.firstPage();
     }
+  }
+
+  clearSearch() {
+    this.searchText = '';
+    this.applySearch();
   }
 }

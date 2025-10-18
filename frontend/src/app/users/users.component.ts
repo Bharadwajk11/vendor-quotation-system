@@ -30,15 +30,17 @@ import { UserFormComponent } from './user-form.component';
     FormsModule
   ],
   template: `
-    <div class="users-container">
-      <mat-card-header>
-          <mat-card-title>
-            <h2>User Management</h2>
-          </mat-card-title>
-          <button mat-raised-button color="primary" (click)="openUserDialog()">
-            <mat-icon>add</mat-icon> Add User
-          </button>
-        </mat-card-header>
+    <div class="page-container">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Users</h1>
+          <p class="page-subtitle">Manage user accounts and permissions</p>
+        </div>
+        <button mat-raised-button color="primary" (click)="openUserDialog()" class="add-button">
+          <mat-icon>add</mat-icon>
+          Add User
+        </button>
+      </div>
 
       <mat-card class="filters-card">
         <mat-form-field appearance="outline" class="search-field">
@@ -127,36 +129,6 @@ import { UserFormComponent } from './user-form.component';
     </div>
   `,
   styles: [`
-    .users-container {
-      padding: 20px;
-    }
-
-    mat-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    mat-card-title h2 {
-      margin: 0;
-      font-size: 24px;
-      font-weight: 500;
-    }
-
-    .filters-card {
-      margin-bottom: 20px;
-      padding: 16px;
-    }
-
-    .search-field {
-      width: 100%;
-      max-width: 500px;
-    }
-
-    table {
-      width: 100%;
-    }
 
     .role-admin {
       background-color: #f44336 !important;

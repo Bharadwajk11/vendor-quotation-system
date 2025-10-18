@@ -32,23 +32,27 @@ import { ProductFormComponent } from './product-form.component';
   template: `
     <div class="page-container">
       <div class="page-header">
-        <h1 class="page-title">Products</h1>
-        <p class="page-subtitle">Manage your product catalog</p>
-      </div>
-
-      <div class="action-buttons">
-        <button mat-raised-button color="primary" (click)="openDialog()">
+        <div>
+          <h1 class="page-title">Products</h1>
+          <p class="page-subtitle">Manage your product catalog</p>
+        </div>
+        <button mat-raised-button color="primary" (click)="openDialog()" class="add-button">
           <mat-icon>add</mat-icon>
           Add Product
         </button>
       </div>
 
-      <mat-card>
-        <mat-form-field appearance="fill">
-          <mat-label>Search Products</mat-label>
-          <input matInput [(ngModel)]="searchText" (input)="applySearch()">
-          <mat-icon matSuffix>search</mat-icon>
+      <mat-card class="filters-card">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-icon matPrefix>search</mat-icon>
+          <input matInput [(ngModel)]="searchText" (input)="applySearch()" placeholder="Search products...">
+          <button mat-icon-button matSuffix *ngIf="searchText" (click)="clearSearch()">
+            <mat-icon>close</mat-icon>
+          </button>
         </mat-form-field>
+      </mat-card>
+
+      <mat-card>
 
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
           <ng-container matColumnDef="id">
@@ -194,5 +198,10 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     if (this.paginator) {
       this.paginator.firstPage();
     }
+  }
+
+  clearSearch() {
+    this.searchText = '';
+    this.applySearch();
   }
 }
