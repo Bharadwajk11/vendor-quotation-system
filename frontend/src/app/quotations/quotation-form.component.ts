@@ -143,6 +143,129 @@ import { ProductFormComponent } from '../products/product-form.component';
     mat-form-field {
       width: 100%;
     }
+
+    @media (max-width: 600px) {
+      mat-dialog-content {
+        min-width: unset;
+        padding: 12px !important;
+      }
+
+      h2 {
+        font-size: 16px !important;
+        padding: 12px !important;
+        margin: 0 !important;
+      }
+
+      form {
+        gap: 10px;
+      }
+
+      mat-form-field {
+        font-size: 13px;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-text-field-wrapper {
+        padding-bottom: 0;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-form-field-infix {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        min-height: 36px;
+      }
+
+      ::ng-deep mat-form-field input {
+        font-size: 13px !important;
+        padding: 6px 0;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-select {
+        font-size: 13px !important;
+      }
+
+      ::ng-deep mat-form-field label {
+        font-size: 12px !important;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-form-field-hint {
+        font-size: 11px !important;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-form-field-subscript-wrapper {
+        margin-top: 2px;
+      }
+
+      /* Reduce button sizes */
+      button[mat-mini-fab] {
+        width: 32px !important;
+        height: 32px !important;
+      }
+
+      button[mat-mini-fab] mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        line-height: 18px;
+      }
+
+      /* Action buttons at bottom */
+      mat-dialog-actions {
+        padding: 10px 12px !important;
+        gap: 8px;
+      }
+
+      mat-dialog-actions button {
+        font-size: 13px;
+        padding: 8px 12px;
+        min-width: 70px;
+        height: 36px;
+      }
+
+      /* Reduce spacing between vendor/product action buttons */
+      div[style*="display: flex"] {
+        gap: 4px !important;
+      }
+    }
+
+    @media (max-width: 400px) {
+      h2 {
+        font-size: 14px !important;
+      }
+
+      mat-form-field {
+        font-size: 12px;
+      }
+
+      ::ng-deep mat-form-field input {
+        font-size: 12px !important;
+      }
+
+      ::ng-deep mat-form-field .mat-mdc-select {
+        font-size: 12px !important;
+      }
+
+      ::ng-deep mat-form-field label {
+        font-size: 11px !important;
+      }
+
+      button[mat-mini-fab] {
+        width: 28px !important;
+        height: 28px !important;
+      }
+
+      button[mat-mini-fab] mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+      }
+
+      mat-dialog-actions button {
+        font-size: 12px;
+        padding: 6px 10px;
+        height: 32px;
+      }
+    }
   `]
 })
 export class QuotationFormComponent implements OnInit {
