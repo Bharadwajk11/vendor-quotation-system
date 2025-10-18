@@ -116,11 +116,6 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
             <mat-option value="ton">ton</mat-option>
           </mat-select>
         </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Unit Price (₹)</mat-label>
-          <input matInput formControlName="unit_price" type="number" step="0.01" required>
-        </mat-form-field>
       </mat-dialog-content>
 
       <mat-dialog-actions align="end">
@@ -319,8 +314,7 @@ export class ProductFormComponent implements OnInit {
       name: ['', Validators.required],
       category: [''],
       grade_spec: [''],
-      unit_type: ['', Validators.required],
-      unit_price: ['', [Validators.required, Validators.min(0)]]
+      unit_type: ['', Validators.required]
     });
   }
 
@@ -443,10 +437,7 @@ export class ProductFormComponent implements OnInit {
 
   onSubmit() {
     if (this.productForm.valid) {
-      const productData = {
-        ...this.productForm.value,
-        kilo_price: this.productForm.value.unit_price
-      };
+      const productData = this.productForm.value;
       
       if (this.data?.id) {
         this.apiService.updateProduct(this.data.id, productData).subscribe({
