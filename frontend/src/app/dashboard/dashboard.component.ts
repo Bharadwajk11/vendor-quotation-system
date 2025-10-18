@@ -159,10 +159,10 @@ export class DashboardComponent implements OnInit {
   };
 
   pieChartData: ChartConfiguration['data'] = {
-    labels: ['Mumbai', 'Delhi', 'Chennai'],
+    labels: [],
     datasets: [{
-      data: [30, 35, 35],
-      backgroundColor: ['#3f51b5', '#ff4081', '#4caf50']
+      data: [],
+      backgroundColor: ['#3f51b5', '#ff4081', '#4caf50', '#ff9800', '#9c27b0', '#00bcd4', '#ffc107', '#e91e63']
     }]
   };
 
@@ -178,6 +178,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.loadStats();
+    this.loadVendorDistribution();
   }
 
   loadStats() {
@@ -195,6 +196,34 @@ export class DashboardComponent implements OnInit {
     
     this.apiService.getQuotations().subscribe({
       next: (data) => this.stats.quotations = data.count || data.results?.length || data.length || 0
+    });
+  }
+
+  loadVendorDistribution() {
+    this.apiService.getVendors().subscribe({
+      next: (data) => {
+        const vendors = data.results || data;
+        
+        // Group vendors by city
+        const cityCount: { [key: string]: number } = {};
+        vendors.forEach((vendor: any) => {
+          const city = vendor.city || 'Unknown';
+          cityCount[city] = (cityCount[city] || 0) + 1;
+        });
+
+        // Convert to chart data
+        const cities = Object.keys(cityCount);
+        const counts = Object.values(cityCount);
+
+        this.pieChartData = {
+          labels: cities,
+          datasets: [{
+            data: counts,
+            backgroundColor: ['#3f51b5', '#ff4081', '#4caf50', '#ff9800', '#9c27b0', '#00bcd4', '#ffc107', '#e91e63']
+          }]
+        };
+      },
+      error: (err: any) => console.error('Error loading vendor distribution:', err)
     });
   }
 }
