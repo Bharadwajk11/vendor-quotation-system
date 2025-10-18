@@ -67,7 +67,6 @@ import { QuotationFormComponent } from './quotation-form.component.js';
             <button mat-icon-button matSuffix *ngIf="selectedVendor !== null" (click)="clearVendorFilter($event)" class="clear-btn">
               <mat-icon>close</mat-icon>
             </button>
-            <mat-icon matIconSuffix *ngIf="selectedVendor === null" class="dropdown-arrow">arrow_drop_down</mat-icon>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="compact-filter">
@@ -81,7 +80,6 @@ import { QuotationFormComponent } from './quotation-form.component.js';
             <button mat-icon-button matSuffix *ngIf="selectedProduct !== null" (click)="clearProductFilter($event)" class="clear-btn">
               <mat-icon>close</mat-icon>
             </button>
-            <mat-icon matIconSuffix *ngIf="selectedProduct === null" class="dropdown-arrow">arrow_drop_down</mat-icon>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="compact-filter">
@@ -95,7 +93,6 @@ import { QuotationFormComponent } from './quotation-form.component.js';
             <button mat-icon-button matSuffix *ngIf="selectedProductGroup !== null" (click)="clearProductGroupFilter($event)" class="clear-btn">
               <mat-icon>close</mat-icon>
             </button>
-            <mat-icon matIconSuffix *ngIf="selectedProductGroup === null" class="dropdown-arrow">arrow_drop_down</mat-icon>
           </mat-form-field>
         </div>
       </mat-card>
@@ -277,12 +274,6 @@ import { QuotationFormComponent } from './quotation-form.component.js';
       width: 18px;
       height: 18px;
       line-height: 18px;
-    }
-
-    .dropdown-arrow {
-      color: #666;
-      font-size: 24px;
-      pointer-events: none;
     }
 
     ::ng-deep .compact-search .mat-mdc-text-field-wrapper,
