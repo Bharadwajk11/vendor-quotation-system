@@ -27,232 +27,417 @@ import { ProductFormComponent } from '../products/product-form.component';
     MatTooltipModule
   ],
   template: `
-    <h2 mat-dialog-title>{{ data?.id ? 'Edit' : 'Add' }} Quotation</h2>
-    <form [formGroup]="quotationForm" (ngSubmit)="onSubmit()">
-      <mat-dialog-content>
-        <div class="field-container">
-          <mat-form-field appearance="outline" class="field-select">
-            <mat-label>Vendor</mat-label>
-            <mat-select formControlName="vendor" required>
-              <mat-option *ngFor="let vendor of vendors" [value]="vendor.id">
-                {{ vendor.name }} - {{ vendor.city }}
-              </mat-option>
-            </mat-select>
-            <mat-hint class="desktop-only-hint">Manage vendors using the buttons →</mat-hint>
-          </mat-form-field>
+    <div class="form-container">
+      <h1 class="form-title">{{ data?.id ? 'Edit' : 'Add' }} Quotation</h1>
+      
+      <form [formGroup]="quotationForm" (ngSubmit)="onSubmit()">
+        <div class="form-content">
           
-          <div class="field-actions">
-            <button mat-icon-button type="button" color="primary" 
-                    (click)="addVendor()" 
-                    matTooltip="Add New Vendor">
-              <mat-icon>add</mat-icon>
-            </button>
-            <button mat-icon-button type="button" color="accent" 
-                    (click)="editVendor()" 
-                    [disabled]="!quotationForm.get('vendor')?.value"
-                    matTooltip="Edit Selected Vendor">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button type="button" color="warn" 
-                    (click)="deleteVendor()" 
-                    [disabled]="!quotationForm.get('vendor')?.value"
-                    matTooltip="Delete Selected Vendor">
-              <mat-icon>delete</mat-icon>
-            </button>
+          <!-- Vendor Selection Section -->
+          <div class="form-section">
+            <label class="section-label">Select Vendor</label>
+            <div class="input-with-actions">
+              <mat-form-field appearance="outline" class="flex-input">
+                <mat-select formControlName="vendor" required placeholder="Choose vendor">
+                  <mat-option *ngFor="let vendor of vendors" [value]="vendor.id">
+                    {{ vendor.name }} - {{ vendor.city }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              
+              <div class="action-buttons">
+                <button mat-mini-fab color="primary" type="button" 
+                        (click)="addVendor()" 
+                        matTooltip="Add Vendor">
+                  <mat-icon>add</mat-icon>
+                </button>
+                <button mat-mini-fab color="accent" type="button" 
+                        (click)="editVendor()" 
+                        [disabled]="!quotationForm.get('vendor')?.value"
+                        matTooltip="Edit Vendor">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-mini-fab color="warn" type="button" 
+                        (click)="deleteVendor()" 
+                        [disabled]="!quotationForm.get('vendor')?.value"
+                        matTooltip="Delete Vendor">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product Selection Section -->
+          <div class="form-section">
+            <label class="section-label">Select Product</label>
+            <div class="input-with-actions">
+              <mat-form-field appearance="outline" class="flex-input">
+                <mat-select formControlName="product" required placeholder="Choose product">
+                  <mat-option *ngFor="let product of products" [value]="product.id">
+                    {{ product.name }} ({{ product.grade_spec }})
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              
+              <div class="action-buttons">
+                <button mat-mini-fab color="primary" type="button" 
+                        (click)="addProduct()" 
+                        matTooltip="Add Product">
+                  <mat-icon>add</mat-icon>
+                </button>
+                <button mat-mini-fab color="accent" type="button" 
+                        (click)="editProduct()" 
+                        [disabled]="!quotationForm.get('product')?.value"
+                        matTooltip="Edit Product">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-mini-fab color="warn" type="button" 
+                        (click)="deleteProduct()" 
+                        [disabled]="!quotationForm.get('product')?.value"
+                        matTooltip="Delete Product">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Pricing Section -->
+          <div class="form-section">
+            <label class="section-label">Pricing Details</label>
+            
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Product Price (₹/kg)</mat-label>
+              <input matInput formControlName="product_price" type="number" step="0.01" required (input)="calculateLandingPrice()" placeholder="Enter price per kg">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Quantity (kg)</mat-label>
+              <input matInput formControlName="quantity" type="number" step="1" required (input)="calculateLandingPrice()" placeholder="Enter quantity">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Delivery Charges (₹)</mat-label>
+              <input matInput formControlName="delivery_price" type="number" step="0.01" required (input)="calculateLandingPrice()" placeholder="Enter delivery cost">
+            </mat-form-field>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Calculated Results Section -->
+          <div class="form-section calculated-section">
+            <label class="section-label">Calculated Costs</label>
+            
+            <div class="calculated-field">
+              <label class="calc-label">Total Landing Price</label>
+              <div class="calc-value">₹{{ quotationForm.get('total_landing_price')?.value || '0.00' }}</div>
+              <div class="calc-formula">Product Price × Quantity + Delivery</div>
+            </div>
+
+            <div class="calculated-field">
+              <label class="calc-label">Landing Price per kg</label>
+              <div class="calc-value">₹{{ quotationForm.get('landing_price')?.value || '0.00' }}/kg</div>
+              <div class="calc-formula">Total Landing Price ÷ Quantity</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Additional Details Section -->
+          <div class="form-section">
+            <label class="section-label">Additional Information</label>
+            
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Lead Time (days)</mat-label>
+              <input matInput formControlName="lead_time_days" type="number" required placeholder="Number of days">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Grade/Specification</mat-label>
+              <input matInput formControlName="grade_spec" placeholder="Enter grade or spec (optional)">
+            </mat-form-field>
           </div>
         </div>
 
-        <div class="field-container">
-          <mat-form-field appearance="outline" class="field-select">
-            <mat-label>Product</mat-label>
-            <mat-select formControlName="product" required>
-              <mat-option *ngFor="let product of products" [value]="product.id">
-                {{ product.name }} ({{ product.grade_spec }})
-              </mat-option>
-            </mat-select>
-            <mat-hint class="desktop-only-hint">Manage products using the buttons →</mat-hint>
-          </mat-form-field>
-          
-          <div class="field-actions">
-            <button mat-icon-button type="button" color="primary" 
-                    (click)="addProduct()" 
-                    matTooltip="Add New Product">
-              <mat-icon>add</mat-icon>
-            </button>
-            <button mat-icon-button type="button" color="accent" 
-                    (click)="editProduct()" 
-                    [disabled]="!quotationForm.get('product')?.value"
-                    matTooltip="Edit Selected Product">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button type="button" color="warn" 
-                    (click)="deleteProduct()" 
-                    [disabled]="!quotationForm.get('product')?.value"
-                    matTooltip="Delete Selected Product">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="!quotationForm.valid" class="submit-btn">
+            {{ data?.id ? 'Update Quotation' : 'Create Quotation' }}
+          </button>
+          <button mat-stroked-button type="button" (click)="dialogRef.close()" class="cancel-btn">
+            Cancel
+          </button>
         </div>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Product Price (₹/kg)</mat-label>
-          <input matInput formControlName="product_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Quantity (kg)</mat-label>
-          <input matInput formControlName="quantity" type="number" step="1" required (input)="calculateLandingPrice()">
-          <mat-hint class="desktop-only-hint">Enter quantity for landing price calculation</mat-hint>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Delivery Charges (₹)</mat-label>
-          <input matInput formControlName="delivery_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width calculated-field">
-          <mat-label>Total Landing Price (₹)</mat-label>
-          <input matInput formControlName="total_landing_price" type="number" step="0.01" readonly>
-          <mat-hint class="desktop-only-hint">Total cost: (Product Price × Quantity) + Delivery Charges</mat-hint>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width calculated-field">
-          <mat-label>Landing Price (₹/kg)</mat-label>
-          <input matInput formControlName="landing_price" type="number" step="0.01" readonly>
-          <mat-hint class="desktop-only-hint">Per kg cost: Total Landing Price ÷ Quantity</mat-hint>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Lead Time (days)</mat-label>
-          <input matInput formControlName="lead_time_days" type="number" required>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Grade/Specification</mat-label>
-          <input matInput formControlName="grade_spec">
-        </mat-form-field>
-      </mat-dialog-content>
-
-      <mat-dialog-actions align="end">
-        <button mat-button type="button" (click)="dialogRef.close()">Cancel</button>
-        <button mat-raised-button color="primary" type="submit" [disabled]="!quotationForm.valid">
-          {{ data?.id ? 'Update' : 'Create' }}
-        </button>
-      </mat-dialog-actions>
-    </form>
+      </form>
+    </div>
   `,
   styles: [`
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      max-height: 90vh;
+      background: #ffffff;
+    }
+
+    .form-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin: 0;
+      padding: 20px 24px;
+      border-bottom: 1px solid #e5e7eb;
+      background: #f9fafb;
+    }
+
+    .form-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    .form-section {
+      margin-bottom: 24px;
+    }
+
+    .section-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .input-with-actions {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .flex-input {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      padding-top: 4px;
+    }
+
+    .action-buttons button {
+      width: 40px;
+      height: 40px;
+      min-height: 40px;
+    }
+
+    .action-buttons mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
     .full-width {
       width: 100%;
       margin-bottom: 16px;
     }
 
-    mat-dialog-content {
-      padding: 20px 24px;
-      min-width: 500px;
+    .divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 24px 0;
     }
 
-    mat-dialog-actions {
-      padding: 12px 24px;
-      gap: 8px;
+    .calculated-section {
+      background: #f0f9ff;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid #bfdbfe;
     }
 
-    .field-container {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      margin-bottom: 16px;
+    .calculated-field {
+      background: #ffffff;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      border: 1px solid #e0e7ff;
     }
 
-    .field-select {
-      flex: 1;
+    .calculated-field:last-child {
       margin-bottom: 0;
     }
 
-    .field-actions {
-      display: flex;
-      gap: 4px;
-      padding-top: 8px;
+    .calc-label {
+      font-size: 12px;
+      color: #6b7280;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 4px;
     }
 
-    .field-actions button {
-      width: 36px;
-      height: 36px;
-    }
-
-    .field-actions mat-icon {
+    .calc-value {
       font-size: 20px;
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 4px;
     }
 
+    .calc-formula {
+      font-size: 11px;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    .form-actions {
+      padding: 16px 24px;
+      border-top: 1px solid #e5e7eb;
+      background: #f9fafb;
+      display: flex;
+      gap: 12px;
+    }
+
+    .submit-btn {
+      flex: 1;
+      height: 48px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+    }
+
+    .cancel-btn {
+      flex: 1;
+      height: 48px;
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: 8px;
+    }
+
+    mat-form-field {
+      font-size: 15px;
+    }
+
+    ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+
+    ::ng-deep .mat-mdc-text-field-wrapper {
+      background: #ffffff;
+    }
+
+    /* Mobile Responsive Styles */
     @media (max-width: 600px) {
-      mat-dialog-content {
-        min-width: unset;
-        padding: 20px 16px;
-      }
-
-      mat-dialog-actions {
-        padding: 16px;
-        flex-direction: column-reverse;
-        align-items: stretch;
-        gap: 12px;
-      }
-
-      mat-dialog-actions button {
-        width: 100%;
-        margin: 0 !important;
-        height: 44px;
-        font-size: 16px;
-      }
-
-      .full-width {
-        margin-bottom: 16px;
-      }
-
-      h2 {
+      .form-title {
         font-size: 20px;
         padding: 16px;
-        margin: 0;
       }
 
-      .field-container {
-        flex-wrap: wrap;
-        gap: 0;
+      .form-content {
+        padding: 16px;
+      }
+
+      .form-section {
         margin-bottom: 20px;
       }
 
-      .field-select {
-        width: 100%;
+      .section-label {
+        font-size: 12px;
+        margin-bottom: 10px;
       }
 
-      .field-actions {
-        width: 100%;
-        justify-content: center;
-        padding-top: 8px;
+      .input-with-actions {
+        flex-direction: column;
         gap: 12px;
       }
 
-      .field-actions button {
-        width: 48px;
-        height: 48px;
-        flex-shrink: 0;
+      .flex-input {
+        width: 100%;
       }
 
-      .field-actions mat-icon {
+      .action-buttons {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding-top: 0;
+      }
+
+      .action-buttons button {
+        width: 100%;
+        height: 50px;
+        min-height: 50px;
+      }
+
+      .action-buttons mat-icon {
         font-size: 24px;
+        width: 24px;
+        height: 24px;
       }
 
-      /* Hide helper text on mobile for cleaner look */
-      .desktop-only-hint {
-        display: none;
+      .full-width {
+        margin-bottom: 14px;
       }
 
-      /* Larger touch targets for inputs */
+      .divider {
+        margin: 20px 0;
+      }
+
+      .calculated-section {
+        padding: 14px;
+      }
+
+      .calculated-field {
+        padding: 12px 14px;
+      }
+
+      .calc-value {
+        font-size: 18px;
+      }
+
+      .form-actions {
+        flex-direction: column-reverse;
+        padding: 16px;
+        gap: 10px;
+      }
+
+      .submit-btn,
+      .cancel-btn {
+        width: 100%;
+        height: 50px;
+        font-size: 16px;
+      }
+
       mat-form-field {
         font-size: 16px;
       }
 
       input {
         font-size: 16px !important;
+      }
+    }
+
+    /* Tablet Portrait */
+    @media (min-width: 601px) and (max-width: 900px) {
+      .form-title {
+        font-size: 22px;
+        padding: 18px 20px;
+      }
+
+      .form-content {
+        padding: 20px;
+      }
+
+      .action-buttons button {
+        width: 44px;
+        height: 44px;
+        min-height: 44px;
+      }
+
+      .action-buttons mat-icon {
+        font-size: 22px;
+        width: 22px;
+        height: 22px;
       }
     }
   `]
@@ -292,10 +477,7 @@ export class QuotationFormComponent implements OnInit {
     const delivery = parseFloat(deliveryCharges);
     
     if (Number.isFinite(price) && Number.isFinite(qty) && qty > 0 && Number.isFinite(delivery) && delivery >= 0) {
-      // Calculate Total Landing Price = (Product Price × Quantity) + Delivery Charges
       const totalLandingPrice = (price * qty) + delivery;
-      
-      // Calculate Landing Price per kg = Total Landing Price ÷ Quantity
       const landingPricePerKg = totalLandingPrice / qty;
       
       this.quotationForm.patchValue({
