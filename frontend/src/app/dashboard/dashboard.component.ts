@@ -26,6 +26,32 @@ import { ChartConfiguration } from 'chart.js';
         <p class="page-subtitle">Overview of your vendor quotation system</p>
       </div>
 
+      <mat-card class="quick-actions">
+        <mat-card-header>
+          <mat-card-title>Quick Actions</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="action-buttons">
+            <button mat-raised-button color="primary" routerLink="/vendors">
+              <mat-icon>add</mat-icon>
+              Add Vendor
+            </button>
+            <button mat-raised-button color="primary" routerLink="/products">
+              <mat-icon>add</mat-icon>
+              Add Product
+            </button>
+            <button mat-raised-button color="primary" routerLink="/quotations">
+              <mat-icon>add</mat-icon>
+              Add Quotation
+            </button>
+            <button mat-raised-button color="accent" routerLink="/compare">
+              <mat-icon>compare_arrows</mat-icon>
+              Compare Vendors
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
       <div class="stats-grid">
         <div class="stat-card">
           <h3>Total Companies</h3>
@@ -76,32 +102,6 @@ import { ChartConfiguration } from 'chart.js';
           </mat-card-content>
         </mat-card>
       </div>
-
-      <mat-card class="quick-actions">
-        <mat-card-header>
-          <mat-card-title>Quick Actions</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="action-buttons">
-            <button mat-raised-button color="primary" routerLink="/vendors">
-              <mat-icon>add</mat-icon>
-              Add Vendor
-            </button>
-            <button mat-raised-button color="primary" routerLink="/products">
-              <mat-icon>add</mat-icon>
-              Add Product
-            </button>
-            <button mat-raised-button color="primary" routerLink="/quotations">
-              <mat-icon>add</mat-icon>
-              Add Quotation
-            </button>
-            <button mat-raised-button color="accent" routerLink="/compare">
-              <mat-icon>compare_arrows</mat-icon>
-              Compare Vendors
-            </button>
-          </div>
-        </mat-card-content>
-      </mat-card>
     </div>
   `,
   styles: [`
