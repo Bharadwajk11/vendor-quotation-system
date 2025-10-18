@@ -33,8 +33,8 @@ import { ProductFormComponent } from '../products/product-form.component';
     <mat-dialog-content>
       <form [formGroup]="quotationForm">
         <!-- Vendor Selection -->
-        <div class="input-with-actions">
-          <mat-form-field appearance="outline" class="flex-input">
+        <div style="display: flex; gap: 8px; align-items: flex-start;">
+          <mat-form-field appearance="outline" style="flex: 1;">
             <mat-label>Vendor</mat-label>
             <mat-select formControlName="vendor" required>
               <mat-option *ngFor="let vendor of vendors" [value]="vendor.id">
@@ -43,24 +43,22 @@ import { ProductFormComponent } from '../products/product-form.component';
             </mat-select>
           </mat-form-field>
           
-          <div class="action-buttons">
-            <button mat-mini-fab color="primary" type="button" (click)="addVendor()" matTooltip="Add Vendor">
-              <mat-icon>add</mat-icon>
-            </button>
-            <button mat-mini-fab color="accent" type="button" (click)="editVendor()" 
-                    [disabled]="!quotationForm.get('vendor')?.value" matTooltip="Edit Vendor">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-mini-fab color="warn" type="button" (click)="deleteVendor()" 
-                    [disabled]="!quotationForm.get('vendor')?.value" matTooltip="Delete Vendor">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
+          <button mat-mini-fab color="primary" type="button" (click)="addVendor()" matTooltip="Add Vendor">
+            <mat-icon>add</mat-icon>
+          </button>
+          <button mat-mini-fab color="accent" type="button" (click)="editVendor()" 
+                  [disabled]="!quotationForm.get('vendor')?.value" matTooltip="Edit Vendor">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-mini-fab color="warn" type="button" (click)="deleteVendor()" 
+                  [disabled]="!quotationForm.get('vendor')?.value" matTooltip="Delete Vendor">
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
 
         <!-- Product Selection -->
-        <div class="input-with-actions">
-          <mat-form-field appearance="outline" class="flex-input">
+        <div style="display: flex; gap: 8px; align-items: flex-start;">
+          <mat-form-field appearance="outline" style="flex: 1;">
             <mat-label>Product</mat-label>
             <mat-select formControlName="product" required>
               <mat-option *ngFor="let product of products" [value]="product.id">
@@ -69,19 +67,17 @@ import { ProductFormComponent } from '../products/product-form.component';
             </mat-select>
           </mat-form-field>
           
-          <div class="action-buttons">
-            <button mat-mini-fab color="primary" type="button" (click)="addProduct()" matTooltip="Add Product">
-              <mat-icon>add</mat-icon>
-            </button>
-            <button mat-mini-fab color="accent" type="button" (click)="editProduct()" 
-                    [disabled]="!quotationForm.get('product')?.value" matTooltip="Edit Product">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-mini-fab color="warn" type="button" (click)="deleteProduct()" 
-                    [disabled]="!quotationForm.get('product')?.value" matTooltip="Delete Product">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
+          <button mat-mini-fab color="primary" type="button" (click)="addProduct()" matTooltip="Add Product">
+            <mat-icon>add</mat-icon>
+          </button>
+          <button mat-mini-fab color="accent" type="button" (click)="editProduct()" 
+                  [disabled]="!quotationForm.get('product')?.value" matTooltip="Edit Product">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-mini-fab color="warn" type="button" (click)="deleteProduct()" 
+                  [disabled]="!quotationForm.get('product')?.value" matTooltip="Delete Product">
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
 
         <!-- Pricing Details -->
@@ -136,7 +132,6 @@ import { ProductFormComponent } from '../products/product-form.component';
   styles: [`
     mat-dialog-content {
       min-width: 500px;
-      max-height: 70vh;
     }
 
     form {
@@ -147,125 +142,6 @@ import { ProductFormComponent } from '../products/product-form.component';
 
     mat-form-field {
       width: 100%;
-    }
-
-    .input-with-actions {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-    }
-
-    .flex-input {
-      flex: 1;
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 4px;
-      padding-top: 8px;
-    }
-
-    .action-buttons button {
-      width: 36px;
-      height: 36px;
-    }
-
-    .action-buttons mat-icon {
-      font-size: 20px;
-    }
-
-    @media (max-width: 600px) {
-      mat-dialog-content {
-        min-width: unset;
-        width: 100%;
-        padding: 12px 16px;
-      }
-
-      form {
-        gap: 10px;
-      }
-
-      .input-with-actions {
-        flex-direction: row;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .flex-input {
-        flex: 1;
-        min-width: 0;
-      }
-
-      .action-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        padding-top: 0;
-      }
-
-      .action-buttons button {
-        width: 32px;
-        height: 32px;
-        min-width: 32px;
-      }
-
-      .action-buttons mat-icon {
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
-      }
-
-      mat-form-field {
-        font-size: 14px;
-      }
-
-      /* Compact Material Form Fields on Mobile */
-      ::ng-deep mat-form-field .mat-mdc-text-field-wrapper {
-        padding-bottom: 0;
-      }
-
-      ::ng-deep mat-form-field .mat-mdc-form-field-subscript-wrapper {
-        display: none;
-      }
-
-      ::ng-deep mat-form-field .mat-mdc-form-field-infix {
-        min-height: 40px;
-        padding-top: 8px;
-        padding-bottom: 8px;
-      }
-
-      ::ng-deep mat-form-field input,
-      ::ng-deep mat-form-field .mat-mdc-select {
-        font-size: 14px;
-      }
-
-      ::ng-deep mat-form-field .mat-mdc-floating-label {
-        font-size: 13px;
-      }
-
-      ::ng-deep mat-form-field .mat-mdc-select-value {
-        font-size: 14px;
-      }
-
-      ::ng-deep mat-form-field .mat-mdc-form-field-hint {
-        display: none;
-      }
-
-      mat-dialog-actions {
-        flex-direction: column-reverse;
-        padding: 12px 16px;
-      }
-
-      mat-dialog-actions button {
-        width: 100%;
-        height: 44px;
-      }
-
-      h2 {
-        font-size: 18px;
-        margin: 0;
-        padding: 12px 16px;
-      }
     }
   `]
 })
