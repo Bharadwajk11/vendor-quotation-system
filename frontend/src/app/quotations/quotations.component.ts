@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { ApiService } from '../services/api.service';
@@ -24,6 +26,8 @@ import { QuotationFormComponent } from './quotation-form.component.js';
     MatDialogModule,
     MatSelectModule,
     MatFormFieldModule,
+    MatInputModule,
+    MatPaginatorModule,
     FormsModule
   ],
   template: `
@@ -41,6 +45,18 @@ import { QuotationFormComponent } from './quotation-form.component.js';
       </div>
 
       <mat-card class="filters-card">
+        <div class="search-container">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search</mat-label>
+            <input matInput [(ngModel)]="searchText" (input)="applySearch()" 
+                   placeholder="Search by vendor, product, or grade...">
+            <mat-icon matPrefix>search</mat-icon>
+            <button mat-icon-button matSuffix *ngIf="searchText" (click)="clearSearch()">
+              <mat-icon>clear</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+
         <div class="filters-container">
           <mat-form-field appearance="outline" class="filter-field">
             <mat-label>Filter by Vendor</mat-label>
@@ -80,7 +96,7 @@ import { QuotationFormComponent } from './quotation-form.component.js';
       </mat-card>
 
       <mat-card>
-        <table mat-table [dataSource]="quotations" class="mat-elevation-z0">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>ID</th>
             <td mat-cell *matCellDef="let quote">{{ quote.id }}</td>
@@ -150,6 +166,11 @@ import { QuotationFormComponent } from './quotation-form.component.js';
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
+
+        <mat-paginator [pageSizeOptions]="[10, 25, 50]" 
+                       [pageSize]="10"
+                       showFirstLastButtons>
+        </mat-paginator>
       </mat-card>
     </div>
   `,
@@ -157,6 +178,14 @@ import { QuotationFormComponent } from './quotation-form.component.js';
     .filters-card {
       margin-bottom: 24px;
       padding: 16px;
+    }
+
+    .search-container {
+      margin-bottom: 16px;
+    }
+
+    .search-field {
+      width: 100%;
     }
 
     .filters-container {
@@ -176,8 +205,8 @@ import { QuotationFormComponent } from './quotation-form.component.js';
     }
   `]
 })
-export class QuotationsComponent implements OnInit {
-  quotations: any[] = [];
+export class QuotationsComponent implements OnInit, AfterViewInit {
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   allQuotations: any[] = [];
   displayedColumns: string[] = ['id', 'vendor', 'product', 'product_price', 'quantity', 'delivery_price', 'total_landing_price', 'landing_price', 'lead_time', 'grade_spec', 'actions'];
 
@@ -188,6 +217,9 @@ export class QuotationsComponent implements OnInit {
   selectedVendor: number | null = null;
   selectedProduct: number | null = null;
   selectedProductGroup: number | null = null;
+  searchText: string = '';
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private apiService: ApiService,
@@ -196,6 +228,10 @@ export class QuotationsComponent implements OnInit {
 
   ngOnInit() {
     this.loadAllData();
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
   }
 
   loadAllData() {
@@ -217,38 +253,67 @@ export class QuotationsComponent implements OnInit {
   }
 
   applyFilters() {
-    if (this.selectedVendor === null && this.selectedProduct === null && this.selectedProductGroup === null) {
-      this.quotations = [...this.allQuotations];
-      return;
+    let filteredData = [...this.allQuotations];
+
+    if (this.selectedVendor !== null || this.selectedProduct !== null || this.selectedProductGroup !== null) {
+      filteredData = filteredData.filter(quote => {
+        let matchesVendor = true;
+        let matchesProduct = true;
+        let matchesProductGroup = true;
+
+        if (this.selectedVendor !== null) {
+          matchesVendor = quote.vendor === this.selectedVendor;
+        }
+
+        if (this.selectedProduct !== null) {
+          matchesProduct = quote.product === this.selectedProduct;
+        }
+
+        if (this.selectedProductGroup !== null) {
+          const product = this.products.find(p => p.id === quote.product);
+          matchesProductGroup = product && product.product_group === this.selectedProductGroup;
+        }
+
+        return matchesVendor && matchesProduct && matchesProductGroup;
+      });
     }
 
-    this.quotations = this.allQuotations.filter(quote => {
-      let matchesVendor = true;
-      let matchesProduct = true;
-      let matchesProductGroup = true;
+    this.applySearchToData(filteredData);
+  }
 
-      if (this.selectedVendor !== null) {
-        matchesVendor = quote.vendor === this.selectedVendor;
-      }
+  applySearchToData(data: any[]) {
+    if (this.searchText && this.searchText.trim() !== '') {
+      const searchTerm = this.searchText.toLowerCase().trim();
+      data = data.filter(quote => {
+        return (
+          quote.vendor_name?.toLowerCase().includes(searchTerm) ||
+          quote.product_name?.toLowerCase().includes(searchTerm) ||
+          quote.grade_spec?.toLowerCase().includes(searchTerm) ||
+          quote.id?.toString().includes(searchTerm)
+        );
+      });
+    }
 
-      if (this.selectedProduct !== null) {
-        matchesProduct = quote.product === this.selectedProduct;
-      }
+    this.dataSource.data = data;
+    if (this.paginator) {
+      this.paginator.firstPage();
+    }
+  }
 
-      if (this.selectedProductGroup !== null) {
-        const product = this.products.find(p => p.id === quote.product);
-        matchesProductGroup = product && product.product_group === this.selectedProductGroup;
-      }
+  applySearch() {
+    this.applyFilters();
+  }
 
-      return matchesVendor && matchesProduct && matchesProductGroup;
-    });
+  clearSearch() {
+    this.searchText = '';
+    this.applyFilters();
   }
 
   clearFilters() {
     this.selectedVendor = null;
     this.selectedProduct = null;
     this.selectedProductGroup = null;
-    this.quotations = [...this.allQuotations];
+    this.applyFilters();
   }
 
   openDialog(quotation?: any) {
