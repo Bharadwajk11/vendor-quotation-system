@@ -23,9 +23,7 @@ import { ApiService } from '../services/api.service';
     MatCheckboxModule
   ],
   template: `
-    <div class="dialog-header">
-      <h2 mat-dialog-title>{{ data ? 'Edit User' : 'Add New User' }}</h2>
-    </div>
+    <h2 mat-dialog-title>{{ data ? 'Edit User' : 'Add New User' }}</h2>
     <mat-dialog-content>
       <form #userForm="ngForm">
         <div class="form-row">
@@ -107,19 +105,6 @@ import { ApiService } from '../services/api.service';
     </mat-dialog-actions>
   `,
   styles: [`
-    .dialog-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 24px;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    h2 {
-      margin: 0;
-      padding: 0;
-    }
-
     mat-dialog-content {
       min-width: 450px;
       padding: 20px 24px;
@@ -145,12 +130,6 @@ import { ApiService } from '../services/api.service';
     }
 
     @media (max-width: 600px) {
-      .dialog-header {
-        padding: 12px;
-        flex-direction: row;
-        justify-content: space-between;
-      }
-
       mat-dialog-content {
         min-width: unset;
         padding: 12px !important;
@@ -158,7 +137,7 @@ import { ApiService } from '../services/api.service';
 
       h2 {
         font-size: 16px !important;
-        padding: 0 !important;
+        padding: 12px !important;
         margin: 0 !important;
       }
 
