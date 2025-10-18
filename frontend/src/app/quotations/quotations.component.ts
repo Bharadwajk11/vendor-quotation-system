@@ -5,6 +5,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/api.service';
 import { QuotationFormComponent } from './quotation-form.component.js';
 
@@ -17,7 +20,10 @@ import { QuotationFormComponent } from './quotation-form.component.js';
     MatButtonModule,
     MatIconModule,
     MatCardModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    FormsModule
   ],
   template: `
     <div class="page-container">
@@ -32,6 +38,45 @@ import { QuotationFormComponent } from './quotation-form.component.js';
           Add Quotation
         </button>
       </div>
+
+      <mat-card class="filters-card">
+        <div class="filters-container">
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Filter by Vendor</mat-label>
+            <mat-select [(ngModel)]="selectedVendor" (selectionChange)="applyFilters()">
+              <mat-option [value]="null">All Vendors</mat-option>
+              <mat-option *ngFor="let vendor of vendors" [value]="vendor.id">
+                {{ vendor.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Filter by Product</mat-label>
+            <mat-select [(ngModel)]="selectedProduct" (selectionChange)="applyFilters()">
+              <mat-option [value]="null">All Products</mat-option>
+              <mat-option *ngFor="let product of products" [value]="product.id">
+                {{ product.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Filter by Product Group</mat-label>
+            <mat-select [(ngModel)]="selectedProductGroup" (selectionChange)="applyFilters()">
+              <mat-option [value]="null">All Product Groups</mat-option>
+              <mat-option *ngFor="let group of productGroups" [value]="group.id">
+                {{ group.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button mat-stroked-button color="primary" (click)="clearFilters()" class="clear-filters-btn">
+            <mat-icon>clear</mat-icon>
+            Clear Filters
+          </button>
+        </div>
+      </mat-card>
 
       <mat-card>
         <table mat-table [dataSource]="quotations" class="mat-elevation-z0">
@@ -106,11 +151,43 @@ import { QuotationFormComponent } from './quotation-form.component.js';
         </table>
       </mat-card>
     </div>
-  `
+  `,
+  styles: [`
+    .filters-card {
+      margin-bottom: 24px;
+      padding: 16px;
+    }
+
+    .filters-container {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-field {
+      min-width: 200px;
+      flex: 1;
+    }
+
+    .clear-filters-btn {
+      margin-top: 8px;
+    }
+  `]
 })
 export class QuotationsComponent implements OnInit {
   quotations: any[] = [];
+  filteredQuotations: any[] = [];
+  allQuotations: any[] = [];
   displayedColumns: string[] = ['id', 'vendor', 'product', 'product_price', 'quantity', 'delivery_price', 'total_landing_price', 'landing_price', 'lead_time', 'grade_spec', 'actions'];
+
+  vendors: any[] = [];
+  products: any[] = [];
+  productGroups: any[] = [];
+
+  selectedVendor: number | null = null;
+  selectedProduct: number | null = null;
+  selectedProductGroup: number | null = null;
 
   constructor(
     private apiService: ApiService,
@@ -119,13 +196,70 @@ export class QuotationsComponent implements OnInit {
 
   ngOnInit() {
     this.loadQuotations();
+    this.loadVendors();
+    this.loadProducts();
+    this.loadProductGroups();
   }
 
   loadQuotations() {
     this.apiService.getQuotations().subscribe({
-      next: (data) => this.quotations = data.results || data,
+      next: (data) => {
+        this.allQuotations = data.results || data;
+        this.quotations = [...this.allQuotations];
+      },
       error: (err: any) => console.error('Error loading quotations:', err)
     });
+  }
+
+  loadVendors() {
+    this.apiService.getVendors().subscribe({
+      next: (data) => this.vendors = data.results || data,
+      error: (err: any) => console.error('Error loading vendors:', err)
+    });
+  }
+
+  loadProducts() {
+    this.apiService.getProducts().subscribe({
+      next: (data) => this.products = data.results || data,
+      error: (err: any) => console.error('Error loading products:', err)
+    });
+  }
+
+  loadProductGroups() {
+    this.apiService.getProductGroups().subscribe({
+      next: (data) => this.productGroups = data.results || data,
+      error: (err: any) => console.error('Error loading product groups:', err)
+    });
+  }
+
+  applyFilters() {
+    this.quotations = this.allQuotations.filter(quote => {
+      let matchesVendor = true;
+      let matchesProduct = true;
+      let matchesProductGroup = true;
+
+      if (this.selectedVendor !== null) {
+        matchesVendor = quote.vendor === this.selectedVendor;
+      }
+
+      if (this.selectedProduct !== null) {
+        matchesProduct = quote.product === this.selectedProduct;
+      }
+
+      if (this.selectedProductGroup !== null) {
+        const product = this.products.find(p => p.id === quote.product);
+        matchesProductGroup = product && product.product_group === this.selectedProductGroup;
+      }
+
+      return matchesVendor && matchesProduct && matchesProductGroup;
+    });
+  }
+
+  clearFilters() {
+    this.selectedVendor = null;
+    this.selectedProduct = null;
+    this.selectedProductGroup = null;
+    this.quotations = [...this.allQuotations];
   }
 
   openDialog(quotation?: any) {
