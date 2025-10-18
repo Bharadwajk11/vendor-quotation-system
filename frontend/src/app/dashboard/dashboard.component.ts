@@ -122,24 +122,15 @@ import { ChartConfiguration } from 'chart.js';
     }
 
     .action-buttons {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     .action-buttons button {
-      width: 100%;
-      font-size: 13px;
-      padding: 8px 12px;
-      height: auto;
-      min-height: 40px;
-    }
-
-    .action-buttons button mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
-      margin-right: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     @media (max-width: 600px) {
@@ -149,81 +140,26 @@ import { ChartConfiguration } from 'chart.js';
       }
 
       .action-buttons {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 6px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
       }
 
       .action-buttons button {
-        font-size: 11px;
-        padding: 6px 8px;
-        min-height: 36px;
+        flex-shrink: 0;
+        font-size: 12px;
+        padding: 8px 12px;
+        min-width: auto;
         white-space: nowrap;
       }
 
       .action-buttons button mat-icon {
-        font-size: 16px;
-        width: 16px;
-        height: 16px;
-        margin-right: 2px;
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
       }
 
-      .action-buttons button .mat-button-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 2px;
-      }
-    }
-
-    @media (max-width: 400px) {
-      .action-buttons button {
-        font-size: 10px;
-        padding: 5px 6px;
-        min-height: 32px;
-      }
-
-      .action-buttons button mat-icon {
-        font-size: 14px;
-        width: 14px;
-        height: 14px;
-      }
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 24px;
-      margin-bottom: 24px;
-    }
-
-    .stat-card {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-
-    .stat-card h3 {
-      margin: 0 0 10px 0;
-      color: #555;
-      font-size: 16px;
-      font-weight: normal;
-    }
-
-    .stat-card .value {
-      font-size: 32px;
-      font-weight: bold;
-      margin-bottom: 20px;
-      color: #3f51b5;
-    }
-
-    .stat-card button {
-      text-transform: uppercase;
-      font-weight: bold;
-    }
-
-    @media (max-width: 600px) {
       .stats-grid {
         gap: 12px;
       }
@@ -232,14 +168,8 @@ import { ChartConfiguration } from 'chart.js';
         padding: 16px;
       }
 
-      .stat-card .value {
-        font-size: 28px;
-      }
-    }
-
-    @media (max-width: 768px) {
       .charts-grid {
-        grid-template-columns: 1fr;
+        gap: 16px;
       }
     }
   `]
@@ -303,15 +233,15 @@ export class DashboardComponent implements OnInit {
     this.apiService.getCompanies().subscribe({
       next: (data) => this.stats.companies = data.count || data.results?.length || data.length || 0
     });
-
+    
     this.apiService.getVendors().subscribe({
       next: (data) => this.stats.vendors = data.count || data.results?.length || data.length || 0
     });
-
+    
     this.apiService.getProducts().subscribe({
       next: (data) => this.stats.products = data.count || data.results?.length || data.length || 0
     });
-
+    
     this.apiService.getQuotations().subscribe({
       next: (data) => this.stats.quotations = data.count || data.results?.length || data.length || 0
     });
@@ -321,7 +251,7 @@ export class DashboardComponent implements OnInit {
     this.apiService.getVendors().subscribe({
       next: (data) => {
         const vendors = data.results || data;
-
+        
         // Group vendors by city
         const cityCount: { [key: string]: number } = {};
         vendors.forEach((vendor: any) => {
@@ -349,11 +279,11 @@ export class DashboardComponent implements OnInit {
     this.apiService.getQuotations().subscribe({
       next: (data) => {
         const quotations = data.results || data;
-
+        
         // Group quotations by month
         const monthCount: { [key: string]: number } = {};
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
+        
         quotations.forEach((quotation: any) => {
           if (quotation.created_at) {
             const date = new Date(quotation.created_at);
