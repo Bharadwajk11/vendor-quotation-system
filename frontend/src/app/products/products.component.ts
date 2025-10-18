@@ -235,6 +235,116 @@ import { ProductFormComponent } from './product-form.component';
       color: #ccc;
       font-style: italic;
     }
+
+    @media (max-width: 768px) {
+      .page-container {
+        padding: 16px;
+      }
+
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .page-title {
+        font-size: 22px;
+      }
+
+      .page-subtitle {
+        font-size: 14px;
+      }
+
+      .add-button {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .filters-card {
+        padding: 10px 12px;
+      }
+
+      .compact-search {
+        min-width: 100%;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .page-container {
+        padding: 12px;
+      }
+
+      .page-title {
+        font-size: 20px;
+      }
+
+      .page-subtitle {
+        font-size: 13px;
+      }
+
+      .add-button {
+        font-size: 13px;
+        padding: 10px 16px;
+      }
+
+      table {
+        font-size: 13px;
+      }
+
+      th, td {
+        padding: 8px 4px;
+      }
+
+      .mat-chip {
+        font-size: 11px;
+        padding: 3px 6px;
+      }
+
+      button[mat-icon-button] {
+        width: 36px;
+        height: 36px;
+      }
+
+      button[mat-icon-button] mat-icon {
+        font-size: 20px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .page-container {
+        padding: 10px;
+      }
+
+      .page-title {
+        font-size: 18px;
+      }
+
+      .page-subtitle {
+        font-size: 12px;
+      }
+
+      .add-button {
+        font-size: 12px;
+        padding: 8px 12px;
+      }
+
+      table {
+        font-size: 12px;
+      }
+
+      th, td {
+        padding: 6px 3px;
+      }
+
+      button[mat-icon-button] {
+        width: 32px;
+        height: 32px;
+      }
+
+      button[mat-icon-button] mat-icon {
+        font-size: 18px;
+      }
+    }
   `]
 })
 export class ProductsComponent implements OnInit, AfterViewInit {
