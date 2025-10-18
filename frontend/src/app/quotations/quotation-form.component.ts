@@ -38,7 +38,7 @@ import { ProductFormComponent } from '../products/product-form.component';
                 {{ vendor.name }} - {{ vendor.city }}
               </mat-option>
             </mat-select>
-            <mat-hint>Manage vendors using the buttons →</mat-hint>
+            <mat-hint class="desktop-only-hint">Manage vendors using the buttons →</mat-hint>
           </mat-form-field>
           
           <div class="field-actions">
@@ -70,7 +70,7 @@ import { ProductFormComponent } from '../products/product-form.component';
                 {{ product.name }} ({{ product.grade_spec }})
               </mat-option>
             </mat-select>
-            <mat-hint>Manage products using the buttons →</mat-hint>
+            <mat-hint class="desktop-only-hint">Manage products using the buttons →</mat-hint>
           </mat-form-field>
           
           <div class="field-actions">
@@ -102,7 +102,7 @@ import { ProductFormComponent } from '../products/product-form.component';
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Quantity (kg)</mat-label>
           <input matInput formControlName="quantity" type="number" step="1" required (input)="calculateLandingPrice()">
-          <mat-hint>Enter quantity for landing price calculation</mat-hint>
+          <mat-hint class="desktop-only-hint">Enter quantity for landing price calculation</mat-hint>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
@@ -110,16 +110,16 @@ import { ProductFormComponent } from '../products/product-form.component';
           <input matInput formControlName="delivery_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
+        <mat-form-field appearance="outline" class="full-width calculated-field">
           <mat-label>Total Landing Price (₹)</mat-label>
           <input matInput formControlName="total_landing_price" type="number" step="0.01" readonly>
-          <mat-hint>Total cost: (Product Price × Quantity) + Delivery Charges</mat-hint>
+          <mat-hint class="desktop-only-hint">Total cost: (Product Price × Quantity) + Delivery Charges</mat-hint>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
+        <mat-form-field appearance="outline" class="full-width calculated-field">
           <mat-label>Landing Price (₹/kg)</mat-label>
           <input matInput formControlName="landing_price" type="number" step="0.01" readonly>
-          <mat-hint>Per kg cost: Total Landing Price ÷ Quantity</mat-hint>
+          <mat-hint class="desktop-only-hint">Per kg cost: Total Landing Price ÷ Quantity</mat-hint>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
@@ -187,32 +187,37 @@ import { ProductFormComponent } from '../products/product-form.component';
     @media (max-width: 600px) {
       mat-dialog-content {
         min-width: unset;
-        padding: 16px;
+        padding: 20px 16px;
       }
 
       mat-dialog-actions {
-        padding: 12px 16px;
+        padding: 16px;
         flex-direction: column-reverse;
         align-items: stretch;
+        gap: 12px;
       }
 
       mat-dialog-actions button {
         width: 100%;
-        margin: 4px 0 !important;
+        margin: 0 !important;
+        height: 44px;
+        font-size: 16px;
       }
 
       .full-width {
-        margin-bottom: 12px;
+        margin-bottom: 16px;
       }
 
       h2 {
-        font-size: 18px;
-        padding: 12px 16px;
+        font-size: 20px;
+        padding: 16px;
+        margin: 0;
       }
 
       .field-container {
         flex-wrap: wrap;
-        gap: 12px;
+        gap: 0;
+        margin-bottom: 20px;
       }
 
       .field-select {
@@ -222,16 +227,32 @@ import { ProductFormComponent } from '../products/product-form.component';
       .field-actions {
         width: 100%;
         justify-content: center;
-        padding-top: 0;
+        padding-top: 8px;
+        gap: 12px;
       }
 
       .field-actions button {
-        width: 44px;
-        height: 44px;
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
       }
 
       .field-actions mat-icon {
-        font-size: 22px;
+        font-size: 24px;
+      }
+
+      /* Hide helper text on mobile for cleaner look */
+      .desktop-only-hint {
+        display: none;
+      }
+
+      /* Larger touch targets for inputs */
+      mat-form-field {
+        font-size: 16px;
+      }
+
+      input {
+        font-size: 16px !important;
       }
     }
   `]
@@ -329,13 +350,11 @@ export class QuotationFormComponent implements OnInit {
   editVendor() {
     const vendorId = this.quotationForm.get('vendor')?.value;
     if (!vendorId) return;
-
-    const selectedVendor = this.vendors.find(v => v.id === vendorId);
-    if (!selectedVendor) return;
-
+    
+    const vendor = this.vendors.find(v => v.id === vendorId);
     const dialogRef = this.dialog.open(VendorFormComponent, {
       width: '600px',
-      data: selectedVendor
+      data: vendor
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -348,12 +367,12 @@ export class QuotationFormComponent implements OnInit {
   deleteVendor() {
     const vendorId = this.quotationForm.get('vendor')?.value;
     if (!vendorId) return;
-
+    
     if (confirm('Are you sure you want to delete this vendor?')) {
       this.apiService.deleteVendor(vendorId).subscribe({
         next: () => {
-          this.quotationForm.patchValue({ vendor: '' });
           this.loadVendors();
+          this.quotationForm.patchValue({ vendor: '' });
         },
         error: (err: any) => console.error('Error deleting vendor:', err)
       });
@@ -376,13 +395,11 @@ export class QuotationFormComponent implements OnInit {
   editProduct() {
     const productId = this.quotationForm.get('product')?.value;
     if (!productId) return;
-
-    const selectedProduct = this.products.find(p => p.id === productId);
-    if (!selectedProduct) return;
-
+    
+    const product = this.products.find(p => p.id === productId);
     const dialogRef = this.dialog.open(ProductFormComponent, {
       width: '600px',
-      data: selectedProduct
+      data: product
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -395,12 +412,12 @@ export class QuotationFormComponent implements OnInit {
   deleteProduct() {
     const productId = this.quotationForm.get('product')?.value;
     if (!productId) return;
-
+    
     if (confirm('Are you sure you want to delete this product?')) {
       this.apiService.deleteProduct(productId).subscribe({
         next: () => {
-          this.quotationForm.patchValue({ product: '' });
           this.loadProducts();
+          this.quotationForm.patchValue({ product: '' });
         },
         error: (err: any) => console.error('Error deleting product:', err)
       });
@@ -410,24 +427,14 @@ export class QuotationFormComponent implements OnInit {
   onSubmit() {
     if (this.quotationForm.valid) {
       const formValue = this.quotationForm.getRawValue();
-      const quotationData = {
-        vendor: formValue.vendor,
-        product: formValue.product,
-        product_price: formValue.product_price,
-        quantity: formValue.quantity,
-        delivery_price: formValue.delivery_price,
-        lead_time_days: formValue.lead_time_days,
-        grade_spec: formValue.grade_spec,
-        kilo_price: formValue.landing_price || formValue.product_price
-      };
       
       if (this.data?.id) {
-        this.apiService.updateQuotation(this.data.id, quotationData).subscribe({
+        this.apiService.updateQuotation(this.data.id, formValue).subscribe({
           next: () => this.dialogRef.close(true),
           error: (err: any) => console.error('Error updating quotation:', err)
         });
       } else {
-        this.apiService.createQuotation(quotationData).subscribe({
+        this.apiService.createQuotation(formValue).subscribe({
           next: () => this.dialogRef.close(true),
           error: (err: any) => console.error('Error creating quotation:', err)
         });

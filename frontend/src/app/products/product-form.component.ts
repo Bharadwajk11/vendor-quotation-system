@@ -39,7 +39,7 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
                 {{ group.name }}
               </mat-option>
             </mat-select>
-            <mat-hint>Manage groups using the buttons →</mat-hint>
+            <mat-hint class="desktop-only-hint">Manage groups using the buttons →</mat-hint>
           </mat-form-field>
           
           <div class="group-actions">
@@ -72,7 +72,7 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
                 {{ category.name }}
               </mat-option>
             </mat-select>
-            <mat-hint>Manage categories using the buttons →</mat-hint>
+            <mat-hint class="desktop-only-hint">Manage categories using the buttons →</mat-hint>
           </mat-form-field>
           
           <div class="group-actions">
@@ -177,32 +177,37 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
     @media (max-width: 600px) {
       mat-dialog-content {
         min-width: unset;
-        padding: 16px;
+        padding: 20px 16px;
       }
 
       mat-dialog-actions {
-        padding: 12px 16px;
+        padding: 16px;
         flex-direction: column-reverse;
         align-items: stretch;
+        gap: 12px;
       }
 
       mat-dialog-actions button {
         width: 100%;
-        margin: 4px 0 !important;
+        margin: 0 !important;
+        height: 44px;
+        font-size: 16px;
       }
 
       .full-width {
-        margin-bottom: 12px;
+        margin-bottom: 16px;
       }
 
       h2 {
-        font-size: 18px;
-        padding: 12px 16px;
+        font-size: 20px;
+        padding: 16px;
+        margin: 0;
       }
 
       .product-group-container {
         flex-wrap: wrap;
-        gap: 12px;
+        gap: 0;
+        margin-bottom: 20px;
       }
 
       .product-group-field {
@@ -212,16 +217,32 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
       .group-actions {
         width: 100%;
         justify-content: center;
-        padding-top: 0;
+        padding-top: 8px;
+        gap: 12px;
       }
 
       .group-actions button {
-        width: 44px;
-        height: 44px;
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
       }
 
       .group-actions mat-icon {
-        font-size: 22px;
+        font-size: 24px;
+      }
+
+      /* Hide helper text on mobile for cleaner look */
+      .desktop-only-hint {
+        display: none;
+      }
+
+      /* Larger touch targets for inputs */
+      mat-form-field {
+        font-size: 16px;
+      }
+
+      input {
+        font-size: 16px !important;
       }
     }
   `]
