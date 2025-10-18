@@ -46,20 +46,20 @@ import { ProductFormComponent } from '../products/product-form.component';
               </mat-form-field>
               
               <div class="action-buttons">
-                <button mat-icon-button color="primary" type="button" 
+                <button mat-raised-button color="primary" type="button" 
                         (click)="addVendor()" 
                         matTooltip="Add Vendor"
                         class="action-btn">
                   <mat-icon>add</mat-icon>
                 </button>
-                <button mat-icon-button color="accent" type="button" 
+                <button mat-raised-button color="accent" type="button" 
                         (click)="editVendor()" 
                         [disabled]="!quotationForm.get('vendor')?.value"
                         matTooltip="Edit Vendor"
                         class="action-btn">
                   <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button color="warn" type="button" 
+                <button mat-raised-button color="warn" type="button" 
                         (click)="deleteVendor()" 
                         [disabled]="!quotationForm.get('vendor')?.value"
                         matTooltip="Delete Vendor"
@@ -83,20 +83,20 @@ import { ProductFormComponent } from '../products/product-form.component';
               </mat-form-field>
               
               <div class="action-buttons">
-                <button mat-icon-button color="primary" type="button" 
+                <button mat-raised-button color="primary" type="button" 
                         (click)="addProduct()" 
                         matTooltip="Add Product"
                         class="action-btn">
                   <mat-icon>add</mat-icon>
                 </button>
-                <button mat-icon-button color="accent" type="button" 
+                <button mat-raised-button color="accent" type="button" 
                         (click)="editProduct()" 
                         [disabled]="!quotationForm.get('product')?.value"
                         matTooltip="Edit Product"
                         class="action-btn">
                   <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button color="warn" type="button" 
+                <button mat-raised-button color="warn" type="button" 
                         (click)="deleteProduct()" 
                         [disabled]="!quotationForm.get('product')?.value"
                         matTooltip="Delete Product"
@@ -218,8 +218,8 @@ import { ProductFormComponent } from '../products/product-form.component';
 
     .input-with-actions {
       display: flex;
-      align-items: center;
-      gap: 4px;
+      align-items: flex-start;
+      gap: 8px;
     }
 
     .flex-input {
@@ -229,22 +229,21 @@ import { ProductFormComponent } from '../products/product-form.component';
 
     .action-buttons {
       display: flex;
-      gap: 2px;
-      align-items: center;
+      gap: 8px;
+      padding-top: 4px;
     }
 
     .action-buttons button {
-      width: 32px;
-      height: 32px;
-      min-height: 32px;
-      min-width: 32px;
-      padding: 0;
+      width: 40px;
+      height: 40px;
+      min-height: 40px;
+      min-width: 40px;
     }
 
     .action-buttons mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
       margin: 0;
     }
 
@@ -252,21 +251,12 @@ import { ProductFormComponent } from '../products/product-form.component';
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 0 !important;
     }
 
     .full-width {
       width: 100%;
-      margin-bottom: 12px;
-    }
-
-    ::ng-deep .mat-mdc-form-field-infix {
-      padding-top: 10px !important;
-      padding-bottom: 10px !important;
-      min-height: 40px !important;
-    }
-
-    ::ng-deep .mat-mdc-text-field-wrapper {
-      height: 40px !important;
+      margin-bottom: 16px;
     }
 
     .divider {
@@ -363,16 +353,17 @@ import { ProductFormComponent } from '../products/product-form.component';
       }
 
       .form-section {
-        margin-bottom: 20px;
+        margin-bottom: 24px;
       }
 
       .section-label {
         font-size: 11px;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
       }
 
       .input-with-actions {
-        gap: 4px;
+        flex-direction: column;
+        gap: 10px;
       }
 
       .flex-input {
@@ -380,24 +371,28 @@ import { ProductFormComponent } from '../products/product-form.component';
       }
 
       .action-buttons {
-        gap: 2px;
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        padding-top: 0;
       }
 
       .action-buttons button {
-        width: 36px;
-        height: 36px;
-        min-height: 36px;
-        min-width: 36px;
+        width: 100%;
+        height: 44px;
+        min-height: 44px;
+        border-radius: 8px;
       }
 
       .action-buttons button mat-icon {
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
       }
 
       .full-width {
-        margin-bottom: 12px;
+        margin-bottom: 14px;
       }
 
       .divider {
@@ -450,16 +445,15 @@ import { ProductFormComponent } from '../products/product-form.component';
       }
 
       .action-buttons button {
-        width: 34px;
-        height: 34px;
-        min-height: 34px;
-        min-width: 34px;
+        width: 44px;
+        height: 44px;
+        min-height: 44px;
       }
 
       .action-buttons mat-icon {
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
+        font-size: 22px;
+        width: 22px;
+        height: 22px;
       }
     }
   `]
