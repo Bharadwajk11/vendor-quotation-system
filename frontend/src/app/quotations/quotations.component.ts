@@ -33,65 +33,65 @@ import { QuotationFormComponent } from './quotation-form.component.js';
   template: `
     <div class="page-container">
       <div class="page-header">
-        <h1 class="page-title">Quotations</h1>
-        <p class="page-subtitle">Manage vendor quotations and pricing</p>
-      </div>
-
-      <mat-card class="filters-card">
-        <div class="search-and-action">
-          <mat-form-field appearance="outline" class="search-field">
-            <mat-label>Search</mat-label>
-            <input matInput [(ngModel)]="searchText" (input)="applySearch()" 
-                   placeholder="Search by vendor, product, or grade...">
-            <mat-icon matPrefix>search</mat-icon>
-            <button mat-icon-button matSuffix *ngIf="searchText" (click)="clearSearch()">
-              <mat-icon>clear</mat-icon>
-            </button>
-          </mat-form-field>
-
+        <div class="header-content">
+          <div>
+            <h1 class="page-title">Quotations</h1>
+            <p class="page-subtitle">Manage vendor quotations and pricing</p>
+          </div>
           <button mat-raised-button color="primary" (click)="openDialog()" class="add-button">
             <mat-icon>add</mat-icon>
             Add Quotation
           </button>
         </div>
+      </div>
 
-        <div class="filters-container">
-          <mat-form-field appearance="outline" class="filter-field">
-            <mat-label>Filter by Vendor</mat-label>
-            <mat-select [(ngModel)]="selectedVendor" (selectionChange)="applyFilters()">
+      <mat-card class="filters-card">
+        <div class="compact-filters">
+          <mat-form-field appearance="outline" class="compact-search">
+            <mat-icon matPrefix class="search-icon">search</mat-icon>
+            <input matInput [(ngModel)]="searchText" (input)="applySearch()" 
+                   placeholder="Search quotations...">
+            <button mat-icon-button matSuffix *ngIf="searchText" (click)="clearSearch()" class="clear-btn">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="compact-filter">
+            <mat-icon matPrefix class="filter-icon">store</mat-icon>
+            <mat-select [(ngModel)]="selectedVendor" (selectionChange)="applyFilters()" placeholder="Vendor">
               <mat-option [value]="null">All Vendors</mat-option>
               <mat-option *ngFor="let vendor of vendors" [value]="vendor.id">
                 {{ vendor.name }}
               </mat-option>
             </mat-select>
-            <button mat-icon-button matSuffix *ngIf="selectedVendor !== null" (click)="clearVendorFilter($event)">
-              <mat-icon>clear</mat-icon>
+            <button mat-icon-button matSuffix *ngIf="selectedVendor !== null" (click)="clearVendorFilter($event)" class="clear-btn">
+              <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="filter-field">
-            <mat-label>Filter by Product</mat-label>
-            <mat-select [(ngModel)]="selectedProduct" (selectionChange)="applyFilters()">
+          <mat-form-field appearance="outline" class="compact-filter">
+            <mat-icon matPrefix class="filter-icon">inventory_2</mat-icon>
+            <mat-select [(ngModel)]="selectedProduct" (selectionChange)="applyFilters()" placeholder="Product">
               <mat-option [value]="null">All Products</mat-option>
               <mat-option *ngFor="let product of products" [value]="product.id">
                 {{ product.name }}
               </mat-option>
             </mat-select>
-            <button mat-icon-button matSuffix *ngIf="selectedProduct !== null" (click)="clearProductFilter($event)">
-              <mat-icon>clear</mat-icon>
+            <button mat-icon-button matSuffix *ngIf="selectedProduct !== null" (click)="clearProductFilter($event)" class="clear-btn">
+              <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="filter-field">
-            <mat-label>Filter by Product Group</mat-label>
-            <mat-select [(ngModel)]="selectedProductGroup" (selectionChange)="applyFilters()">
-              <mat-option [value]="null">All Product Groups</mat-option>
+          <mat-form-field appearance="outline" class="compact-filter">
+            <mat-icon matPrefix class="filter-icon">category</mat-icon>
+            <mat-select [(ngModel)]="selectedProductGroup" (selectionChange)="applyFilters()" placeholder="Group">
+              <mat-option [value]="null">All Groups</mat-option>
               <mat-option *ngFor="let group of productGroups" [value]="group.id">
                 {{ group.name }}
               </mat-option>
             </mat-select>
-            <button mat-icon-button matSuffix *ngIf="selectedProductGroup !== null" (click)="clearProductGroupFilter($event)">
-              <mat-icon>clear</mat-icon>
+            <button mat-icon-button matSuffix *ngIf="selectedProductGroup !== null" (click)="clearProductGroupFilter($event)" class="clear-btn">
+              <mat-icon>close</mat-icon>
             </button>
           </mat-form-field>
         </div>
@@ -177,41 +177,86 @@ import { QuotationFormComponent } from './quotation-form.component.js';
     </div>
   `,
   styles: [`
-    .filters-card {
-      margin-bottom: 24px;
-      padding: 16px;
-    }
-
-    .search-and-action {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
+    .page-header {
       margin-bottom: 16px;
     }
 
-    .search-field {
-      flex: 1;
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
     }
 
     .add-button {
-      margin-top: 4px;
       white-space: nowrap;
+      height: 40px;
     }
 
-    .filters-container {
+    .filters-card {
+      margin-bottom: 20px;
+      padding: 12px 16px;
+    }
+
+    .compact-filters {
       display: flex;
-      gap: 16px;
-      align-items: flex-start;
+      gap: 12px;
+      align-items: center;
       flex-wrap: wrap;
     }
 
-    .filter-field {
-      min-width: 250px;
+    .compact-search {
       flex: 1;
+      min-width: 280px;
     }
 
-    .filter-field button[matsuffix] {
-      margin-right: 8px;
+    .compact-filter {
+      min-width: 180px;
+      flex: 0 1 auto;
+    }
+
+    .compact-search, .compact-filter {
+      font-size: 14px;
+    }
+
+    .compact-search ::ng-deep .mat-mdc-form-field-infix {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      min-height: 40px;
+    }
+
+    .compact-filter ::ng-deep .mat-mdc-form-field-infix {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      min-height: 40px;
+    }
+
+    .search-icon, .filter-icon {
+      color: #666;
+      font-size: 20px;
+      margin-right: 4px;
+    }
+
+    .clear-btn {
+      width: 32px;
+      height: 32px;
+    }
+
+    .clear-btn mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      line-height: 18px;
+    }
+
+    ::ng-deep .compact-search .mat-mdc-text-field-wrapper,
+    ::ng-deep .compact-filter .mat-mdc-text-field-wrapper {
+      padding-bottom: 0;
+    }
+
+    ::ng-deep .compact-search .mat-mdc-form-field-subscript-wrapper,
+    ::ng-deep .compact-filter .mat-mdc-form-field-subscript-wrapper {
+      display: none;
     }
   `]
 })
