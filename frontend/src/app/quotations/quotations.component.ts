@@ -285,6 +285,22 @@ import { QuotationFormComponent } from './quotation-form.component.js';
     ::ng-deep .compact-filter .mat-mdc-form-field-subscript-wrapper {
       display: none;
     }
+
+    table {
+      width: 100%;
+    }
+
+    th {
+      background-color: #3f51b5;
+      font-weight: 600;
+      color: white;
+      padding: 16px;
+    }
+
+    td {
+      color: #555;
+      padding: 12px 16px;
+    }
   `]
 })
 export class QuotationsComponent implements OnInit, AfterViewInit {
