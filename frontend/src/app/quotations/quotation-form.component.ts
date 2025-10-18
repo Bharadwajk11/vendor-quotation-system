@@ -28,435 +28,190 @@ import { ProductFormComponent } from '../products/product-form.component';
     MatTooltipModule
   ],
   template: `
-    <div class="form-container">
-      <h1 class="form-title">{{ data?.id ? 'Edit' : 'Add' }} Quotation</h1>
-      
-      <form [formGroup]="quotationForm" (ngSubmit)="onSubmit()">
-        <div class="form-content">
+    <h2 mat-dialog-title>{{ data?.id ? 'Edit' : 'Add' }} Quotation</h2>
+    
+    <mat-dialog-content>
+      <form [formGroup]="quotationForm">
+        <!-- Vendor Selection -->
+        <div class="input-with-actions">
+          <mat-form-field appearance="outline" class="flex-input">
+            <mat-label>Vendor</mat-label>
+            <mat-select formControlName="vendor" required>
+              <mat-option *ngFor="let vendor of vendors" [value]="vendor.id">
+                {{ vendor.name }} - {{ vendor.city }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
           
-          <!-- Vendor Selection Section -->
-          <div class="form-section">
-            <label class="section-label">Select Vendor</label>
-            <div class="input-with-icons">
-              <mat-form-field appearance="outline" class="compact-field">
-                <mat-select formControlName="vendor" required placeholder="Choose vendor">
-                  <mat-option *ngFor="let vendor of vendors" [value]="vendor.id">
-                    {{ vendor.name }} - {{ vendor.city }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-              
-              <div class="inline-icons">
-                <button mat-icon-button color="primary" type="button" 
-                        (click)="addVendor()" 
-                        matTooltip="Add"
-                        class="icon-btn">
-                  <mat-icon>add</mat-icon>
-                </button>
-                <button mat-icon-button color="accent" type="button" 
-                        (click)="editVendor()" 
-                        [disabled]="!quotationForm.get('vendor')?.value"
-                        matTooltip="Edit"
-                        class="icon-btn">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button color="warn" type="button" 
-                        (click)="deleteVendor()" 
-                        [disabled]="!quotationForm.get('vendor')?.value"
-                        matTooltip="Delete"
-                        class="icon-btn">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Product Selection Section -->
-          <div class="form-section">
-            <label class="section-label">Select Product</label>
-            <div class="input-with-icons">
-              <mat-form-field appearance="outline" class="compact-field">
-                <mat-select formControlName="product" required placeholder="Choose product">
-                  <mat-option *ngFor="let product of products" [value]="product.id">
-                    {{ product.name }} ({{ product.grade_spec }})
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-              
-              <div class="inline-icons">
-                <button mat-icon-button color="primary" type="button" 
-                        (click)="addProduct()" 
-                        matTooltip="Add"
-                        class="icon-btn">
-                  <mat-icon>add</mat-icon>
-                </button>
-                <button mat-icon-button color="accent" type="button" 
-                        (click)="editProduct()" 
-                        [disabled]="!quotationForm.get('product')?.value"
-                        matTooltip="Edit"
-                        class="icon-btn">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button color="warn" type="button" 
-                        (click)="deleteProduct()" 
-                        [disabled]="!quotationForm.get('product')?.value"
-                        matTooltip="Delete"
-                        class="icon-btn">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <!-- Pricing Section -->
-          <div class="form-section">
-            <label class="section-label">Pricing Details</label>
-            
-            <mat-form-field appearance="outline" class="compact-field full-width">
-              <mat-label>Product Price (₹/kg)</mat-label>
-              <input matInput formControlName="product_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="compact-field full-width">
-              <mat-label>Quantity (kg)</mat-label>
-              <input matInput formControlName="quantity" type="number" step="1" required (input)="calculateLandingPrice()">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="compact-field full-width">
-              <mat-label>Delivery Charges (₹)</mat-label>
-              <input matInput formControlName="delivery_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
-            </mat-form-field>
-          </div>
-
-          <div class="divider"></div>
-
-          <!-- Calculated Results Section -->
-          <div class="form-section">
-            <label class="section-label">Calculated Costs</label>
-            
-            <mat-form-field appearance="outline" class="compact-field full-width">
-              <mat-label>Total Landing Price (₹)</mat-label>
-              <input matInput [value]="quotationForm.get('total_landing_price')?.value || '0.00'" readonly>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="compact-field full-width">
-              <mat-label>Landing Price per kg (₹/kg)</mat-label>
-              <input matInput [value]="quotationForm.get('landing_price')?.value || '0.00'" readonly>
-            </mat-form-field>
-          </div>
-
-          <div class="divider"></div>
-
-          <!-- Additional Details Section -->
-          <div class="form-section">
-            <label class="section-label">Additional Information</label>
-            
-            <mat-form-field appearance="outline" class="compact-field full-width">
-              <mat-label>Lead Time (days)</mat-label>
-              <input matInput formControlName="lead_time_days" type="number" required>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="compact-field full-width">
-              <mat-label>Grade/Specification</mat-label>
-              <input matInput formControlName="grade_spec">
-            </mat-form-field>
+          <div class="action-buttons">
+            <button mat-mini-fab color="primary" type="button" (click)="addVendor()" matTooltip="Add Vendor">
+              <mat-icon>add</mat-icon>
+            </button>
+            <button mat-mini-fab color="accent" type="button" (click)="editVendor()" 
+                    [disabled]="!quotationForm.get('vendor')?.value" matTooltip="Edit Vendor">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-mini-fab color="warn" type="button" (click)="deleteVendor()" 
+                    [disabled]="!quotationForm.get('vendor')?.value" matTooltip="Delete Vendor">
+              <mat-icon>delete</mat-icon>
+            </button>
           </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="form-actions">
-          <button mat-raised-button color="primary" type="submit" [disabled]="!quotationForm.valid" class="submit-btn">
-            {{ data?.id ? 'Update' : 'Create' }}
-          </button>
-          <button mat-stroked-button type="button" (click)="dialogRef.close()" class="cancel-btn">
-            Cancel
-          </button>
+        <!-- Product Selection -->
+        <div class="input-with-actions">
+          <mat-form-field appearance="outline" class="flex-input">
+            <mat-label>Product</mat-label>
+            <mat-select formControlName="product" required>
+              <mat-option *ngFor="let product of products" [value]="product.id">
+                {{ product.name }} ({{ product.grade_spec }})
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <div class="action-buttons">
+            <button mat-mini-fab color="primary" type="button" (click)="addProduct()" matTooltip="Add Product">
+              <mat-icon>add</mat-icon>
+            </button>
+            <button mat-mini-fab color="accent" type="button" (click)="editProduct()" 
+                    [disabled]="!quotationForm.get('product')?.value" matTooltip="Edit Product">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-mini-fab color="warn" type="button" (click)="deleteProduct()" 
+                    [disabled]="!quotationForm.get('product')?.value" matTooltip="Delete Product">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         </div>
+
+        <!-- Pricing Details -->
+        <mat-form-field appearance="outline">
+          <mat-label>Product Price (₹/kg)</mat-label>
+          <input matInput formControlName="product_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Quantity (kg)</mat-label>
+          <input matInput formControlName="quantity" type="number" step="1" required (input)="calculateLandingPrice()">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Delivery Charges (₹)</mat-label>
+          <input matInput formControlName="delivery_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
+        </mat-form-field>
+
+        <!-- Calculated Values -->
+        <mat-form-field appearance="outline">
+          <mat-label>Total Landing Price (₹)</mat-label>
+          <input matInput [value]="quotationForm.get('total_landing_price')?.value || '0.00'" readonly>
+          <mat-hint>Product Price × Quantity + Delivery Charges</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Landing Price per kg (₹/kg)</mat-label>
+          <input matInput [value]="quotationForm.get('landing_price')?.value || '0.00'" readonly>
+          <mat-hint>Total Landing Price ÷ Quantity</mat-hint>
+        </mat-form-field>
+
+        <!-- Additional Information -->
+        <mat-form-field appearance="outline">
+          <mat-label>Lead Time (days)</mat-label>
+          <input matInput formControlName="lead_time_days" type="number" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Grade/Specification</mat-label>
+          <input matInput formControlName="grade_spec">
+        </mat-form-field>
       </form>
-    </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="dialogRef.close()">Cancel</button>
+      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!quotationForm.valid">
+        {{ data?.id ? 'Update' : 'Create' }}
+      </button>
+    </mat-dialog-actions>
   `,
   styles: [`
-    .form-container {
+    mat-dialog-content {
+      min-width: 500px;
+      max-height: 70vh;
+    }
+
+    form {
       display: flex;
       flex-direction: column;
-      max-height: 90vh;
-      background: #ffffff;
+      gap: 16px;
     }
 
-    .form-title {
-      font-size: 20px;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin: 0;
-      padding: 16px 20px;
-      border-bottom: 1px solid #e5e7eb;
-      background: #f9fafb;
-    }
-
-    .form-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px 20px;
-    }
-
-    .form-section {
-      margin-bottom: 16px;
-    }
-
-    .section-label {
-      display: block;
-      font-size: 11px;
-      font-weight: 600;
-      color: #6b7280;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-    }
-
-    .input-with-icons {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .compact-field {
-      flex: 1;
-      margin-bottom: 0;
-    }
-
-    .inline-icons {
-      display: flex;
-      gap: 2px;
-      flex-shrink: 0;
-    }
-
-    .icon-btn {
-      width: 32px;
-      height: 32px;
-      line-height: 32px;
-      padding: 0;
-    }
-
-    .icon-btn mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
-      line-height: 18px;
-    }
-
-    .full-width {
+    mat-form-field {
       width: 100%;
-      margin-bottom: 10px;
     }
 
-    .divider {
-      height: 1px;
-      background: #e5e7eb;
-      margin: 16px 0;
-    }
-
-    
-
-    .form-actions {
-      padding: 12px 20px;
-      border-top: 1px solid #e5e7eb;
-      background: #f9fafb;
+    .input-with-actions {
       display: flex;
-      gap: 10px;
+      align-items: flex-start;
+      gap: 8px;
     }
 
-    .submit-btn,
-    .cancel-btn {
+    .flex-input {
       flex: 1;
-      height: 42px;
-      font-size: 14px;
-      font-weight: 600;
-      border-radius: 8px;
     }
 
-    /* Compact Material Form Fields */
-    ::ng-deep .compact-field .mat-mdc-text-field-wrapper {
-      padding-bottom: 0;
-    }
-
-    ::ng-deep .compact-field .mat-mdc-form-field-subscript-wrapper {
-      display: none;
-    }
-
-    ::ng-deep .compact-field .mat-mdc-form-field-infix {
-      min-height: 36px;
+    .action-buttons {
+      display: flex;
+      gap: 4px;
       padding-top: 8px;
-      padding-bottom: 8px;
     }
 
-    ::ng-deep .compact-field input,
-    ::ng-deep .compact-field .mat-mdc-select {
-      font-size: 13px;
+    .action-buttons button {
+      width: 36px;
+      height: 36px;
     }
 
-    ::ng-deep .compact-field .mat-mdc-floating-label {
-      font-size: 12px;
+    .action-buttons mat-icon {
+      font-size: 20px;
     }
 
-    ::ng-deep .compact-field input::placeholder {
-      text-align: left;
-    }
-
-    ::ng-deep .compact-field .mat-mdc-select-placeholder {
-      text-align: left;
-    }
-
-    /* Mobile Responsive Styles */
     @media (max-width: 600px) {
-      .form-title {
-        font-size: 18px;
-        padding: 14px 16px;
+      mat-dialog-content {
+        min-width: unset;
+        width: 100%;
       }
 
-      .form-content {
-        padding: 14px 16px;
+      .input-with-actions {
+        flex-direction: column;
+        gap: 12px;
       }
 
-      .form-section {
-        margin-bottom: 14px;
+      .flex-input {
+        width: 100%;
       }
 
-      .section-label {
-        font-size: 10px;
-        margin-bottom: 6px;
+      .action-buttons {
+        width: 100%;
+        justify-content: center;
+        gap: 12px;
+        padding-top: 0;
       }
 
-      .input-with-icons {
-        gap: 4px;
+      .action-buttons button {
+        width: 48px;
+        height: 48px;
       }
 
-      .inline-icons {
-        gap: 1px;
-      }
-
-      .icon-btn {
-        width: 28px;
-        height: 28px;
-        line-height: 28px;
-      }
-
-      .icon-btn mat-icon {
+      mat-form-field {
         font-size: 16px;
-        width: 16px;
-        height: 16px;
-        line-height: 16px;
       }
 
-      .full-width {
-        margin-bottom: 8px;
+      mat-dialog-actions {
+        flex-direction: column-reverse;
       }
 
-      .divider {
-        margin: 12px 0;
-      }
-
-      
-
-      .form-actions {
-        padding: 10px 16px;
-        gap: 8px;
-      }
-
-      .submit-btn,
-      .cancel-btn {
-        height: 38px;
-        font-size: 13px;
-      }
-
-      /* Even more compact form fields on mobile */
-      ::ng-deep .compact-field .mat-mdc-form-field-infix {
-        min-height: 32px;
-        padding-top: 6px;
-        padding-bottom: 6px;
-      }
-
-      ::ng-deep .compact-field input,
-      ::ng-deep .compact-field .mat-mdc-select {
-        font-size: 12px;
-      }
-
-      ::ng-deep .compact-field .mat-mdc-floating-label {
-        font-size: 11px;
-      }
-
-      ::ng-deep .compact-field .mat-mdc-select-value {
-        font-size: 12px;
-      }
-    }
-
-    /* Tablet Portrait */
-    @media (min-width: 601px) and (max-width: 900px) {
-      .form-title {
-        font-size: 19px;
-        padding: 15px 18px;
-      }
-
-      .form-content {
-        padding: 15px 18px;
-      }
-
-      .icon-btn {
-        width: 30px;
-        height: 30px;
-      }
-
-      .icon-btn mat-icon {
-        font-size: 17px;
-        width: 17px;
-        height: 17px;
-      }
-
-      ::ng-deep .compact-field .mat-mdc-form-field-infix {
-        min-height: 34px;
-        padding-top: 7px;
-        padding-bottom: 7px;
-      }
-
-      ::ng-deep .compact-field input,
-      ::ng-deep .compact-field .mat-mdc-select {
-        font-size: 12.5px;
-      }
-    }
-
-    /* Desktop */
-    @media (min-width: 901px) {
-      .form-title {
-        font-size: 22px;
-        padding: 18px 24px;
-      }
-
-      .form-content {
-        padding: 20px 24px;
-      }
-
-      .form-section {
-        margin-bottom: 20px;
-      }
-
-      .section-label {
-        font-size: 12px;
-        margin-bottom: 10px;
-      }
-
-      .divider {
-        margin: 20px 0;
-      }
-
-      .form-actions {
-        padding: 14px 24px;
-      }
-
-      .submit-btn,
-      .cancel-btn {
-        height: 44px;
-        font-size: 15px;
+      mat-dialog-actions button {
+        width: 100%;
+        height: 48px;
       }
     }
   `]
@@ -544,6 +299,7 @@ export class QuotationFormComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadVendors();
+        this.quotationForm.patchValue({ vendor: result.id });
       }
     });
   }
@@ -551,7 +307,7 @@ export class QuotationFormComponent implements OnInit {
   editVendor() {
     const vendorId = this.quotationForm.get('vendor')?.value;
     if (!vendorId) return;
-    
+
     const vendor = this.vendors.find(v => v.id === vendorId);
     const dialogRef = this.dialog.open(VendorFormComponent, {
       width: '600px',
@@ -568,7 +324,7 @@ export class QuotationFormComponent implements OnInit {
   deleteVendor() {
     const vendorId = this.quotationForm.get('vendor')?.value;
     if (!vendorId) return;
-    
+
     if (confirm('Are you sure you want to delete this vendor?')) {
       this.apiService.deleteVendor(vendorId).subscribe({
         next: () => {
@@ -589,6 +345,7 @@ export class QuotationFormComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadProducts();
+        this.quotationForm.patchValue({ product: result.id });
       }
     });
   }
@@ -596,7 +353,7 @@ export class QuotationFormComponent implements OnInit {
   editProduct() {
     const productId = this.quotationForm.get('product')?.value;
     if (!productId) return;
-    
+
     const product = this.products.find(p => p.id === productId);
     const dialogRef = this.dialog.open(ProductFormComponent, {
       width: '600px',
@@ -613,7 +370,7 @@ export class QuotationFormComponent implements OnInit {
   deleteProduct() {
     const productId = this.quotationForm.get('product')?.value;
     if (!productId) return;
-    
+
     if (confirm('Are you sure you want to delete this product?')) {
       this.apiService.deleteProduct(productId).subscribe({
         next: () => {
@@ -628,18 +385,7 @@ export class QuotationFormComponent implements OnInit {
   onSubmit() {
     if (this.quotationForm.valid) {
       const formValue = this.quotationForm.getRawValue();
-      
-      if (this.data?.id) {
-        this.apiService.updateQuotation(this.data.id, formValue).subscribe({
-          next: () => this.dialogRef.close(true),
-          error: (err: any) => console.error('Error updating quotation:', err)
-        });
-      } else {
-        this.apiService.createQuotation(formValue).subscribe({
-          next: () => this.dialogRef.close(true),
-          error: (err: any) => console.error('Error creating quotation:', err)
-        });
-      }
+      this.dialogRef.close(formValue);
     }
   }
 }
