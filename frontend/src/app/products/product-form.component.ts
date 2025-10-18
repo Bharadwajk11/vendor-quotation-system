@@ -30,6 +30,11 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
     <h2 mat-dialog-title>{{ data?.id ? 'Edit' : 'Add' }} Product</h2>
     <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
       <mat-dialog-content>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Product Name</mat-label>
+          <input matInput formControlName="name" required>
+        </mat-form-field>
+
         <div class="product-group-container">
           <mat-form-field appearance="outline" class="product-group-field">
             <mat-label>Product Group (Optional)</mat-label>
@@ -95,11 +100,6 @@ import { ProductCategoryFormComponent } from '../product-categories/product-cate
             </button>
           </div>
         </div>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Product Name</mat-label>
-          <input matInput formControlName="name" required>
-        </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Grade/Specification</mat-label>
