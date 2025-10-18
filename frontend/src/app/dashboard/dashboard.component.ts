@@ -118,6 +118,7 @@ import { ChartConfiguration } from 'chart.js';
 
     .quick-actions {
       padding: 20px;
+      margin-bottom: 24px;
     }
 
     .action-buttons {
