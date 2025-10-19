@@ -442,7 +442,17 @@ export class QuotationFormComponent implements OnInit {
   onSubmit() {
     if (this.quotationForm.valid) {
       const formValue = this.quotationForm.getRawValue();
-      this.dialogRef.close(formValue);
+      
+      // Clean up empty strings for optional numeric fields - convert to null
+      const cleanedValue = {
+        ...formValue,
+        quantity: formValue.quantity === '' || formValue.quantity === null ? null : formValue.quantity,
+        delivery_price: formValue.delivery_price === '' || formValue.delivery_price === null ? null : formValue.delivery_price,
+        lead_time_days: formValue.lead_time_days === '' || formValue.lead_time_days === null ? null : formValue.lead_time_days,
+        grade_spec: formValue.grade_spec === '' ? null : formValue.grade_spec
+      };
+      
+      this.dialogRef.close(cleanedValue);
     }
   }
 }
