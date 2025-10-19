@@ -84,16 +84,19 @@ import { ProductFormComponent } from '../products/product-form.component';
         <mat-form-field appearance="outline">
           <mat-label>Product Price (₹/kg)</mat-label>
           <input matInput formControlName="product_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
+          <mat-hint>Required field</mat-hint>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Quantity (kg)</mat-label>
-          <input matInput formControlName="quantity" type="number" step="1" required (input)="calculateLandingPrice()">
+          <input matInput formControlName="quantity" type="number" step="1" (input)="calculateLandingPrice()">
+          <mat-hint>Optional</mat-hint>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Delivery Charges (₹)</mat-label>
-          <input matInput formControlName="delivery_price" type="number" step="0.01" required (input)="calculateLandingPrice()">
+          <input matInput formControlName="delivery_price" type="number" step="0.01" (input)="calculateLandingPrice()">
+          <mat-hint>Optional</mat-hint>
         </mat-form-field>
 
         <!-- Calculated Values -->
@@ -112,12 +115,14 @@ import { ProductFormComponent } from '../products/product-form.component';
         <!-- Additional Information -->
         <mat-form-field appearance="outline">
           <mat-label>Lead Time (days)</mat-label>
-          <input matInput formControlName="lead_time_days" type="number" required>
+          <input matInput formControlName="lead_time_days" type="number">
+          <mat-hint>Optional</mat-hint>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Grade/Specification</mat-label>
           <input matInput formControlName="grade_spec">
+          <mat-hint>Optional</mat-hint>
         </mat-form-field>
       </form>
     </mat-dialog-content>
@@ -284,11 +289,11 @@ export class QuotationFormComponent implements OnInit {
       vendor: ['', Validators.required],
       product: ['', Validators.required],
       product_price: ['', [Validators.required, Validators.min(0)]],
-      quantity: ['', [Validators.required, Validators.min(1)]],
-      delivery_price: ['', [Validators.required, Validators.min(0)]],
+      quantity: ['', Validators.min(1)],
+      delivery_price: ['', Validators.min(0)],
       total_landing_price: [{ value: '', disabled: true }],
       landing_price: [{ value: '', disabled: true }],
-      lead_time_days: ['', [Validators.required, Validators.min(1)]],
+      lead_time_days: ['', Validators.min(1)],
       grade_spec: ['']
     });
   }
