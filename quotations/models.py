@@ -109,11 +109,14 @@ class Product(models.Model):
 
 
 class Quotation(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='quotations', null=True, blank=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='quotations')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='quotations')
     product_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField(null=True, blank=True)
     delivery_price = models.DecimalField(max_digits=10, decimal_places=2)
+    total_landing_price = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    landing_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     kilo_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     grade_spec = models.CharField(max_length=200)
     lead_time_days = models.IntegerField()
@@ -125,6 +128,14 @@ class Quotation(models.Model):
 
     def __str__(self):
         return f"{self.vendor.name} - {self.product.name} - ₹{self.product_price}"
+    
+    def save(self, *args, **kwargs):
+        # Auto-calculate total landing price and landing price per kg
+        if self.product_price and self.quantity and self.delivery_price is not None:
+            self.total_landing_price = (self.product_price * self.quantity) + self.delivery_price
+            if self.quantity > 0:
+                self.landing_price = self.total_landing_price / self.quantity
+        super().save(*args, **kwargs)
 
 
 class OrderRequest(models.Model):
