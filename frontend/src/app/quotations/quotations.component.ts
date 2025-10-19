@@ -433,7 +433,19 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadAllData();
+        if (quotation?.id) {
+          // Update existing quotation
+          this.apiService.updateQuotation(quotation.id, result).subscribe({
+            next: () => this.loadAllData(),
+            error: (err: any) => console.error('Error updating quotation:', err)
+          });
+        } else {
+          // Create new quotation
+          this.apiService.createQuotation(result).subscribe({
+            next: () => this.loadAllData(),
+            error: (err: any) => console.error('Error creating quotation:', err)
+          });
+        }
       }
     });
   }
