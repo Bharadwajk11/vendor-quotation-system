@@ -349,6 +349,10 @@ def compare_vendors(request):
     comparison_results = []
     
     for quotation in quotations:
+        # Skip quotations that don't have complete data for comparison
+        if quotation.delivery_price is None or quotation.lead_time_days is None:
+            continue
+        
         base_delivery_price = quotation.delivery_price
         
         # Apply interstate shipping surcharge if vendor is in different state
@@ -378,6 +382,13 @@ def compare_vendors(request):
             'base_delivery_price': base_delivery_price,
             'adjusted_delivery_price': adjusted_delivery_price
         })
+    
+    # Check if any quotations have complete data for comparison
+    if not comparison_results:
+        return Response(
+            {"error": "No quotations with complete data (delivery price and lead time) found for comparison"}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
     
     # Sort by: 1st Total Landing Price, 2nd Landing Price per kg, 3rd Lead Time
     comparison_results.sort(key=lambda x: (

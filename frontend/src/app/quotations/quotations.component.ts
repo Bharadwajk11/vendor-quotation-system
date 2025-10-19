@@ -145,7 +145,7 @@ import { QuotationFormComponent } from './quotation-form.component.js';
 
           <ng-container matColumnDef="landing_price">
             <th mat-header-cell *matHeaderCellDef>Landing Price (₹/kg)</th>
-            <td mat-cell *matCellDef="let quote">₹{{ quote.kilo_price }}</td>
+            <td mat-cell *matCellDef="let quote">{{ calculateLandingPricePerKg(quote) }}</td>
           </ng-container>
 
           <ng-container matColumnDef="lead_time">
@@ -463,6 +463,15 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
     if (quote.quantity && quote.product_price && quote.delivery_price) {
       const total = (parseFloat(quote.product_price) * parseFloat(quote.quantity)) + parseFloat(quote.delivery_price);
       return '₹' + total.toFixed(2);
+    }
+    return '-';
+  }
+
+  calculateLandingPricePerKg(quote: any): string {
+    if (quote.quantity && quote.product_price && quote.delivery_price) {
+      const total = (parseFloat(quote.product_price) * parseFloat(quote.quantity)) + parseFloat(quote.delivery_price);
+      const perKg = total / parseFloat(quote.quantity);
+      return '₹' + perKg.toFixed(2);
     }
     return '-';
   }
