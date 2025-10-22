@@ -37,6 +37,16 @@ db.sqlite3-journal
 
 # Database
 *.db
+db.sqlite3
+*.sqlite3
+
+# Replit-specific secrets (DO NOT COMMIT)
+.replit_secrets
+.upm/
+
+# Sensitive configuration files
+config.json
+secrets.json
 
 # Node.js / Angular
 node_modules/
