@@ -59,11 +59,6 @@ import { VendorFormComponent } from './vendor-form.component';
         <!-- Desktop Table View -->
         <div class="desktop-view">
           <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
-            <ng-container matColumnDef="id">
-              <th mat-header-cell *matHeaderCellDef>ID</th>
-              <td mat-cell *matCellDef="let vendor">{{ vendor.id }}</td>
-            </ng-container>
-
             <ng-container matColumnDef="name">
               <th mat-header-cell *matHeaderCellDef>Vendor Name</th>
               <td mat-cell *matCellDef="let vendor">
@@ -119,7 +114,7 @@ import { VendorFormComponent } from './vendor-form.component';
           <div class="mobile-list">
             <div class="mobile-list-item" *ngFor="let vendor of getPaginatedData()">
               <div class="mobile-item-header">
-                <div class="item-id">ID: {{ vendor.id }}</div>
+                <div class="item-name">{{ vendor.name }}</div>
                 <div class="item-actions">
                   <button mat-icon-button color="primary" (click)="openDialog(vendor)">
                     <mat-icon>edit</mat-icon>
@@ -403,7 +398,7 @@ import { VendorFormComponent } from './vendor-form.component';
 export class VendorsComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   allVendors: any[] = [];
-  displayedColumns: string[] = ['id', 'name', 'city', 'state', 'rating', 'contact', 'actions'];
+  displayedColumns: string[] = ['name', 'city', 'state', 'rating', 'contact', 'actions'];
   searchText: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;

@@ -59,11 +59,6 @@ import { ProductFormComponent } from './product-form.component';
         <!-- Desktop Table View -->
         <div class="desktop-view">
           <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
-            <ng-container matColumnDef="id">
-              <th mat-header-cell *matHeaderCellDef>ID</th>
-              <td mat-cell *matCellDef="let product">{{ product.id }}</td>
-            </ng-container>
-
             <ng-container matColumnDef="name">
               <th mat-header-cell *matHeaderCellDef>Product Name</th>
               <td mat-cell *matCellDef="let product">
@@ -123,7 +118,7 @@ import { ProductFormComponent } from './product-form.component';
           <div class="mobile-list">
             <div class="mobile-list-item" *ngFor="let product of getPaginatedData()">
               <div class="mobile-item-header">
-                <div class="item-id">ID: {{ product.id }}</div>
+                <div class="item-name">{{ product.name }}</div>
                 <div class="item-actions">
                   <button mat-icon-button color="primary" (click)="openDialog(product)">
                     <mat-icon>edit</mat-icon>
@@ -546,7 +541,7 @@ import { ProductFormComponent } from './product-form.component';
 export class ProductsComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   allProducts: any[] = [];
-  displayedColumns: string[] = ['id', 'name', 'product_group', 'product_category', 'grade_spec', 'unit_type', 'actions'];
+  displayedColumns: string[] = ['name', 'product_group', 'product_category', 'grade_spec', 'unit_type', 'actions'];
   searchText: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;

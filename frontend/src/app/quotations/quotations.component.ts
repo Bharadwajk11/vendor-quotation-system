@@ -101,11 +101,6 @@ import { QuotationFormComponent } from './quotation-form.component.js';
         <!-- Desktop Table View -->
         <div class="desktop-view">
           <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
-            <ng-container matColumnDef="id">
-              <th mat-header-cell *matHeaderCellDef>ID</th>
-              <td mat-cell *matCellDef="let quote">{{ quote.id }}</td>
-            </ng-container>
-
             <ng-container matColumnDef="vendor">
               <th mat-header-cell *matHeaderCellDef>Vendor</th>
               <td mat-cell *matCellDef="let quote">
@@ -182,7 +177,7 @@ import { QuotationFormComponent } from './quotation-form.component.js';
           <div class="mobile-list">
             <div class="mobile-list-item" *ngFor="let quote of dataSource.filteredData">
               <div class="mobile-item-header">
-                <div class="item-id">ID: {{ quote.id }}</div>
+                <div class="item-name">{{ quote.vendor_name }} - {{ quote.product_name }}</div>
                 <div class="item-actions">
                   <button mat-icon-button color="primary" (click)="openDialog(quote)">
                     <mat-icon>edit</mat-icon>
@@ -512,7 +507,7 @@ import { QuotationFormComponent } from './quotation-form.component.js';
 export class QuotationsComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   allQuotations: any[] = [];
-  displayedColumns: string[] = ['id', 'vendor', 'product', 'product_group', 'product_price', 'quantity', 'delivery_price', 'total_landing_price', 'landing_price', 'lead_time', 'grade_spec', 'actions'];
+  displayedColumns: string[] = ['vendor', 'product', 'product_group', 'product_price', 'quantity', 'delivery_price', 'total_landing_price', 'landing_price', 'lead_time', 'grade_spec', 'actions'];
 
   vendors: any[] = [];
   products: any[] = [];

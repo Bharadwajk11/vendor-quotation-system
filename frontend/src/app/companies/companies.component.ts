@@ -57,11 +57,6 @@ import { CompanyFormComponent } from './company-form.component';
         <!-- Desktop Table View -->
         <div class="desktop-view">
           <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
-            <ng-container matColumnDef="id">
-              <th mat-header-cell *matHeaderCellDef>ID</th>
-              <td mat-cell *matCellDef="let company">{{ company.id }}</td>
-            </ng-container>
-
             <ng-container matColumnDef="name">
               <th mat-header-cell *matHeaderCellDef>Company Name</th>
               <td mat-cell *matCellDef="let company">{{ company.name }}</td>
@@ -109,7 +104,7 @@ import { CompanyFormComponent } from './company-form.component';
           <div class="mobile-list">
             <div class="mobile-list-item" *ngFor="let company of getPaginatedData()">
               <div class="mobile-item-header">
-                <div class="item-id">ID: {{ company.id }}</div>
+                <div class="item-name">{{ company.name }}</div>
                 <div class="item-actions">
                   <button mat-icon-button color="primary" (click)="openDialog(company)">
                     <mat-icon>edit</mat-icon>
@@ -374,7 +369,7 @@ import { CompanyFormComponent } from './company-form.component';
 export class CompaniesComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   allCompanies: any[] = [];
-  displayedColumns: string[] = ['id', 'name', 'industry_type', 'state', 'contact_email', 'address', 'actions'];
+  displayedColumns: string[] = ['name', 'industry_type', 'state', 'contact_email', 'address', 'actions'];
   searchText: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
