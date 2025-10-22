@@ -24,9 +24,15 @@ export class ApiService {
     return this.http.get(url);
   }
 
-  getQuotations(productId?: number): Observable<any> {
-    const url = productId ? `${this.apiUrl}/quotations/?product_id=${productId}` : `${this.apiUrl}/quotations/`;
-    return this.http.get(url);
+  getQuotations(filters?: { product_id?: number, vendor_id?: number, product_group_id?: number }): Observable<any> {
+    let params: string[] = [];
+    if (filters) {
+      if (filters.product_id) params.push(`product_id=${filters.product_id}`);
+      if (filters.vendor_id) params.push(`vendor_id=${filters.vendor_id}`);
+      if (filters.product_group_id) params.push(`product_group_id=${filters.product_group_id}`);
+    }
+    const queryString = params.length > 0 ? `?${params.join('&')}` : '';
+    return this.http.get(`${this.apiUrl}/quotations/${queryString}`);
   }
 
   compareVendors(data: any): Observable<any> {

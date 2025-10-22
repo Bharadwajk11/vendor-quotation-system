@@ -517,6 +517,7 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
   selectedProduct: number | null = null;
   selectedProductGroup: number | null = null;
   searchText: string = '';
+  isLoading: boolean = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -534,50 +535,57 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
   }
 
   loadAllData() {
+    this.isLoading = true;
     forkJoin({
-      quotations: this.apiService.getQuotations(),
       vendors: this.apiService.getVendors(),
       products: this.apiService.getProducts(),
       productGroups: this.apiService.getProductGroups()
     }).subscribe({
       next: (data) => {
-        this.allQuotations = data.quotations.results || data.quotations;
         this.vendors = data.vendors.results || data.vendors;
         this.products = data.products.results || data.products;
         this.productGroups = data.productGroups.results || data.productGroups;
-        this.applyFilters();
+        this.loadQuotations();
       },
-      error: (err: any) => console.error('Error loading data:', err)
+      error: (err: any) => {
+        console.error('Error loading data:', err);
+        this.isLoading = false;
+        alert('Failed to load data. Please try again.');
+      }
+    });
+  }
+
+  loadQuotations() {
+    this.isLoading = true;
+    const filters: any = {};
+    
+    if (this.selectedVendor !== null) {
+      filters.vendor_id = this.selectedVendor;
+    }
+    if (this.selectedProduct !== null) {
+      filters.product_id = this.selectedProduct;
+    }
+    if (this.selectedProductGroup !== null) {
+      filters.product_group_id = this.selectedProductGroup;
+    }
+
+    this.apiService.getQuotations(filters).subscribe({
+      next: (data) => {
+        this.allQuotations = data.results || data;
+        this.applySearchToData(this.allQuotations);
+        this.isLoading = false;
+      },
+      error: (err: any) => {
+        console.error('Error loading quotations:', err);
+        this.isLoading = false;
+        alert('Failed to load quotations. Please try again.');
+      }
     });
   }
 
   applyFilters() {
-    let filteredData = [...this.allQuotations];
-
-    if (this.selectedVendor !== null || this.selectedProduct !== null || this.selectedProductGroup !== null) {
-      filteredData = filteredData.filter(quote => {
-        let matchesVendor = true;
-        let matchesProduct = true;
-        let matchesProductGroup = true;
-
-        if (this.selectedVendor !== null) {
-          matchesVendor = quote.vendor === this.selectedVendor;
-        }
-
-        if (this.selectedProduct !== null) {
-          matchesProduct = quote.product === this.selectedProduct;
-        }
-
-        if (this.selectedProductGroup !== null) {
-          const product = this.products.find(p => p.id === quote.product);
-          matchesProductGroup = product && product.product_group === this.selectedProductGroup;
-        }
-
-        return matchesVendor && matchesProduct && matchesProductGroup;
-      });
-    }
-
-    this.applySearchToData(filteredData);
+    // Now uses server-side filtering
+    this.loadQuotations();
   }
 
   applySearchToData(data: any[]) {
@@ -634,17 +642,32 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        this.isLoading = true;
         if (quotation?.id) {
           // Update existing quotation
           this.apiService.updateQuotation(quotation.id, result).subscribe({
-            next: () => this.loadAllData(),
-            error: (err: any) => console.error('Error updating quotation:', err)
+            next: () => {
+              this.loadQuotations();
+              alert('Quotation updated successfully!');
+            },
+            error: (err: any) => {
+              console.error('Error updating quotation:', err);
+              this.isLoading = false;
+              alert('Failed to update quotation. Please check your inputs and try again.');
+            }
           });
         } else {
           // Create new quotation
           this.apiService.createQuotation(result).subscribe({
-            next: () => this.loadAllData(),
-            error: (err: any) => console.error('Error creating quotation:', err)
+            next: () => {
+              this.loadQuotations();
+              alert('Quotation created successfully!');
+            },
+            error: (err: any) => {
+              console.error('Error creating quotation:', err);
+              this.isLoading = false;
+              alert('Failed to create quotation. Please check your inputs and try again.');
+            }
           });
         }
       }
@@ -653,9 +676,17 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
 
   deleteQuotation(id: number) {
     if (confirm('Are you sure you want to delete this quotation?')) {
+      this.isLoading = true;
       this.apiService.deleteQuotation(id).subscribe({
-        next: () => this.loadAllData(),
-        error: (err: any) => console.error('Error deleting quotation:', err)
+        next: () => {
+          this.loadQuotations();
+          alert('Quotation deleted successfully!');
+        },
+        error: (err: any) => {
+          console.error('Error deleting quotation:', err);
+          this.isLoading = false;
+          alert('Failed to delete quotation. Please try again.');
+        }
       });
     }
   }

@@ -155,15 +155,27 @@ class QuotationViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         # Filter by vendors of the default company
         default_company = get_default_company()
-        queryset = Quotation.objects.filter(vendor__company=default_company)
         
+        # Optimize with select_related to prevent N+1 queries
+        queryset = Quotation.objects.filter(
+            vendor__company=default_company
+        ).select_related(
+            'vendor',
+            'product',
+            'product__product_group'
+        )
+        
+        # Server-side filtering by query parameters
         product_id = self.request.query_params.get('product_id', None)
         vendor_id = self.request.query_params.get('vendor_id', None)
+        product_group_id = self.request.query_params.get('product_group_id', None)
         
         if product_id:
             queryset = queryset.filter(product_id=product_id)
         if vendor_id:
             queryset = queryset.filter(vendor_id=vendor_id)
+        if product_group_id:
+            queryset = queryset.filter(product__product_group_id=product_group_id)
         
         return queryset
 
