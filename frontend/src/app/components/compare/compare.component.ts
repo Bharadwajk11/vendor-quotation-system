@@ -800,7 +800,11 @@ export class CompareComponent implements OnInit {
 
   ngOnInit() {
     this.breakpointObserver
-      .observe([Breakpoints.Handset, Breakpoints.TabletPortrait, Breakpoints.TabletLandscape])
+      .observe([
+        Breakpoints.HandsetPortrait,
+        Breakpoints.TabletPortrait,
+        '(max-width: 599px)'
+      ])
       .subscribe(result => {
         this.isMobile = result.matches;
       });
