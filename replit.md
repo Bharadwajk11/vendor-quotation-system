@@ -26,6 +26,13 @@ The backend is built with Django 5.2+ and Django REST Framework, offering a REST
 -   **Mobile-Responsive Dialogs**: Confirmation dialogs use responsive width (90vw on mobile, max 400px on desktop) with full-width stacked buttons on small screens
 -   **Consistent UX**: All 9 components (quotations, vendors, products, users, companies, product-groups, product-categories, and forms) now use the unified notification system
 
+### October 22, 2025 - Global Loading Spinner with Counter-Based State Management
+-   **LoadingService**: Created centralized loading state management using counter-based tracking (activeRequestCount) to handle concurrent API requests without flickering
+-   **Loading Spinner Component**: Professional full-screen overlay with Material Design spinner, blur backdrop, and "Loading..." text positioned globally in the app layout
+-   **Bug Fix**: Resolved critical spinner flickering issue where spinner would disappear prematurely when multiple API calls ran in parallel (e.g., Dashboard loading 4 different stats simultaneously)
+-   **Concurrent Request Handling**: Service increments counter on show() and decrements on hide(), only hiding spinner when counter reaches 0, ensuring smooth UX during overlapping operations
+-   **Universal Integration**: All 9 CRUD modules (quotations, vendors, products, users, companies, product-groups, product-categories, compare, dashboard) now show loading feedback for all operations
+
 ### October 22, 2025 - Performance & UX Improvements
 -   **Server-Side Filtering**: Quotations list now filters on the backend, reducing data transfer and improving performance with large datasets
 -   **Database Query Optimization**: Implemented select_related() to eliminate N+1 queries when loading quotations (reduced from 201 queries to 3 queries for 100 quotations)
