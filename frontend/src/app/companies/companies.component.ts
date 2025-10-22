@@ -13,6 +13,7 @@ import { ApiService } from '../services/api.service';
 import { CompanyFormComponent } from './company-form.component';
 import { NotificationService } from '../services/notification.service';
 import { ConfirmService } from '../services/confirm.service';
+import { LoadingService } from '../services/loading.service';
 
 @Component({
   selector: 'app-companies',
@@ -380,7 +381,8 @@ export class CompaniesComponent implements OnInit, AfterViewInit {
     private apiService: ApiService,
     private dialog: MatDialog,
     private notificationService: NotificationService,
-    private confirmService: ConfirmService
+    private confirmService: ConfirmService,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit() {
@@ -392,12 +394,17 @@ export class CompaniesComponent implements OnInit, AfterViewInit {
   }
 
   loadCompanies() {
+    this.loadingService.show();
     this.apiService.getCompanies().subscribe({
       next: (data) => {
         this.allCompanies = data.results || data;
         this.applySearch();
+        this.loadingService.hide();
       },
-      error: (err: any) => console.error('Error loading companies:', err)
+      error: (err: any) => {
+        console.error('Error loading companies:', err);
+        this.loadingService.hide();
+      }
     });
   }
 
@@ -458,6 +465,7 @@ export class CompaniesComponent implements OnInit, AfterViewInit {
       'Cancel'
     ).subscribe((confirmed) => {
       if (confirmed) {
+        this.loadingService.show();
         this.apiService.deleteCompany(id).subscribe({
           next: () => {
             this.loadCompanies();
@@ -465,6 +473,7 @@ export class CompaniesComponent implements OnInit, AfterViewInit {
           },
           error: (err: any) => {
             console.error('Error deleting company:', err);
+            this.loadingService.hide();
             this.notificationService.showError('Failed to delete company. Please try again.');
           }
         });

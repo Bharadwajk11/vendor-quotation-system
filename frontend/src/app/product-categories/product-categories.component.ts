@@ -13,6 +13,7 @@ import { ApiService } from '../services/api.service';
 import { ProductCategoryFormComponent } from './product-category-form.component';
 import { NotificationService } from '../services/notification.service';
 import { ConfirmService } from '../services/confirm.service';
+import { LoadingService } from '../services/loading.service';
 
 @Component({
   selector: 'app-product-categories',
@@ -351,7 +352,8 @@ export class ProductCategoriesComponent implements OnInit, AfterViewInit {
     private apiService: ApiService,
     private dialog: MatDialog,
     private notificationService: NotificationService,
-    private confirmService: ConfirmService
+    private confirmService: ConfirmService,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit() {
@@ -363,12 +365,17 @@ export class ProductCategoriesComponent implements OnInit, AfterViewInit {
   }
 
   loadProductCategories() {
+    this.loadingService.show();
     this.apiService.getProductCategories().subscribe({
       next: (data) => {
         this.allProductCategories = data.results || data;
         this.applySearch();
+        this.loadingService.hide();
       },
-      error: (err: any) => console.error('Error loading product categories:', err)
+      error: (err: any) => {
+        console.error('Error loading product categories:', err);
+        this.loadingService.hide();
+      }
     });
   }
 
@@ -426,6 +433,7 @@ export class ProductCategoriesComponent implements OnInit, AfterViewInit {
       'Cancel'
     ).subscribe((confirmed) => {
       if (confirmed) {
+        this.loadingService.show();
         this.apiService.deleteProductCategory(id).subscribe({
           next: () => {
             this.loadProductCategories();
@@ -433,6 +441,7 @@ export class ProductCategoriesComponent implements OnInit, AfterViewInit {
           },
           error: (err: any) => {
             console.error('Error deleting product category:', err);
+            this.loadingService.hide();
             this.notificationService.showError('Failed to delete product category. Please try again.');
           }
         });

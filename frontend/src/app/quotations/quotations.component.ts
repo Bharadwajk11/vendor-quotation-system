@@ -15,6 +15,7 @@ import { ApiService } from '../services/api.service';
 import { QuotationFormComponent } from './quotation-form.component.js';
 import { NotificationService } from '../services/notification.service';
 import { ConfirmService } from '../services/confirm.service';
+import { LoadingService } from '../services/loading.service';
 
 @Component({
   selector: 'app-quotations',
@@ -519,7 +520,6 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
   selectedProduct: number | null = null;
   selectedProductGroup: number | null = null;
   searchText: string = '';
-  isLoading: boolean = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -527,7 +527,8 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
     private apiService: ApiService,
     private dialog: MatDialog,
     private notificationService: NotificationService,
-    private confirmService: ConfirmService
+    private confirmService: ConfirmService,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit() {
@@ -539,7 +540,7 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
   }
 
   loadAllData() {
-    this.isLoading = true;
+    this.loadingService.show();
     forkJoin({
       vendors: this.apiService.getVendors(),
       products: this.apiService.getProducts(),
@@ -553,14 +554,14 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
       },
       error: (err: any) => {
         console.error('Error loading data:', err);
-        this.isLoading = false;
+        this.loadingService.hide();
         this.notificationService.showError('Failed to load data. Please try again.');
       }
     });
   }
 
   loadQuotations() {
-    this.isLoading = true;
+    this.loadingService.show();
     const filters: any = {};
     
     if (this.selectedVendor !== null) {
@@ -577,11 +578,11 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
       next: (data) => {
         this.allQuotations = data.results || data;
         this.applySearchToData(this.allQuotations);
-        this.isLoading = false;
+        this.loadingService.hide();
       },
       error: (err: any) => {
         console.error('Error loading quotations:', err);
-        this.isLoading = false;
+        this.loadingService.hide();
         this.notificationService.showError('Failed to load quotations. Please try again.');
       }
     });
@@ -646,7 +647,7 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.isLoading = true;
+        this.loadingService.show();
         if (quotation?.id) {
           // Update existing quotation
           this.apiService.updateQuotation(quotation.id, result).subscribe({
@@ -656,7 +657,7 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
             },
             error: (err: any) => {
               console.error('Error updating quotation:', err);
-              this.isLoading = false;
+              this.loadingService.hide();
               this.notificationService.showError('Failed to update quotation. Please check your inputs and try again.');
             }
           });
@@ -669,7 +670,7 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
             },
             error: (err: any) => {
               console.error('Error creating quotation:', err);
-              this.isLoading = false;
+              this.loadingService.hide();
               this.notificationService.showError('Failed to create quotation. Please check your inputs and try again.');
             }
           });
@@ -686,7 +687,7 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
       'Cancel'
     ).subscribe((confirmed) => {
       if (confirmed) {
-        this.isLoading = true;
+        this.loadingService.show();
         this.apiService.deleteQuotation(id).subscribe({
           next: () => {
             this.loadQuotations();
@@ -694,7 +695,7 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
           },
           error: (err: any) => {
             console.error('Error deleting quotation:', err);
-            this.isLoading = false;
+            this.loadingService.hide();
             this.notificationService.showError('Failed to delete quotation. Please try again.');
           }
         });

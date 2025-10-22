@@ -10,9 +10,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/api.service';
-import { ProductGroupFormComponent } from './product-group-form.component';
+import { ProductGroupFormComponent} from './product-group-form.component';
 import { NotificationService } from '../services/notification.service';
 import { ConfirmService } from '../services/confirm.service';
+import { LoadingService } from '../services/loading.service';
 
 @Component({
   selector: 'app-product-groups',
@@ -351,7 +352,8 @@ export class ProductGroupsComponent implements OnInit, AfterViewInit {
     private apiService: ApiService,
     private dialog: MatDialog,
     private notificationService: NotificationService,
-    private confirmService: ConfirmService
+    private confirmService: ConfirmService,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit() {
@@ -363,12 +365,17 @@ export class ProductGroupsComponent implements OnInit, AfterViewInit {
   }
 
   loadProductGroups() {
+    this.loadingService.show();
     this.apiService.getProductGroups().subscribe({
       next: (data) => {
         this.allProductGroups = data.results || data;
         this.applySearch();
+        this.loadingService.hide();
       },
-      error: (err: any) => console.error('Error loading product groups:', err)
+      error: (err: any) => {
+        console.error('Error loading product groups:', err);
+        this.loadingService.hide();
+      }
     });
   }
 
@@ -426,6 +433,7 @@ export class ProductGroupsComponent implements OnInit, AfterViewInit {
       'Cancel'
     ).subscribe((confirmed) => {
       if (confirmed) {
+        this.loadingService.show();
         this.apiService.deleteProductGroup(id).subscribe({
           next: () => {
             this.loadProductGroups();
@@ -433,6 +441,7 @@ export class ProductGroupsComponent implements OnInit, AfterViewInit {
           },
           error: (err: any) => {
             console.error('Error deleting product group:', err);
+            this.loadingService.hide();
             this.notificationService.showError('Failed to delete product group. Please try again.');
           }
         });

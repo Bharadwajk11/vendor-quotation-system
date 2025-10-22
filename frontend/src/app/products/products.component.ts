@@ -14,6 +14,7 @@ import { ApiService } from '../services/api.service';
 import { ProductFormComponent } from './product-form.component';
 import { NotificationService } from '../services/notification.service';
 import { ConfirmService } from '../services/confirm.service';
+import { LoadingService } from '../services/loading.service';
 
 @Component({
   selector: 'app-products',
@@ -552,7 +553,8 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     private apiService: ApiService,
     private dialog: MatDialog,
     private notificationService: NotificationService,
-    private confirmService: ConfirmService
+    private confirmService: ConfirmService,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit() {
@@ -564,6 +566,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   }
 
   loadProducts() {
+    this.loadingService.show();
     this.apiService.getProducts().subscribe({
       next: (data) => {
         this.allProducts = data.results || data;
@@ -571,8 +574,12 @@ export class ProductsComponent implements OnInit, AfterViewInit {
         if (this.paginator) {
           this.paginator.firstPage();
         }
+        this.loadingService.hide();
       },
-      error: (err: any) => console.error('Error loading products:', err)
+      error: (err: any) => {
+        console.error('Error loading products:', err);
+        this.loadingService.hide();
+      }
     });
   }
 
@@ -597,6 +604,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
       'Cancel'
     ).subscribe((confirmed) => {
       if (confirmed) {
+        this.loadingService.show();
         this.apiService.deleteProduct(id).subscribe({
           next: () => {
             this.loadProducts();
@@ -604,6 +612,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
           },
           error: (err: any) => {
             console.error('Error deleting product:', err);
+            this.loadingService.hide();
             this.notificationService.showError('Failed to delete product. Please try again.');
           }
         });

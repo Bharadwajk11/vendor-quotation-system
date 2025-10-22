@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
+import { LoadingService } from '../services/loading.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -211,7 +212,10 @@ export class DashboardComponent implements OnInit {
     }
   };
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private loadingService: LoadingService
+  ) {}
 
   ngOnInit() {
     this.loadStats();
@@ -220,8 +224,16 @@ export class DashboardComponent implements OnInit {
   }
 
   loadStats() {
+    this.loadingService.show();
     this.apiService.getCompanies().subscribe({
-      next: (data) => this.stats.companies = data.count || data.results?.length || data.length || 0
+      next: (data) => {
+        this.stats.companies = data.count || data.results?.length || data.length || 0;
+        this.loadingService.hide();
+      },
+      error: (err: any) => {
+        console.error('Error loading companies:', err);
+        this.loadingService.hide();
+      }
     });
     
     this.apiService.getVendors().subscribe({
@@ -238,6 +250,7 @@ export class DashboardComponent implements OnInit {
   }
 
   loadVendorDistribution() {
+    this.loadingService.show();
     this.apiService.getVendors().subscribe({
       next: (data) => {
         const vendors = data.results || data;
@@ -260,12 +273,17 @@ export class DashboardComponent implements OnInit {
             backgroundColor: ['#3f51b5', '#ff4081', '#4caf50', '#ff9800', '#9c27b0', '#00bcd4', '#ffc107', '#e91e63']
           }]
         };
+        this.loadingService.hide();
       },
-      error: (err: any) => console.error('Error loading vendor distribution:', err)
+      error: (err: any) => {
+        console.error('Error loading vendor distribution:', err);
+        this.loadingService.hide();
+      }
     });
   }
 
   loadRecentActivity() {
+    this.loadingService.show();
     this.apiService.getQuotations().subscribe({
       next: (data) => {
         const quotations = data.results || data;
@@ -297,8 +315,12 @@ export class DashboardComponent implements OnInit {
             { data: counts, label: 'Quotations', backgroundColor: '#3f51b5' }
           ]
         };
+        this.loadingService.hide();
       },
-      error: (err: any) => console.error('Error loading recent activity:', err)
+      error: (err: any) => {
+        console.error('Error loading recent activity:', err);
+        this.loadingService.hide();
+      }
     });
   }
 }

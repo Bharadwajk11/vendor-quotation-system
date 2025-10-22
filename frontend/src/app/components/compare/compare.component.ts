@@ -12,6 +12,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ApiService } from '../../services/api.service';
+import { LoadingService } from '../../services/loading.service';
 
 @Component({
   selector: 'app-compare',
@@ -877,7 +878,8 @@ export class CompareComponent implements OnInit, OnDestroy {
 
   constructor(
     private apiService: ApiService,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit() {
@@ -938,9 +940,16 @@ export class CompareComponent implements OnInit, OnDestroy {
   }
 
   private loadData() {
+    this.loadingService.show();
     this.apiService.getProducts().subscribe({
-      next: (data) => (this.products = data.results || data),
-      error: (err: any) => console.error('Error loading products:', err),
+      next: (data) => {
+        this.products = data.results || data;
+        this.loadingService.hide();
+      },
+      error: (err: any) => {
+        console.error('Error loading products:', err);
+        this.loadingService.hide();
+      },
     });
     
     this.apiService.getCompanies().subscribe({
@@ -984,14 +993,17 @@ export class CompareComponent implements OnInit, OnDestroy {
       company_id: this.company.id,
     };
 
+    this.loadingService.show();
     this.apiService.compareVendors(requestData).subscribe({
       next: (data) => {
         this.comparisonResults = data;
         this.errorMessage = '';
+        this.loadingService.hide();
       },
       error: (err: any) => {
         this.errorMessage = 'Error comparing vendors: ' + (err.error?.error || err.message);
         console.error('Error:', err);
+        this.loadingService.hide();
       },
     });
   }

@@ -14,6 +14,7 @@ import { ApiService } from '../services/api.service';
 import { VendorFormComponent } from './vendor-form.component';
 import { NotificationService } from '../services/notification.service';
 import { ConfirmService } from '../services/confirm.service';
+import { LoadingService } from '../services/loading.service';
 
 @Component({
   selector: 'app-vendors',
@@ -409,7 +410,8 @@ export class VendorsComponent implements OnInit, AfterViewInit {
     private apiService: ApiService,
     private dialog: MatDialog,
     private notificationService: NotificationService,
-    private confirmService: ConfirmService
+    private confirmService: ConfirmService,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit() {
@@ -421,6 +423,7 @@ export class VendorsComponent implements OnInit, AfterViewInit {
   }
 
   loadVendors() {
+    this.loadingService.show();
     this.apiService.getVendors().subscribe({
       next: (data) => {
         this.allVendors = data.results || data;
@@ -428,8 +431,12 @@ export class VendorsComponent implements OnInit, AfterViewInit {
         if (this.paginator) {
           this.paginator.firstPage();
         }
+        this.loadingService.hide();
       },
-      error: (err: any) => console.error('Error loading vendors:', err)
+      error: (err: any) => {
+        console.error('Error loading vendors:', err);
+        this.loadingService.hide();
+      }
     });
   }
 
@@ -460,6 +467,7 @@ export class VendorsComponent implements OnInit, AfterViewInit {
       'Cancel'
     ).subscribe((confirmed) => {
       if (confirmed) {
+        this.loadingService.show();
         this.apiService.deleteVendor(id).subscribe({
           next: () => {
             this.loadVendors();
@@ -467,6 +475,7 @@ export class VendorsComponent implements OnInit, AfterViewInit {
           },
           error: (err: any) => {
             console.error('Error deleting vendor:', err);
+            this.loadingService.hide();
             this.notificationService.showError('Failed to delete vendor. Please try again.');
           }
         });

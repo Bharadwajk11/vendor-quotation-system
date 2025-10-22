@@ -14,6 +14,7 @@ import { ApiService } from '../services/api.service';
 import { UserFormComponent } from './user-form.component';
 import { NotificationService } from '../services/notification.service';
 import { ConfirmService } from '../services/confirm.service';
+import { LoadingService } from '../services/loading.service';
 
 @Component({
   selector: 'app-users',
@@ -453,7 +454,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
     private apiService: ApiService,
     private dialog: MatDialog,
     private notificationService: NotificationService,
-    private confirmService: ConfirmService
+    private confirmService: ConfirmService,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit() {
@@ -465,12 +467,17 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   loadUsers() {
+    this.loadingService.show();
     this.apiService.getUserProfiles().subscribe({
       next: (data) => {
         this.allUsers = data.results || data;
         this.applySearch();
+        this.loadingService.hide();
       },
-      error: (err: any) => console.error('Error loading users:', err)
+      error: (err: any) => {
+        console.error('Error loading users:', err);
+        this.loadingService.hide();
+      }
     });
   }
 
@@ -537,6 +544,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
       'Cancel'
     ).subscribe((confirmed) => {
       if (confirmed) {
+        this.loadingService.show();
         this.apiService.deleteUserProfile(id).subscribe({
           next: () => {
             this.loadUsers();
@@ -544,6 +552,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
           },
           error: (err: any) => {
             console.error('Error deleting user:', err);
+            this.loadingService.hide();
             this.notificationService.showError('Failed to delete user. Please try again.');
           }
         });
