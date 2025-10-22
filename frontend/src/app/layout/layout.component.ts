@@ -6,6 +6,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { LoadingSpinnerComponent } from '../components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-layout',
@@ -17,9 +18,11 @@ import { MatButtonModule } from '@angular/material/button';
     MatToolbarModule,
     MatListModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    LoadingSpinnerComponent
   ],
   template: `
+    <app-loading-spinner></app-loading-spinner>
     <mat-sidenav-container class="sidenav-container">
       <mat-sidenav #sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" class="sidenav">
         <div class="logo-section">
