@@ -54,37 +54,71 @@ import { ProductGroupFormComponent } from './product-group-form.component';
       </mat-card>
 
       <mat-card>
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Group Name</th>
-            <td mat-cell *matCellDef="let group"><strong>{{ group.name }}</strong></td>
-          </ng-container>
+        <!-- Desktop Table View -->
+        <div class="desktop-view">
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Group Name</th>
+              <td mat-cell *matCellDef="let group"><strong>{{ group.name }}</strong></td>
+            </ng-container>
 
-          <ng-container matColumnDef="description">
-            <th mat-header-cell *matHeaderCellDef>Description</th>
-            <td mat-cell *matCellDef="let group">{{ group.description || '-' }}</td>
-          </ng-container>
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef>Description</th>
+              <td mat-cell *matCellDef="let group">{{ group.description || '-' }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="product_count">
-            <th mat-header-cell *matHeaderCellDef>Products</th>
-            <td mat-cell *matCellDef="let group">{{ group.product_count || 0 }}</td>
-          </ng-container>
+            <ng-container matColumnDef="product_count">
+              <th mat-header-cell *matHeaderCellDef>Products</th>
+              <td mat-cell *matCellDef="let group">{{ group.product_count || 0 }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let group">
-              <button mat-icon-button color="primary" (click)="openDialog(group)">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button color="warn" (click)="deleteProductGroup(group.id)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let group">
+                <button mat-icon-button color="primary" (click)="openDialog(group)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteProductGroup(group.id)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+
+        <!-- Mobile List View -->
+        <div class="mobile-view">
+          <div class="mobile-list">
+            <div class="mobile-list-item" *ngFor="let group of dataSource.filteredData">
+              <div class="mobile-item-header">
+                <div class="item-name">{{ group.name }}</div>
+                <div class="item-actions">
+                  <button mat-icon-button color="primary" (click)="openDialog(group)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="deleteProductGroup(group.id)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mobile-item-content">
+                <div class="data-row">
+                  <span class="data-label">Description:</span>
+                  <span class="data-value">{{ group.description || '-' }}</span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">Products:</span>
+                  <span class="data-value">{{ group.product_count || 0 }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <mat-paginator [pageSizeOptions]="[10, 25, 50]" 
                        [pageSize]="10"
@@ -192,6 +226,114 @@ import { ProductGroupFormComponent } from './product-group-form.component';
     td {
       color: #555;
       padding: 12px 16px;
+    }
+
+    /* Desktop/Mobile View Toggle */
+    .desktop-view {
+      display: block;
+    }
+
+    .mobile-view {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .desktop-view {
+        display: none;
+      }
+
+      .mobile-view {
+        display: block;
+      }
+
+      .mobile-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 8px;
+      }
+
+      .mobile-list-item {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .mobile-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        border-bottom: 2px solid #3f51b5;
+      }
+
+      .item-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #3f51b5;
+        flex: 1;
+      }
+
+      .item-actions {
+        display: flex;
+        gap: 4px;
+      }
+
+      .item-actions button {
+        width: 36px;
+        height: 36px;
+      }
+
+      .mobile-item-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .data-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .data-row:last-child {
+        border-bottom: none;
+      }
+
+      .data-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: #666;
+        flex: 0 0 auto;
+        min-width: 100px;
+      }
+
+      .data-value {
+        font-size: 14px;
+        color: #333;
+        text-align: right;
+        flex: 1;
+        word-break: break-word;
+      }
+
+      ::ng-deep .mat-mdc-paginator {
+        padding: 8px 0;
+      }
+
+      ::ng-deep .mat-mdc-paginator-container {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      ::ng-deep .mat-mdc-paginator-page-size {
+        margin: 0 8px;
+      }
     }
   `]
 })
