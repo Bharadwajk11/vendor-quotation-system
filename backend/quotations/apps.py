@@ -3,7 +3,7 @@ from django.apps import AppConfig
 
 class QuotationsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'quotations'
+    name = 'backend.quotations'
 
     def ready(self):
-        import quotations.signals
+        import backend.quotations.signals

@@ -131,20 +131,18 @@ For comprehensive installation instructions, production deployment, and troubles
 
 ```
 vendor-quotation-system/
-├── backend/                   # Django project settings
-│   └── backend/              # Project configuration
-│       ├── settings.py       # Django settings (uses env variables)
-│       ├── urls.py           # Main URL routing
-│       └── wsgi.py           # WSGI application
+├── backend/                  # Django backend
+│   ├── quotations/          # Main Django app (API)
+│   │   ├── models.py        # Database models
+│   │   ├── serializers.py   # DRF serializers
+│   │   ├── views.py         # ViewSets and API logic
+│   │   ├── urls.py          # API endpoints
+│   │   └── migrations/      # Database migrations
+│   ├── settings.py          # Django settings (uses env variables)
+│   ├── urls.py              # Main URL routing
+│   └── wsgi.py              # WSGI application
 │
-├── quotations/               # Django app (main API)
-│   ├── models.py            # Database models
-│   ├── serializers.py       # DRF serializers
-│   ├── views.py             # ViewSets and API logic
-│   ├── urls.py              # API endpoints
-│   └── migrations/          # Database migrations
-│
-├── frontend/                 # Angular application
+├── frontend/                # Angular application
 │   ├── src/
 │   │   ├── app/
 │   │   │   ├── dashboard/          # Dashboard with charts
