@@ -544,13 +544,16 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
     forkJoin({
       vendors: this.apiService.getVendors(),
       products: this.apiService.getProducts(),
-      productGroups: this.apiService.getProductGroups()
+      productGroups: this.apiService.getProductGroups(),
+      quotations: this.apiService.getQuotations()
     }).subscribe({
       next: (data) => {
         this.vendors = data.vendors.results || data.vendors;
         this.products = data.products.results || data.products;
         this.productGroups = data.productGroups.results || data.productGroups;
-        this.loadQuotations();
+        this.allQuotations = data.quotations.results || data.quotations;
+        this.applySearchToData(this.allQuotations);
+        this.loadingService.hide();
       },
       error: (err: any) => {
         console.error('Error loading data:', err);
