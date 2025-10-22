@@ -92,7 +92,7 @@ import { ProductCategoryFormComponent } from './product-category-form.component'
         <!-- Mobile List View -->
         <div class="mobile-view">
           <div class="mobile-list">
-            <div class="mobile-list-item" *ngFor="let category of dataSource.filteredData">
+            <div class="mobile-list-item" *ngFor="let category of getPaginatedData()">
               <div class="mobile-item-header">
                 <div class="item-name">{{ category.name }}</div>
                 <div class="item-actions">
@@ -390,6 +390,15 @@ export class ProductCategoriesComponent implements OnInit, AfterViewInit {
   clearSearch() {
     this.searchText = '';
     this.applySearch();
+  }
+
+  getPaginatedData(): any[] {
+    if (!this.paginator) {
+      return this.dataSource.filteredData;
+    }
+    const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+    const endIndex = startIndex + this.paginator.pageSize;
+    return this.dataSource.filteredData.slice(startIndex, endIndex);
   }
 
   openDialog(productCategory?: any) {

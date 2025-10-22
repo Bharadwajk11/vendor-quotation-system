@@ -121,7 +121,7 @@ import { ProductFormComponent } from './product-form.component';
         <!-- Mobile List View -->
         <div class="mobile-view">
           <div class="mobile-list">
-            <div class="mobile-list-item" *ngFor="let product of dataSource.filteredData">
+            <div class="mobile-list-item" *ngFor="let product of getPaginatedData()">
               <div class="mobile-item-header">
                 <div class="item-id">ID: {{ product.id }}</div>
                 <div class="item-actions">
@@ -623,5 +623,14 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   clearSearch() {
     this.searchText = '';
     this.applySearch();
+  }
+
+  getPaginatedData(): any[] {
+    if (!this.paginator) {
+      return this.dataSource.filteredData;
+    }
+    const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+    const endIndex = startIndex + this.paginator.pageSize;
+    return this.dataSource.filteredData.slice(startIndex, endIndex);
   }
 }

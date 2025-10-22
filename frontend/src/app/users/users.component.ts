@@ -129,7 +129,7 @@ import { UserFormComponent } from './user-form.component';
           <!-- Mobile List View -->
           <div class="mobile-view">
             <div class="mobile-list">
-              <div class="mobile-list-item" *ngFor="let user of dataSource.filteredData">
+              <div class="mobile-list-item" *ngFor="let user of getPaginatedData()">
                 <div class="mobile-item-header">
                   <div class="item-name">{{ user.username }}</div>
                   <div class="item-actions">
@@ -497,6 +497,15 @@ export class UsersComponent implements OnInit, AfterViewInit {
   clearSearch() {
     this.searchText = '';
     this.applySearch();
+  }
+
+  getPaginatedData(): any[] {
+    if (!this.paginator) {
+      return this.dataSource.filteredData;
+    }
+    const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+    const endIndex = startIndex + this.paginator.pageSize;
+    return this.dataSource.filteredData.slice(startIndex, endIndex);
   }
 
   getRoleClass(role: string): string {
