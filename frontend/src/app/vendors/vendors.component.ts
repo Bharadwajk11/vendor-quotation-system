@@ -470,6 +470,7 @@ export class VendorsComponent implements OnInit, AfterViewInit {
         this.loadingService.show();
         this.apiService.deleteVendor(id).subscribe({
           next: () => {
+            this.loadingService.hide();
             this.loadVendors();
             this.notificationService.showSuccess('Vendor deleted successfully!');
           },

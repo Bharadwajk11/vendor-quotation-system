@@ -468,6 +468,7 @@ export class CompaniesComponent implements OnInit, AfterViewInit {
         this.loadingService.show();
         this.apiService.deleteCompany(id).subscribe({
           next: () => {
+            this.loadingService.hide();
             this.loadCompanies();
             this.notificationService.showSuccess('Company deleted successfully!');
           },

@@ -647,11 +647,12 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadingService.show();
         if (quotation?.id) {
           // Update existing quotation
+          this.loadingService.show();
           this.apiService.updateQuotation(quotation.id, result).subscribe({
             next: () => {
+              this.loadingService.hide();
               this.loadQuotations();
               this.notificationService.showSuccess('Quotation updated successfully!');
             },
@@ -663,8 +664,10 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
           });
         } else {
           // Create new quotation
+          this.loadingService.show();
           this.apiService.createQuotation(result).subscribe({
             next: () => {
+              this.loadingService.hide();
               this.loadQuotations();
               this.notificationService.showSuccess('Quotation created successfully!');
             },
@@ -690,6 +693,7 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
         this.loadingService.show();
         this.apiService.deleteQuotation(id).subscribe({
           next: () => {
+            this.loadingService.hide();
             this.loadQuotations();
             this.notificationService.showSuccess('Quotation deleted successfully!');
           },

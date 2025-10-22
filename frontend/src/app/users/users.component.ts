@@ -547,6 +547,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
         this.loadingService.show();
         this.apiService.deleteUserProfile(id).subscribe({
           next: () => {
+            this.loadingService.hide();
             this.loadUsers();
             this.notificationService.showSuccess('User deleted successfully!');
           },

@@ -436,6 +436,7 @@ export class ProductCategoriesComponent implements OnInit, AfterViewInit {
         this.loadingService.show();
         this.apiService.deleteProductCategory(id).subscribe({
           next: () => {
+            this.loadingService.hide();
             this.loadProductCategories();
             this.notificationService.showSuccess('Product category deleted successfully!');
           },

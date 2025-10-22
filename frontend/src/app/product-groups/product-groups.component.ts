@@ -436,6 +436,7 @@ export class ProductGroupsComponent implements OnInit, AfterViewInit {
         this.loadingService.show();
         this.apiService.deleteProductGroup(id).subscribe({
           next: () => {
+            this.loadingService.hide();
             this.loadProductGroups();
             this.notificationService.showSuccess('Product group deleted successfully!');
           },
