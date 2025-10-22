@@ -1,0 +1,10 @@
+# Django and REST Framework
+Django==5.2.7
+djangorestframework==3.16.1
+
+# Database
+psycopg2-binary==2.9.11
+dj-database-url==3.0.1
+
+# CORS headers for frontend/backend communication
+django-cors-headers==4.9.0
