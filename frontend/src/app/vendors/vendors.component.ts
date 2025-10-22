@@ -163,7 +163,8 @@ import { LoadingService } from '../services/loading.service';
         </div>
 
         <mat-paginator #paginator
-                       [pageSizeOptions]="[5, 10, 20]"
+                       [pageSizeOptions]="[10, 20, 50]"
+                       [pageSize]="10"
                        [showFirstLastButtons]="true">
         </mat-paginator>
       </mat-card>
