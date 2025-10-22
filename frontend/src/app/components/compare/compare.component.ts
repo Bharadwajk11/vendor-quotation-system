@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -390,6 +390,24 @@ import { ApiService } from '../../services/api.service';
         }
       }
 
+      /* Smooth Transitions */
+      .mobile-cards,
+      .results-card {
+        opacity: 0;
+        animation: fadeIn 0.3s ease-in-out forwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
       /* Mobile Cards */
       .mobile-cards {
         margin-top: 24px;
@@ -768,10 +786,71 @@ import { ApiService } from '../../services/api.service';
         border-spacing: 0;
         display: table !important;
       }
+
+      /* Landscape Mode Optimizations for Mobile/Tablet Devices */
+      @media (max-width: 959px) and (orientation: landscape) {
+        .results-card {
+          max-height: 85vh;
+          overflow-y: auto;
+        }
+
+        .mat-mdc-header-cell,
+        th {
+          font-size: 12px !important;
+          padding: 10px 8px !important;
+          white-space: nowrap;
+        }
+
+        .mat-mdc-cell,
+        td {
+          font-size: 12px !important;
+          padding: 8px 6px !important;
+        }
+
+        table {
+          font-size: 12px;
+        }
+
+        .mat-mdc-chip {
+          font-size: 11px !important;
+          min-height: 28px !important;
+          padding: 4px 8px !important;
+        }
+
+        .total-landing-price,
+        .landing-price {
+          font-size: 13px;
+        }
+
+        .results-card mat-card-content {
+          padding: 8px !important;
+        }
+      }
+
+      /* Extra small landscape devices (phones in landscape) */
+      @media (max-width: 767px) and (orientation: landscape) {
+        .mat-mdc-header-cell,
+        th {
+          font-size: 11px !important;
+          padding: 8px 4px !important;
+        }
+
+        .mat-mdc-cell,
+        td {
+          font-size: 11px !important;
+          padding: 6px 4px !important;
+        }
+
+        .mat-mdc-chip {
+          font-size: 10px !important;
+          min-height: 24px !important;
+          padding: 3px 6px !important;
+        }
+      }
     `,
   ],
 })
-export class CompareComponent implements OnInit {
+export class CompareComponent implements OnInit, OnDestroy {
   products: any[] = [];
   selectedProductId: string = '';
   orderQty: number = 100;
@@ -793,12 +872,44 @@ export class CompareComponent implements OnInit {
     'lead_time',
   ];
 
+  private portraitMediaQuery: MediaQueryList | null = null;
+  private orientationChangeHandler: ((e: MediaQueryListEvent) => void) | null = null;
+
   constructor(
     private apiService: ApiService,
     private breakpointObserver: BreakpointObserver
   ) {}
 
   ngOnInit() {
+    this.setupOrientationDetection();
+    this.loadData();
+  }
+
+  ngOnDestroy() {
+    if (this.portraitMediaQuery && this.orientationChangeHandler) {
+      this.portraitMediaQuery.removeEventListener('change', this.orientationChangeHandler);
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.updateViewMode();
+  }
+
+  @HostListener('window:orientationchange', ['$event'])
+  onOrientationChange(event: any) {
+    setTimeout(() => this.updateViewMode(), 100);
+  }
+
+  private setupOrientationDetection() {
+    this.portraitMediaQuery = window.matchMedia('(orientation: portrait)');
+    
+    this.orientationChangeHandler = (e: MediaQueryListEvent) => {
+      this.updateViewMode();
+    };
+
+    this.portraitMediaQuery.addEventListener('change', this.orientationChangeHandler);
+
     this.breakpointObserver
       .observe([
         Breakpoints.HandsetPortrait,
@@ -806,9 +917,27 @@ export class CompareComponent implements OnInit {
         '(max-width: 599px)'
       ])
       .subscribe(result => {
-        this.isMobile = result.matches;
+        this.updateViewMode();
       });
 
+    this.updateViewMode();
+  }
+
+  private updateViewMode() {
+    const isPortrait = window.matchMedia('(orientation: portrait)').matches;
+    const isSmallScreen = window.matchMedia('(max-width: 599px)').matches;
+    const isMediumScreen = window.matchMedia('(max-width: 959px)').matches;
+    
+    if (isSmallScreen && isPortrait) {
+      this.isMobile = true;
+    } else if (isMediumScreen && isPortrait) {
+      this.isMobile = true;
+    } else {
+      this.isMobile = false;
+    }
+  }
+
+  private loadData() {
     this.apiService.getProducts().subscribe({
       next: (data) => (this.products = data.results || data),
       error: (err: any) => console.error('Error loading products:', err),
