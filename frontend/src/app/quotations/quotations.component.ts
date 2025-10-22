@@ -98,81 +98,155 @@ import { QuotationFormComponent } from './quotation-form.component.js';
       </mat-card>
 
       <mat-card>
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
-          <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef>ID</th>
-            <td mat-cell *matCellDef="let quote">{{ quote.id }}</td>
-          </ng-container>
+        <!-- Desktop Table View -->
+        <div class="desktop-view">
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef>ID</th>
+              <td mat-cell *matCellDef="let quote">{{ quote.id }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="vendor">
-            <th mat-header-cell *matHeaderCellDef>Vendor</th>
-            <td mat-cell *matCellDef="let quote">
-              <strong>{{ quote.vendor_name }}</strong>
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="vendor">
+              <th mat-header-cell *matHeaderCellDef>Vendor</th>
+              <td mat-cell *matCellDef="let quote">
+                <strong>{{ quote.vendor_name }}</strong>
+              </td>
+            </ng-container>
 
-          <ng-container matColumnDef="product">
-            <th mat-header-cell *matHeaderCellDef>Product</th>
-            <td mat-cell *matCellDef="let quote">{{ quote.product_name }}</td>
-          </ng-container>
+            <ng-container matColumnDef="product">
+              <th mat-header-cell *matHeaderCellDef>Product</th>
+              <td mat-cell *matCellDef="let quote">{{ quote.product_name }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="product_group">
-            <th mat-header-cell *matHeaderCellDef>Product Group</th>
-            <td mat-cell *matCellDef="let quote">{{ quote.product_group_name || '-' }}</td>
-          </ng-container>
+            <ng-container matColumnDef="product_group">
+              <th mat-header-cell *matHeaderCellDef>Product Group</th>
+              <td mat-cell *matCellDef="let quote">{{ quote.product_group_name || '-' }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="product_price">
-            <th mat-header-cell *matHeaderCellDef>Product Price</th>
-            <td mat-cell *matCellDef="let quote">₹{{ quote.product_price }}</td>
-          </ng-container>
+            <ng-container matColumnDef="product_price">
+              <th mat-header-cell *matHeaderCellDef>Product Price</th>
+              <td mat-cell *matCellDef="let quote">₹{{ quote.product_price }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="quantity">
-            <th mat-header-cell *matHeaderCellDef>Quantity (kg)</th>
-            <td mat-cell *matCellDef="let quote">{{ quote.quantity || '-' }}</td>
-          </ng-container>
+            <ng-container matColumnDef="quantity">
+              <th mat-header-cell *matHeaderCellDef>Quantity (kg)</th>
+              <td mat-cell *matCellDef="let quote">{{ quote.quantity || '-' }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="delivery_price">
-            <th mat-header-cell *matHeaderCellDef>Delivery Charges</th>
-            <td mat-cell *matCellDef="let quote">₹{{ quote.delivery_price }}</td>
-          </ng-container>
+            <ng-container matColumnDef="delivery_price">
+              <th mat-header-cell *matHeaderCellDef>Delivery Charges</th>
+              <td mat-cell *matCellDef="let quote">₹{{ quote.delivery_price }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="total_landing_price">
-            <th mat-header-cell *matHeaderCellDef>Total Landing Price (₹)</th>
-            <td mat-cell *matCellDef="let quote">
-              <strong>{{ calculateTotalLandingPrice(quote) }}</strong>
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="total_landing_price">
+              <th mat-header-cell *matHeaderCellDef>Total Landing Price (₹)</th>
+              <td mat-cell *matCellDef="let quote">
+                <strong>{{ calculateTotalLandingPrice(quote) }}</strong>
+              </td>
+            </ng-container>
 
-          <ng-container matColumnDef="landing_price">
-            <th mat-header-cell *matHeaderCellDef>Landing Price (₹/kg)</th>
-            <td mat-cell *matCellDef="let quote">{{ calculateLandingPricePerKg(quote) }}</td>
-          </ng-container>
+            <ng-container matColumnDef="landing_price">
+              <th mat-header-cell *matHeaderCellDef>Landing Price (₹/kg)</th>
+              <td mat-cell *matCellDef="let quote">{{ calculateLandingPricePerKg(quote) }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="lead_time">
-            <th mat-header-cell *matHeaderCellDef>Lead Time</th>
-            <td mat-cell *matCellDef="let quote">{{ quote.lead_time_days }} days</td>
-          </ng-container>
+            <ng-container matColumnDef="lead_time">
+              <th mat-header-cell *matHeaderCellDef>Lead Time</th>
+              <td mat-cell *matCellDef="let quote">{{ quote.lead_time_days }} days</td>
+            </ng-container>
 
-          <ng-container matColumnDef="grade_spec">
-            <th mat-header-cell *matHeaderCellDef>Grade</th>
-            <td mat-cell *matCellDef="let quote">{{ quote.grade_spec }}</td>
-          </ng-container>
+            <ng-container matColumnDef="grade_spec">
+              <th mat-header-cell *matHeaderCellDef>Grade</th>
+              <td mat-cell *matCellDef="let quote">{{ quote.grade_spec }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let quote">
-              <button mat-icon-button color="primary" (click)="openDialog(quote)">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button color="warn" (click)="deleteQuotation(quote.id)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let quote">
+                <button mat-icon-button color="primary" (click)="openDialog(quote)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteQuotation(quote.id)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+
+        <!-- Mobile List View -->
+        <div class="mobile-view">
+          <div class="mobile-list">
+            <div class="mobile-list-item" *ngFor="let quote of dataSource.filteredData">
+              <div class="mobile-item-header">
+                <div class="item-id">ID: {{ quote.id }}</div>
+                <div class="item-actions">
+                  <button mat-icon-button color="primary" (click)="openDialog(quote)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="deleteQuotation(quote.id)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mobile-item-content">
+                <div class="data-row">
+                  <span class="data-label">Vendor:</span>
+                  <span class="data-value vendor-name">{{ quote.vendor_name }}</span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">Product:</span>
+                  <span class="data-value">{{ quote.product_name }}</span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">Product Group:</span>
+                  <span class="data-value">{{ quote.product_group_name || '-' }}</span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">Product Price:</span>
+                  <span class="data-value price">₹{{ quote.product_price }}</span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">Quantity (kg):</span>
+                  <span class="data-value">{{ quote.quantity || '-' }}</span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">Delivery Charges:</span>
+                  <span class="data-value price">₹{{ quote.delivery_price || '-' }}</span>
+                </div>
+
+                <div class="data-row highlight">
+                  <span class="data-label">Total Landing Price:</span>
+                  <span class="data-value price-highlight">{{ calculateTotalLandingPrice(quote) }}</span>
+                </div>
+
+                <div class="data-row highlight">
+                  <span class="data-label">Landing Price (₹/kg):</span>
+                  <span class="data-value price-highlight">{{ calculateLandingPricePerKg(quote) }}</span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">Lead Time:</span>
+                  <span class="data-value">{{ quote.lead_time_days ? quote.lead_time_days + ' days' : '-' }}</span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">Grade:</span>
+                  <span class="data-value">{{ quote.grade_spec || '-' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <mat-paginator [pageSizeOptions]="[10, 25, 50]" 
                        [pageSize]="10"
@@ -300,6 +374,138 @@ import { QuotationFormComponent } from './quotation-form.component.js';
     td {
       color: #555;
       padding: 12px 16px;
+    }
+
+    /* Desktop/Mobile View Toggle */
+    .desktop-view {
+      display: block;
+    }
+
+    .mobile-view {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .desktop-view {
+        display: none;
+      }
+
+      .mobile-view {
+        display: block;
+      }
+
+      .mobile-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 8px;
+      }
+
+      .mobile-list-item {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .mobile-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        border-bottom: 2px solid #3f51b5;
+      }
+
+      .item-id {
+        font-size: 14px;
+        font-weight: 600;
+        color: #3f51b5;
+      }
+
+      .item-actions {
+        display: flex;
+        gap: 4px;
+      }
+
+      .item-actions button {
+        width: 36px;
+        height: 36px;
+      }
+
+      .mobile-item-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .data-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .data-row:last-child {
+        border-bottom: none;
+      }
+
+      .data-row.highlight {
+        background: #e8eaf6;
+        padding: 8px;
+        border-radius: 4px;
+        border-bottom: none;
+        margin: 4px 0;
+      }
+
+      .data-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: #666;
+        flex: 0 0 auto;
+        min-width: 130px;
+      }
+
+      .data-value {
+        font-size: 14px;
+        color: #333;
+        text-align: right;
+        flex: 1;
+        word-break: break-word;
+      }
+
+      .data-value.vendor-name {
+        font-weight: 600;
+        color: #3f51b5;
+      }
+
+      .data-value.price {
+        font-weight: 500;
+        color: #2e7d32;
+      }
+
+      .data-value.price-highlight {
+        font-weight: 600;
+        color: #3f51b5;
+        font-size: 15px;
+      }
+
+      /* Adjust pagination on mobile */
+      ::ng-deep .mat-mdc-paginator {
+        padding: 8px 0;
+      }
+
+      ::ng-deep .mat-mdc-paginator-container {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      ::ng-deep .mat-mdc-paginator-page-size {
+        margin: 0 8px;
+      }
     }
   `]
 })
