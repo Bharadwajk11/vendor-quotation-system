@@ -349,3 +349,72 @@ th {
     display: none;
   }
 }
+
+/* Custom Snackbar Notifications */
+.success-snackbar {
+  background-color: #4caf50 !important;
+}
+
+.success-snackbar .mdc-snackbar__surface {
+  background-color: #4caf50 !important;
+}
+
+.success-snackbar .mat-mdc-snack-bar-label {
+  color: white !important;
+  font-weight: 500 !important;
+}
+
+.success-snackbar .mat-mdc-button {
+  color: white !important;
+}
+
+.error-snackbar {
+  background-color: #f44336 !important;
+}
+
+.error-snackbar .mdc-snackbar__surface {
+  background-color: #f44336 !important;
+}
+
+.error-snackbar .mat-mdc-snack-bar-label {
+  color: white !important;
+  font-weight: 500 !important;
+}
+
+.error-snackbar .mat-mdc-button {
+  color: white !important;
+}
+
+.warning-snackbar {
+  background-color: #ff9800 !important;
+}
+
+.warning-snackbar .mdc-snackbar__surface {
+  background-color: #ff9800 !important;
+}
+
+.warning-snackbar .mat-mdc-snack-bar-label {
+  color: white !important;
+  font-weight: 500 !important;
+}
+
+.warning-snackbar .mat-mdc-button {
+  color: white !important;
+}
+
+.info-snackbar {
+  background-color: #2196f3 !important;
+}
+
+.info-snackbar .mdc-snackbar__surface {
+  background-color: #2196f3 !important;
+}
+
+.info-snackbar .mat-mdc-snack-bar-label {
+  color: white !important;
+  font-weight: 500 !important;
+}
+
+.info-snackbar .mat-mdc-button {
+  color: white !important;
+}
