@@ -56,65 +56,119 @@ import { ProductFormComponent } from './product-form.component';
       </mat-card>
 
       <mat-card>
+        <!-- Desktop Table View -->
+        <div class="desktop-view">
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef>ID</th>
+              <td mat-cell *matCellDef="let product">{{ product.id }}</td>
+            </ng-container>
 
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
-          <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef>ID</th>
-            <td mat-cell *matCellDef="let product">{{ product.id }}</td>
-          </ng-container>
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Product Name</th>
+              <td mat-cell *matCellDef="let product">
+                <strong>{{ product.name }}</strong>
+              </td>
+            </ng-container>
 
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Product Name</th>
-            <td mat-cell *matCellDef="let product">
-              <strong>{{ product.name }}</strong>
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="product_group">
+              <th mat-header-cell *matHeaderCellDef>Product Group</th>
+              <td mat-cell *matCellDef="let product">
+                <mat-chip-set *ngIf="product.product_group_name">
+                  <mat-chip color="primary">{{ product.product_group_name }}</mat-chip>
+                </mat-chip-set>
+                <span *ngIf="!product.product_group_name" class="no-data">—</span>
+              </td>
+            </ng-container>
 
-          <ng-container matColumnDef="product_group">
-            <th mat-header-cell *matHeaderCellDef>Product Group</th>
-            <td mat-cell *matCellDef="let product">
-              <mat-chip-set *ngIf="product.product_group_name">
-                <mat-chip color="primary">{{ product.product_group_name }}</mat-chip>
-              </mat-chip-set>
-              <span *ngIf="!product.product_group_name" class="no-data">—</span>
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="product_category">
+              <th mat-header-cell *matHeaderCellDef>Product Category</th>
+              <td mat-cell *matCellDef="let product">
+                <mat-chip-set *ngIf="product.product_category_name">
+                  <mat-chip color="accent">{{ product.product_category_name }}</mat-chip>
+                </mat-chip-set>
+                <span *ngIf="!product.product_category_name" class="no-data">—</span>
+              </td>
+            </ng-container>
 
-          <ng-container matColumnDef="product_category">
-            <th mat-header-cell *matHeaderCellDef>Product Category</th>
-            <td mat-cell *matCellDef="let product">
-              <mat-chip-set *ngIf="product.product_category_name">
-                <mat-chip color="accent">{{ product.product_category_name }}</mat-chip>
-              </mat-chip-set>
-              <span *ngIf="!product.product_category_name" class="no-data">—</span>
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="grade_spec">
+              <th mat-header-cell *matHeaderCellDef>Grade/Specification</th>
+              <td mat-cell *matCellDef="let product">{{ product.grade_spec }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="grade_spec">
-            <th mat-header-cell *matHeaderCellDef>Grade/Specification</th>
-            <td mat-cell *matCellDef="let product">{{ product.grade_spec }}</td>
-          </ng-container>
+            <ng-container matColumnDef="unit_type">
+              <th mat-header-cell *matHeaderCellDef>Unit Type</th>
+              <td mat-cell *matCellDef="let product">{{ product.unit_type }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="unit_type">
-            <th mat-header-cell *matHeaderCellDef>Unit Type</th>
-            <td mat-cell *matCellDef="let product">{{ product.unit_type }}</td>
-          </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let product">
+                <button mat-icon-button color="primary" (click)="openDialog(product)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteProduct(product.id)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
 
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let product">
-              <button mat-icon-button color="primary" (click)="openDialog(product)">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button color="warn" (click)="deleteProduct(product.id)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
+        <!-- Mobile List View -->
+        <div class="mobile-view">
+          <div class="mobile-list">
+            <div class="mobile-list-item" *ngFor="let product of dataSource.filteredData">
+              <div class="mobile-item-header">
+                <div class="item-id">ID: {{ product.id }}</div>
+                <div class="item-actions">
+                  <button mat-icon-button color="primary" (click)="openDialog(product)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="deleteProduct(product.id)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mobile-item-content">
+                <div class="data-row">
+                  <span class="data-label">Product Name:</span>
+                  <span class="data-value product-name">{{ product.name }}</span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">Product Group:</span>
+                  <span class="data-value">
+                    <mat-chip *ngIf="product.product_group_name" color="primary">{{ product.product_group_name }}</mat-chip>
+                    <span *ngIf="!product.product_group_name" class="no-data">—</span>
+                  </span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">Product Category:</span>
+                  <span class="data-value">
+                    <mat-chip *ngIf="product.product_category_name" color="accent">{{ product.product_category_name }}</mat-chip>
+                    <span *ngIf="!product.product_category_name" class="no-data">—</span>
+                  </span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">Grade/Spec:</span>
+                  <span class="data-value">{{ product.grade_spec }}</span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">Unit Type:</span>
+                  <span class="data-value">{{ product.unit_type }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <mat-paginator [pageSizeOptions]="[10, 25, 50]" 
                        [pageSize]="10"
@@ -260,6 +314,118 @@ import { ProductFormComponent } from './product-form.component';
     .no-data {
       color: #ccc;
       font-style: italic;
+    }
+
+    /* Desktop/Mobile View Toggle */
+    .desktop-view {
+      display: block;
+    }
+
+    .mobile-view {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .desktop-view {
+        display: none;
+      }
+
+      .mobile-view {
+        display: block;
+      }
+
+      .mobile-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 8px;
+      }
+
+      .mobile-list-item {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .mobile-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        border-bottom: 2px solid #3f51b5;
+      }
+
+      .item-id {
+        font-size: 14px;
+        font-weight: 600;
+        color: #3f51b5;
+      }
+
+      .item-actions {
+        display: flex;
+        gap: 4px;
+      }
+
+      .item-actions button {
+        width: 36px;
+        height: 36px;
+      }
+
+      .mobile-item-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .data-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .data-row:last-child {
+        border-bottom: none;
+      }
+
+      .data-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: #666;
+        flex: 0 0 auto;
+        min-width: 120px;
+      }
+
+      .data-value {
+        font-size: 14px;
+        color: #333;
+        text-align: right;
+        flex: 1;
+        word-break: break-word;
+      }
+
+      .data-value.product-name {
+        font-weight: 600;
+        color: #3f51b5;
+      }
+
+      ::ng-deep .mat-mdc-paginator {
+        padding: 8px 0;
+      }
+
+      ::ng-deep .mat-mdc-paginator-container {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      ::ng-deep .mat-mdc-paginator-page-size {
+        margin: 0 8px;
+      }
     }
 
     @media (max-width: 768px) {
