@@ -54,52 +54,101 @@ import { CompanyFormComponent } from './company-form.component';
       </mat-card>
 
       <mat-card>
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
-          <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef>ID</th>
-            <td mat-cell *matCellDef="let company">{{ company.id }}</td>
-          </ng-container>
+        <!-- Desktop Table View -->
+        <div class="desktop-view">
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef>ID</th>
+              <td mat-cell *matCellDef="let company">{{ company.id }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Company Name</th>
-            <td mat-cell *matCellDef="let company">{{ company.name }}</td>
-          </ng-container>
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Company Name</th>
+              <td mat-cell *matCellDef="let company">{{ company.name }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="industry_type">
-            <th mat-header-cell *matHeaderCellDef>Industry</th>
-            <td mat-cell *matCellDef="let company">{{ company.industry_type }}</td>
-          </ng-container>
+            <ng-container matColumnDef="industry_type">
+              <th mat-header-cell *matHeaderCellDef>Industry</th>
+              <td mat-cell *matCellDef="let company">{{ company.industry_type }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="state">
-            <th mat-header-cell *matHeaderCellDef>State</th>
-            <td mat-cell *matCellDef="let company">{{ company.state || '-' }}</td>
-          </ng-container>
+            <ng-container matColumnDef="state">
+              <th mat-header-cell *matHeaderCellDef>State</th>
+              <td mat-cell *matCellDef="let company">{{ company.state || '-' }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="contact_email">
-            <th mat-header-cell *matHeaderCellDef>Email</th>
-            <td mat-cell *matCellDef="let company">{{ company.contact_email }}</td>
-          </ng-container>
+            <ng-container matColumnDef="contact_email">
+              <th mat-header-cell *matHeaderCellDef>Email</th>
+              <td mat-cell *matCellDef="let company">{{ company.contact_email }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="address">
-            <th mat-header-cell *matHeaderCellDef>Address</th>
-            <td mat-cell *matCellDef="let company">{{ company.address }}</td>
-          </ng-container>
+            <ng-container matColumnDef="address">
+              <th mat-header-cell *matHeaderCellDef>Address</th>
+              <td mat-cell *matCellDef="let company">{{ company.address }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let company">
-              <button mat-icon-button color="primary" (click)="openDialog(company)">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button color="warn" (click)="deleteCompany(company.id)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let company">
+                <button mat-icon-button color="primary" (click)="openDialog(company)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteCompany(company.id)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+
+        <!-- Mobile List View -->
+        <div class="mobile-view">
+          <div class="mobile-list">
+            <div class="mobile-list-item" *ngFor="let company of dataSource.filteredData">
+              <div class="mobile-item-header">
+                <div class="item-id">ID: {{ company.id }}</div>
+                <div class="item-actions">
+                  <button mat-icon-button color="primary" (click)="openDialog(company)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="deleteCompany(company.id)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mobile-item-content">
+                <div class="data-row">
+                  <span class="data-label">Company Name:</span>
+                  <span class="data-value company-name">{{ company.name }}</span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">Industry:</span>
+                  <span class="data-value">{{ company.industry_type }}</span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">State:</span>
+                  <span class="data-value">{{ company.state || '-' }}</span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">Email:</span>
+                  <span class="data-value">{{ company.contact_email }}</span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">Address:</span>
+                  <span class="data-value">{{ company.address }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <mat-paginator [pageSizeOptions]="[5, 10, 25]" 
                        [pageSize]="10"
@@ -207,6 +256,118 @@ import { CompanyFormComponent } from './company-form.component';
     td {
       color: #555;
       padding: 12px 16px;
+    }
+
+    /* Desktop/Mobile View Toggle */
+    .desktop-view {
+      display: block;
+    }
+
+    .mobile-view {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .desktop-view {
+        display: none;
+      }
+
+      .mobile-view {
+        display: block;
+      }
+
+      .mobile-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 8px;
+      }
+
+      .mobile-list-item {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .mobile-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        border-bottom: 2px solid #3f51b5;
+      }
+
+      .item-id {
+        font-size: 14px;
+        font-weight: 600;
+        color: #3f51b5;
+      }
+
+      .item-actions {
+        display: flex;
+        gap: 4px;
+      }
+
+      .item-actions button {
+        width: 36px;
+        height: 36px;
+      }
+
+      .mobile-item-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .data-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .data-row:last-child {
+        border-bottom: none;
+      }
+
+      .data-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: #666;
+        flex: 0 0 auto;
+        min-width: 110px;
+      }
+
+      .data-value {
+        font-size: 14px;
+        color: #333;
+        text-align: right;
+        flex: 1;
+        word-break: break-word;
+      }
+
+      .data-value.company-name {
+        font-weight: 600;
+        color: #3f51b5;
+      }
+
+      ::ng-deep .mat-mdc-paginator {
+        padding: 8px 0;
+      }
+
+      ::ng-deep .mat-mdc-paginator-container {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      ::ng-deep .mat-mdc-paginator-page-size {
+        margin: 0 8px;
+      }
     }
   `]
 })
