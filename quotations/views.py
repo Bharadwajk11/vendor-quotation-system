@@ -327,6 +327,20 @@ def compare_vendors(request):
     delivery_location = data['delivery_location']
     required_date = data.get('required_date', None)
     
+    # Validate order quantity
+    if order_qty <= 0:
+        return Response(
+            {"error": "Order quantity must be greater than 0"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    # Validate delivery location
+    if not delivery_location or not delivery_location.strip():
+        return Response(
+            {"error": "Delivery location cannot be empty"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
     # Always use default company for single-tenant mode (ignore company_id input)
     company = get_default_company()
     
