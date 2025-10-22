@@ -11,6 +11,8 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/api.service';
 import { ProductGroupFormComponent } from './product-group-form.component';
+import { NotificationService } from '../services/notification.service';
+import { ConfirmService } from '../services/confirm.service';
 
 @Component({
   selector: 'app-product-groups',
@@ -347,7 +349,9 @@ export class ProductGroupsComponent implements OnInit, AfterViewInit {
 
   constructor(
     private apiService: ApiService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private notificationService: NotificationService,
+    private confirmService: ConfirmService
   ) {}
 
   ngOnInit() {
@@ -415,11 +419,24 @@ export class ProductGroupsComponent implements OnInit, AfterViewInit {
   }
 
   deleteProductGroup(id: number) {
-    if (confirm('Are you sure you want to delete this product group?')) {
-      this.apiService.deleteProductGroup(id).subscribe({
-        next: () => this.loadProductGroups(),
-        error: (err: any) => console.error('Error deleting product group:', err)
-      });
-    }
+    this.confirmService.confirm(
+      'Delete Product Group',
+      'Are you sure you want to delete this product group? This action cannot be undone.',
+      'Delete',
+      'Cancel'
+    ).subscribe((confirmed) => {
+      if (confirmed) {
+        this.apiService.deleteProductGroup(id).subscribe({
+          next: () => {
+            this.loadProductGroups();
+            this.notificationService.showSuccess('Product group deleted successfully!');
+          },
+          error: (err: any) => {
+            console.error('Error deleting product group:', err);
+            this.notificationService.showError('Failed to delete product group. Please try again.');
+          }
+        });
+      }
+    });
   }
 }

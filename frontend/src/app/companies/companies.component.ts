@@ -11,6 +11,8 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/api.service';
 import { CompanyFormComponent } from './company-form.component';
+import { NotificationService } from '../services/notification.service';
+import { ConfirmService } from '../services/confirm.service';
 
 @Component({
   selector: 'app-companies',
@@ -376,7 +378,9 @@ export class CompaniesComponent implements OnInit, AfterViewInit {
 
   constructor(
     private apiService: ApiService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private notificationService: NotificationService,
+    private confirmService: ConfirmService
   ) {}
 
   ngOnInit() {
@@ -447,11 +451,24 @@ export class CompaniesComponent implements OnInit, AfterViewInit {
   }
 
   deleteCompany(id: number) {
-    if (confirm('Are you sure you want to delete this company?')) {
-      this.apiService.deleteCompany(id).subscribe({
-        next: () => this.loadCompanies(),
-        error: (err) => console.error('Error deleting company:', err)
-      });
-    }
+    this.confirmService.confirm(
+      'Delete Company',
+      'Are you sure you want to delete this company? This action cannot be undone.',
+      'Delete',
+      'Cancel'
+    ).subscribe((confirmed) => {
+      if (confirmed) {
+        this.apiService.deleteCompany(id).subscribe({
+          next: () => {
+            this.loadCompanies();
+            this.notificationService.showSuccess('Company deleted successfully!');
+          },
+          error: (err: any) => {
+            console.error('Error deleting company:', err);
+            this.notificationService.showError('Failed to delete company. Please try again.');
+          }
+        });
+      }
+    });
   }
 }

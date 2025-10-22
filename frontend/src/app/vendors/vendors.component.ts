@@ -12,6 +12,8 @@ import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/api.service';
 import { VendorFormComponent } from './vendor-form.component';
+import { NotificationService } from '../services/notification.service';
+import { ConfirmService } from '../services/confirm.service';
 
 @Component({
   selector: 'app-vendors',
@@ -405,7 +407,9 @@ export class VendorsComponent implements OnInit, AfterViewInit {
 
   constructor(
     private apiService: ApiService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private notificationService: NotificationService,
+    private confirmService: ConfirmService
   ) {}
 
   ngOnInit() {
@@ -449,12 +453,25 @@ export class VendorsComponent implements OnInit, AfterViewInit {
   }
 
   deleteVendor(id: number) {
-    if (confirm('Are you sure you want to delete this vendor?')) {
-      this.apiService.deleteVendor(id).subscribe({
-        next: () => this.loadVendors(),
-        error: (err: any) => console.error('Error deleting vendor:', err)
-      });
-    }
+    this.confirmService.confirm(
+      'Delete Vendor',
+      'Are you sure you want to delete this vendor? This action cannot be undone.',
+      'Delete',
+      'Cancel'
+    ).subscribe((confirmed) => {
+      if (confirmed) {
+        this.apiService.deleteVendor(id).subscribe({
+          next: () => {
+            this.loadVendors();
+            this.notificationService.showSuccess('Vendor deleted successfully!');
+          },
+          error: (err: any) => {
+            console.error('Error deleting vendor:', err);
+            this.notificationService.showError('Failed to delete vendor. Please try again.');
+          }
+        });
+      }
+    });
   }
 
   applySearch() {

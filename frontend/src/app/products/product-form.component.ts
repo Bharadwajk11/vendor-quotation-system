@@ -11,6 +11,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ApiService } from '../services/api.service';
 import { ProductGroupFormComponent } from '../product-groups/product-group-form.component';
 import { ProductCategoryFormComponent } from '../product-categories/product-category-form.component';
+import { NotificationService } from '../services/notification.service';
+import { ConfirmService } from '../services/confirm.service';
 
 @Component({
   selector: 'app-product-form',
@@ -312,7 +314,9 @@ export class ProductFormComponent implements OnInit {
     public dialogRef: MatDialogRef<ProductFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private apiService: ApiService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private notificationService: NotificationService,
+    private confirmService: ConfirmService
   ) {
     this.productForm = this.fb.group({
       product_group: [''],
@@ -384,15 +388,26 @@ export class ProductFormComponent implements OnInit {
     const groupId = this.productForm.get('product_group')?.value;
     if (!groupId) return;
 
-    if (confirm('Are you sure you want to delete this product group? Products in this group will not be deleted.')) {
-      this.apiService.deleteProductGroup(groupId).subscribe({
-        next: () => {
-          this.productForm.patchValue({ product_group: null });
-          this.loadProductGroups();
-        },
-        error: (err: any) => console.error('Error deleting product group:', err)
-      });
-    }
+    this.confirmService.confirm(
+      'Delete Product Group',
+      'Are you sure you want to delete this product group? Products in this group will not be deleted.',
+      'Delete',
+      'Cancel'
+    ).subscribe((confirmed) => {
+      if (confirmed) {
+        this.apiService.deleteProductGroup(groupId).subscribe({
+          next: () => {
+            this.productForm.patchValue({ product_group: null });
+            this.loadProductGroups();
+            this.notificationService.showSuccess('Product group deleted successfully!');
+          },
+          error: (err: any) => {
+            console.error('Error deleting product group:', err);
+            this.notificationService.showError('Failed to delete product group. Please try again.');
+          }
+        });
+      }
+    });
   }
 
   addProductCategory() {
@@ -431,15 +446,26 @@ export class ProductFormComponent implements OnInit {
     const categoryId = this.productForm.get('product_category')?.value;
     if (!categoryId) return;
 
-    if (confirm('Are you sure you want to delete this product category? Products in this category will not be deleted.')) {
-      this.apiService.deleteProductCategory(categoryId).subscribe({
-        next: () => {
-          this.productForm.patchValue({ product_category: null });
-          this.loadProductCategories();
-        },
-        error: (err: any) => console.error('Error deleting product category:', err)
-      });
-    }
+    this.confirmService.confirm(
+      'Delete Product Category',
+      'Are you sure you want to delete this product category? Products in this category will not be deleted.',
+      'Delete',
+      'Cancel'
+    ).subscribe((confirmed) => {
+      if (confirmed) {
+        this.apiService.deleteProductCategory(categoryId).subscribe({
+          next: () => {
+            this.productForm.patchValue({ product_category: null });
+            this.loadProductCategories();
+            this.notificationService.showSuccess('Product category deleted successfully!');
+          },
+          error: (err: any) => {
+            console.error('Error deleting product category:', err);
+            this.notificationService.showError('Failed to delete product category. Please try again.');
+          }
+        });
+      }
+    });
   }
 
   onSubmit() {

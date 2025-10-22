@@ -12,6 +12,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ApiService } from '../services/api.service';
 import { VendorFormComponent } from '../vendors/vendor-form.component';
 import { ProductFormComponent } from '../products/product-form.component';
+import { NotificationService } from '../services/notification.service';
+import { ConfirmService } from '../services/confirm.service';
 
 @Component({
   selector: 'app-quotation-form',
@@ -283,7 +285,9 @@ export class QuotationFormComponent implements OnInit {
     public dialogRef: MatDialogRef<QuotationFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private apiService: ApiService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private notificationService: NotificationService,
+    private confirmService: ConfirmService
   ) {
     this.quotationForm = this.fb.group({
       vendor: ['', Validators.required],
@@ -382,15 +386,26 @@ export class QuotationFormComponent implements OnInit {
     const vendorId = this.quotationForm.get('vendor')?.value;
     if (!vendorId) return;
 
-    if (confirm('Are you sure you want to delete this vendor?')) {
-      this.apiService.deleteVendor(vendorId).subscribe({
-        next: () => {
-          this.loadVendors();
-          this.quotationForm.patchValue({ vendor: '' });
-        },
-        error: (err: any) => console.error('Error deleting vendor:', err)
-      });
-    }
+    this.confirmService.confirm(
+      'Delete Vendor',
+      'Are you sure you want to delete this vendor? This action cannot be undone.',
+      'Delete',
+      'Cancel'
+    ).subscribe((confirmed) => {
+      if (confirmed) {
+        this.apiService.deleteVendor(vendorId).subscribe({
+          next: () => {
+            this.loadVendors();
+            this.quotationForm.patchValue({ vendor: '' });
+            this.notificationService.showSuccess('Vendor deleted successfully!');
+          },
+          error: (err: any) => {
+            console.error('Error deleting vendor:', err);
+            this.notificationService.showError('Failed to delete vendor. Please try again.');
+          }
+        });
+      }
+    });
   }
 
   addProduct() {
@@ -428,15 +443,26 @@ export class QuotationFormComponent implements OnInit {
     const productId = this.quotationForm.get('product')?.value;
     if (!productId) return;
 
-    if (confirm('Are you sure you want to delete this product?')) {
-      this.apiService.deleteProduct(productId).subscribe({
-        next: () => {
-          this.loadProducts();
-          this.quotationForm.patchValue({ product: '' });
-        },
-        error: (err: any) => console.error('Error deleting product:', err)
-      });
-    }
+    this.confirmService.confirm(
+      'Delete Product',
+      'Are you sure you want to delete this product? This action cannot be undone.',
+      'Delete',
+      'Cancel'
+    ).subscribe((confirmed) => {
+      if (confirmed) {
+        this.apiService.deleteProduct(productId).subscribe({
+          next: () => {
+            this.loadProducts();
+            this.quotationForm.patchValue({ product: '' });
+            this.notificationService.showSuccess('Product deleted successfully!');
+          },
+          error: (err: any) => {
+            console.error('Error deleting product:', err);
+            this.notificationService.showError('Failed to delete product. Please try again.');
+          }
+        });
+      }
+    });
   }
 
   onSubmit() {

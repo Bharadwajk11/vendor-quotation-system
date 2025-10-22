@@ -11,6 +11,8 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/api.service';
 import { ProductCategoryFormComponent } from './product-category-form.component';
+import { NotificationService } from '../services/notification.service';
+import { ConfirmService } from '../services/confirm.service';
 
 @Component({
   selector: 'app-product-categories',
@@ -347,7 +349,9 @@ export class ProductCategoriesComponent implements OnInit, AfterViewInit {
 
   constructor(
     private apiService: ApiService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private notificationService: NotificationService,
+    private confirmService: ConfirmService
   ) {}
 
   ngOnInit() {
@@ -415,11 +419,24 @@ export class ProductCategoriesComponent implements OnInit, AfterViewInit {
   }
 
   deleteProductCategory(id: number) {
-    if (confirm('Are you sure you want to delete this product category?')) {
-      this.apiService.deleteProductCategory(id).subscribe({
-        next: () => this.loadProductCategories(),
-        error: (err: any) => console.error('Error deleting product category:', err)
-      });
-    }
+    this.confirmService.confirm(
+      'Delete Product Category',
+      'Are you sure you want to delete this product category? This action cannot be undone.',
+      'Delete',
+      'Cancel'
+    ).subscribe((confirmed) => {
+      if (confirmed) {
+        this.apiService.deleteProductCategory(id).subscribe({
+          next: () => {
+            this.loadProductCategories();
+            this.notificationService.showSuccess('Product category deleted successfully!');
+          },
+          error: (err: any) => {
+            console.error('Error deleting product category:', err);
+            this.notificationService.showError('Failed to delete product category. Please try again.');
+          }
+        });
+      }
+    });
   }
 }

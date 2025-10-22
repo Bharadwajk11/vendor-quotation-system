@@ -12,6 +12,8 @@ import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/api.service';
 import { ProductFormComponent } from './product-form.component';
+import { NotificationService } from '../services/notification.service';
+import { ConfirmService } from '../services/confirm.service';
 
 @Component({
   selector: 'app-products',
@@ -548,7 +550,9 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
   constructor(
     private apiService: ApiService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private notificationService: NotificationService,
+    private confirmService: ConfirmService
   ) {}
 
   ngOnInit() {
@@ -586,12 +590,25 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   }
 
   deleteProduct(id: number) {
-    if (confirm('Are you sure you want to delete this product?')) {
-      this.apiService.deleteProduct(id).subscribe({
-        next: () => this.loadProducts(),
-        error: (err: any) => console.error('Error deleting product:', err)
-      });
-    }
+    this.confirmService.confirm(
+      'Delete Product',
+      'Are you sure you want to delete this product? This action cannot be undone.',
+      'Delete',
+      'Cancel'
+    ).subscribe((confirmed) => {
+      if (confirmed) {
+        this.apiService.deleteProduct(id).subscribe({
+          next: () => {
+            this.loadProducts();
+            this.notificationService.showSuccess('Product deleted successfully!');
+          },
+          error: (err: any) => {
+            console.error('Error deleting product:', err);
+            this.notificationService.showError('Failed to delete product. Please try again.');
+          }
+        });
+      }
+    });
   }
 
   applySearch() {

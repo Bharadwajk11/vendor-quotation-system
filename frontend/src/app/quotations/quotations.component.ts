@@ -13,6 +13,8 @@ import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { QuotationFormComponent } from './quotation-form.component.js';
+import { NotificationService } from '../services/notification.service';
+import { ConfirmService } from '../services/confirm.service';
 
 @Component({
   selector: 'app-quotations',
@@ -523,7 +525,9 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
 
   constructor(
     private apiService: ApiService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private notificationService: NotificationService,
+    private confirmService: ConfirmService
   ) {}
 
   ngOnInit() {
@@ -550,7 +554,7 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
       error: (err: any) => {
         console.error('Error loading data:', err);
         this.isLoading = false;
-        alert('Failed to load data. Please try again.');
+        this.notificationService.showError('Failed to load data. Please try again.');
       }
     });
   }
@@ -578,7 +582,7 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
       error: (err: any) => {
         console.error('Error loading quotations:', err);
         this.isLoading = false;
-        alert('Failed to load quotations. Please try again.');
+        this.notificationService.showError('Failed to load quotations. Please try again.');
       }
     });
   }
@@ -648,12 +652,12 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
           this.apiService.updateQuotation(quotation.id, result).subscribe({
             next: () => {
               this.loadQuotations();
-              alert('Quotation updated successfully!');
+              this.notificationService.showSuccess('Quotation updated successfully!');
             },
             error: (err: any) => {
               console.error('Error updating quotation:', err);
               this.isLoading = false;
-              alert('Failed to update quotation. Please check your inputs and try again.');
+              this.notificationService.showError('Failed to update quotation. Please check your inputs and try again.');
             }
           });
         } else {
@@ -661,12 +665,12 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
           this.apiService.createQuotation(result).subscribe({
             next: () => {
               this.loadQuotations();
-              alert('Quotation created successfully!');
+              this.notificationService.showSuccess('Quotation created successfully!');
             },
             error: (err: any) => {
               console.error('Error creating quotation:', err);
               this.isLoading = false;
-              alert('Failed to create quotation. Please check your inputs and try again.');
+              this.notificationService.showError('Failed to create quotation. Please check your inputs and try again.');
             }
           });
         }
@@ -675,20 +679,27 @@ export class QuotationsComponent implements OnInit, AfterViewInit {
   }
 
   deleteQuotation(id: number) {
-    if (confirm('Are you sure you want to delete this quotation?')) {
-      this.isLoading = true;
-      this.apiService.deleteQuotation(id).subscribe({
-        next: () => {
-          this.loadQuotations();
-          alert('Quotation deleted successfully!');
-        },
-        error: (err: any) => {
-          console.error('Error deleting quotation:', err);
-          this.isLoading = false;
-          alert('Failed to delete quotation. Please try again.');
-        }
-      });
-    }
+    this.confirmService.confirm(
+      'Delete Quotation',
+      'Are you sure you want to delete this quotation? This action cannot be undone.',
+      'Delete',
+      'Cancel'
+    ).subscribe((confirmed) => {
+      if (confirmed) {
+        this.isLoading = true;
+        this.apiService.deleteQuotation(id).subscribe({
+          next: () => {
+            this.loadQuotations();
+            this.notificationService.showSuccess('Quotation deleted successfully!');
+          },
+          error: (err: any) => {
+            console.error('Error deleting quotation:', err);
+            this.isLoading = false;
+            this.notificationService.showError('Failed to delete quotation. Please try again.');
+          }
+        });
+      }
+    });
   }
 
   calculateTotalLandingPrice(quote: any): string {

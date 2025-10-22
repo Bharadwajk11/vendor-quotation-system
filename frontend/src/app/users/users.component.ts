@@ -12,6 +12,8 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/api.service';
 import { UserFormComponent } from './user-form.component';
+import { NotificationService } from '../services/notification.service';
+import { ConfirmService } from '../services/confirm.service';
 
 @Component({
   selector: 'app-users',
@@ -449,7 +451,9 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   constructor(
     private apiService: ApiService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private notificationService: NotificationService,
+    private confirmService: ConfirmService
   ) {}
 
   ngOnInit() {
@@ -526,10 +530,24 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   deleteUser(id: number) {
-    if (confirm('Are you sure you want to delete this user?')) {
-      this.apiService.deleteUserProfile(id).subscribe(() => {
-        this.loadUsers();
-      });
-    }
+    this.confirmService.confirm(
+      'Delete User',
+      'Are you sure you want to delete this user? This action cannot be undone.',
+      'Delete',
+      'Cancel'
+    ).subscribe((confirmed) => {
+      if (confirmed) {
+        this.apiService.deleteUserProfile(id).subscribe({
+          next: () => {
+            this.loadUsers();
+            this.notificationService.showSuccess('User deleted successfully!');
+          },
+          error: (err: any) => {
+            console.error('Error deleting user:', err);
+            this.notificationService.showError('Failed to delete user. Please try again.');
+          }
+        });
+      }
+    });
   }
 }
