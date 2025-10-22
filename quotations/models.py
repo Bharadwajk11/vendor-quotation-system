@@ -125,11 +125,6 @@ class Quotation(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-        indexes = [
-            models.Index(fields=['vendor', 'product']),
-            models.Index(fields=['product', '-created_at']),
-            models.Index(fields=['-created_at']),
-        ]
 
     def __str__(self):
         return f"{self.vendor.name} - {self.product.name} - ₹{self.product_price}"
