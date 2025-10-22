@@ -131,19 +131,20 @@ For comprehensive installation instructions, production deployment, and troubles
 
 ```
 vendor-quotation-system/
-├── backend/                    # Django REST API
-│   ├── backend/               # Project settings & configuration
-│   │   ├── settings.py       # Django settings (uses env variables)
-│   │   ├── urls.py           # Main URL routing
-│   │   └── wsgi.py           # WSGI application
-│   ├── api/                  # API application
-│   │   ├── models.py         # Database models
-│   │   ├── serializers.py    # DRF serializers
-│   │   ├── views.py          # ViewSets and API logic
-│   │   └── urls.py           # API endpoints
-│   └── manage.py             # Django management script
+├── backend/                   # Django project settings
+│   └── backend/              # Project configuration
+│       ├── settings.py       # Django settings (uses env variables)
+│       ├── urls.py           # Main URL routing
+│       └── wsgi.py           # WSGI application
 │
-├── frontend/                  # Angular application
+├── quotations/               # Django app (main API)
+│   ├── models.py            # Database models
+│   ├── serializers.py       # DRF serializers
+│   ├── views.py             # ViewSets and API logic
+│   ├── urls.py              # API endpoints
+│   └── migrations/          # Database migrations
+│
+├── frontend/                 # Angular application
 │   ├── src/
 │   │   ├── app/
 │   │   │   ├── dashboard/          # Dashboard with charts
@@ -167,6 +168,7 @@ vendor-quotation-system/
 │   ├── package.json          # Node dependencies
 │   └── proxy.conf.json       # API proxy configuration
 │
+├── manage.py                 # Django management script
 ├── .env.example              # Environment variables template
 ├── .gitignore                # Git ignore rules
 ├── requirements.txt          # Python dependencies
