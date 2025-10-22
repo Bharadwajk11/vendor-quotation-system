@@ -16,7 +16,8 @@ export class ConfirmService {
     cancelText: string = 'Cancel'
   ): Observable<boolean> {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px',
+      width: '90vw',
+      maxWidth: '400px',
       data: {
         title,
         message,
